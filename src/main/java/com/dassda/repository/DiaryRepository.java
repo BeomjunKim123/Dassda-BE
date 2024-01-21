@@ -15,5 +15,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     Long countByBoardId(Long boardId);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN 1 ELSE 0 END FROM Diary d WHERE d.regDate BETWEEN :startDate AND :endDate")
-    int existsDiariesInLastThreeDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    boolean existsDiariesInLastThreeDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }

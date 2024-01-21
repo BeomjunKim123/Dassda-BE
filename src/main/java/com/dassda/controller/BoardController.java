@@ -1,7 +1,5 @@
 package com.dassda.controller;
 
-import com.dassda.entity.Board;
-import com.dassda.jwt.JwtTokenProvider;
 import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.service.BoardService;
@@ -9,21 +7,17 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.misc.ObjectEqualityComparator;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
+@CrossOrigin("http://localhost:5173/**")
 public class BoardController {
 
     private final BoardService boardService;
@@ -33,7 +27,7 @@ public class BoardController {
             @ApiResponse(responseCode = "success", description = "일기장 추가 완료"),
             @ApiResponse(responseCode = "fail", description = "일기장 추가 실패, 예외 처리 확인")
     })
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<Object> addBoard(@RequestBody BoardRequest boardRequest) {
         boardService.addBoard(boardRequest);
         Map<String, Object> response = new HashMap<>();
@@ -57,7 +51,7 @@ public class BoardController {
             @ApiResponse(responseCode = "success", description = "일기장 조회 성공"),
             @ApiResponse(responseCode = "fail", description = "일기장 조회 실패")
     })
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<List<BoardResponse>> getBoard() {
         List<BoardResponse> boards = boardService.getBoard();
         return ResponseEntity.ok(boards);
@@ -67,7 +61,7 @@ public class BoardController {
             @ApiResponse(responseCode = "success", description = "일기장 편집 성공"),
             @ApiResponse(responseCode = "fail", description = "일기장 편집 실패")
     })
-    @PutMapping("/")
+    @PutMapping()
     public ResponseEntity<Object> updateBoard(@RequestBody BoardRequest boardRequest) {
         boardService.updateBoard(boardRequest);
         Map<String, Object> response = new HashMap<>();

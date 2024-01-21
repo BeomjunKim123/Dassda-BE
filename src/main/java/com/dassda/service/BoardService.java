@@ -39,6 +39,11 @@ public class BoardService {
     }
     public void addBoard(BoardRequest boardRequest) {
         Optional<Member> member = memberRepository.findByEmail(email().getEmail());
+        //Dto에 있는 데이터 말고 다른 값을 클라이언트에서 추가적으로 요청했을 때
+        //스프링에서 객체로 바인딩할 때 자동으로 무시함
+        if(boardRequest.getBoardTitle().length() > 10) {
+            throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
+        }
 
         if(member.isPresent()) {
             Board board = new Board();
@@ -90,14 +95,18 @@ public class BoardService {
         boardResponse.setNewBadge(newBadge());
         return boardResponse;
     }
-    private int newBadge() {
+    private boolean newBadge() {
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = endDate.minusDays(3);
-        int badge = diaryRepository.existsDiariesInLastThreeDays(startDate, endDate);
+        boolean badge = diaryRepository.existsDiariesInLastThreeDays(startDate, endDate);
         return badge;
     }
     public void updateBoard(BoardRequest boardRequest) {
         Optional<Board> boardInfo = boardRepository.findById(boardRequest.getId());
+
+        if(boardRequest.getBoardTitle().length() > 10) {
+            throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
+        }
 
         if(boardInfo.isPresent()) {
             Board board = boardInfo.get();

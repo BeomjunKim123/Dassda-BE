@@ -1,25 +1,27 @@
 package com.dassda.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-//@RequiredArgsConstructor 필드에서 final로 선언된 필드만 포함하는 생성자 생성
-@AllArgsConstructor //모든 필드를 포함하는 생성자 생성
-@NoArgsConstructor  //인자 없는 생성자를 생성
+@Schema(description = "일기장 조회 응답 데이터")
+@AllArgsConstructor
+@NoArgsConstructor
 public class BoardResponse {
     private Long id;
     private int imageNumber;
     private int appearanceType;
     private String title;
-    private int isShared;
+    private boolean isShared;
     private LocalDateTime regDate;
     private Long diaryCount;
     private int memberCount;
-    private int newBadge;
-    private int backUp;
+    private boolean newBadge;
+    private boolean backUp;
 }
 //빌더 패턴
 //    private BoardResponse convertToBoardResponse(Board board) {

@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://106.10.33.98:3306/ssda
+    url: jdbc:mysql://localhost:3306/ssda
     username: root
-    password: dong
+    password: Dongcci92!!
 
 jpa:
   properties:
