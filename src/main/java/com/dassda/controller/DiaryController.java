@@ -13,11 +13,11 @@ import java.util.List;
 @RequestMapping("/api/diary")
 public class DiaryController {
     private final DiaryService diaryService;
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<Diary> addDiary() throws Exception {
         return null;
     }
-    @GetMapping("/get")
+    @GetMapping()
     public ResponseEntity<List<Diary>> getDiary(@RequestParam Long boardId) {
         return null;
     }
