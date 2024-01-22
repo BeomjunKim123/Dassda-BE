@@ -12,16 +12,16 @@ import java.util.List;
 
 @Getter
 @Setter
-@Schema(description = "달력 조회 응답 데이터")
-public class CalenderResponse {
+@Schema(description = "달력 일별 조회 응답 데이터")
+public class CalenderDayResponse {
 
     private Long id;
-    private List<Member> members;
+    private Member write;
     private Board board;
     private Sticker sticker;
     private String contents;
     private Long likesCount;
-    private int commentCount;
+    private Long commentCount;
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private boolean backUp;

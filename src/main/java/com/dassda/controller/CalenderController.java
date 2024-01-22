@@ -1,16 +1,16 @@
 package com.dassda.controller;
 
-import com.dassda.response.CalenderResponse;
+import com.dassda.response.CalenderDayResponse;
+import com.dassda.response.CalenderMonthResponse;
 import com.dassda.service.CalenderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,23 +24,20 @@ public class CalenderController {
             @ApiResponse(responseCode = "sucess", description = "달력 유무 응답 성공"),
             @ApiResponse(responseCode = "fail", description = "실패함 확인좀")
     })
-    @GetMapping("/month/{date}")
-    public ResponseEntity<CalenderResponse> getCalender(@PathVariable String date) {
-
-        CalenderResponse calenderResponse = calenderService.getDiaryExisting(date);
-
-        return ResponseEntity.ok().build();
+    @GetMapping("/month")
+    public ResponseEntity<CalenderMonthResponse> getCalender(@RequestParam String date) {
+        System.out.println(date);
+        CalenderMonthResponse calenderMonthResponse = calenderService.getMonth(date);
+        return ResponseEntity.ok(calenderMonthResponse);
     }
     @Operation(summary = "달력 선택된 날 일기 조회 API", description = "년월일을 보내주면 해당하는 날에 일기 조회(디폴트는 오늘)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "달력 그날 조회 성공"),
             @ApiResponse(responseCode = "fail", description = "실패함 확인좀")
     })
-    @GetMapping("/day/{date}")
-    public ResponseEntity<Void> getDayDiary(@PathVariable String date) {
-
-
-
-        return ResponseEntity.ok().build();
+    @GetMapping("/day")
+    public ResponseEntity<List<CalenderDayResponse>> getDayDiary(@RequestParam Long boardId, @RequestParam String date) {
+        List<CalenderDayResponse> calenderDayResponse = calenderService.getDiaries(boardId, date);
+        return ResponseEntity.ok(calenderDayResponse);
     }
 }

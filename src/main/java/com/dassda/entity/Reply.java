@@ -1,6 +1,5 @@
 package com.dassda.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,33 +7,28 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "board")
+@Table(name = "reply")
 @Getter
 @Setter
-public class Board {
+public class Reply {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", referencedColumnName = "id")
+    private Comment comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
 
-    @Column(name = "design")
-    private Long imageNumber;
+    @Column(name = "reply")
+    private String reply;
 
-    @Column(name = "style")
-    private Long appearanceType;
-
-    @Column(name = "board_title")
-    private String title;
-
-    @Column(name = "share")
-    private boolean isShared;
-
-    @Column(name = "reg_date")
     private LocalDateTime regDate;
 
-    @Column(name = "back_up")
-    private boolean backUp;
+    private LocalDateTime updateDate;
+
 }

@@ -1,19 +1,19 @@
 server:
   port: 8080
 
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/ssda
-#    username: root
-#    password: Dongcci92!!
-
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://118.67.143.25:3306/ssda
-    username: ssda
-    password: 1234
+    url: jdbc:mysql://localhost:3306/ssda
+    username: root
+    password: Dongcci92!!
+
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://118.67.143.25:3306/ssda
+#    username: ssda
+#    password: 1234
 
 jpa:
   properties:

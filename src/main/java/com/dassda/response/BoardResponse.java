@@ -13,13 +13,13 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardResponse {
     private Long id;
-    private int imageNumber;
-    private int appearanceType;
+    private Long imageNumber;
+    private Long appearanceType;
     private String title;
     private boolean isShared;
     private LocalDateTime regDate;
     private Long diaryCount;
-    private int memberCount;
+    private Long memberCount;
     private boolean newBadge;
     private boolean backUp;
 }

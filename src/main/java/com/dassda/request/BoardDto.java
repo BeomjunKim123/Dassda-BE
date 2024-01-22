@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Schema(description = "일기장 요청 데이터")
-public class BoardRequest {
+public class BoardDto {
     private Long id;
     private String boardTitle;
-    private int imageNumber;
-    private int appearanceType;
+    private Long imageNumber;
+    private Long appearanceType;
 }

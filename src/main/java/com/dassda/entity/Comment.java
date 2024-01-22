@@ -7,28 +7,25 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "diary")
+@Table(name = "comment")
 @Getter
 @Setter
-public class Diary {
+public class Comment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", referencedColumnName = "id")
-    private Board board;
+    @JoinColumn(name = "write_id", referencedColumnName = "id")
+    private Member write;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id", referencedColumnName = "id")
-    private Member writes;
+    @JoinColumn(name = "diary_id", referencedColumnName = "id")
+    private Diary diary;
 
-    @OneToOne
-    @JoinColumn(name = "sticker_id", referencedColumnName = "id")
-    private Sticker sticker;
-
-    @Column(name = "content")
-    private String diaryContent;
+    @Column(name = "comment")
+    private String comment;
 
     @Column(name = "reg_date")
     private LocalDateTime regDate;
@@ -36,6 +33,4 @@ public class Diary {
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 
-    @Column(name = "back_up")
-    private boolean backUp;
 }

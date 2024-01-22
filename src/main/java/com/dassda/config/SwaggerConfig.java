@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-    private static final String REFERENCE = "Authorization 헤더";
+    private static final String REFERENCE = "Authorization";
 
     @Bean
     public GroupedOpenApi api() {
@@ -33,8 +33,9 @@ public class SwaggerConfig {
             openApi.components(new Components()
                     .addSecuritySchemes(REFERENCE, new SecurityScheme()
                             .name(REFERENCE)
-                            .type(SecurityScheme.Type.APIKEY)
+                            .type(SecurityScheme.Type.HTTP)
                             .in(SecurityScheme.In.HEADER)
+                            .scheme("Bearer")
                             .name("Authorization Bearer도 붙이셈")));
         };
     }

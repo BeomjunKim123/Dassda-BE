@@ -1,7 +1,8 @@
 package com.dassda.controller;
 
-import com.dassda.request.BoardRequest;
+import com.dassda.request.BoardDto;
 import com.dassda.response.BoardResponse;
+import com.dassda.response.HeroResponse;
 import com.dassda.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,11 +27,9 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 추가 실패, 예외 처리 확인")
     })
     @PostMapping()
-    public ResponseEntity<Object> addBoard(@RequestBody BoardRequest boardRequest) {
-        boardService.addBoard(boardRequest);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", "일기장 추가 성공");
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Void> addBoard(@RequestBody BoardDto boardDto) {
+        boardService.addBoard(boardDto);
+        return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기장 삭제 API", description = "일기장 아이디 값으로 삭제")
     @ApiResponses(value = {
@@ -40,11 +37,9 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 삭제 실패, 예외 처리 확인")
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", "일기장 삭제 성공");
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기장 조회 API", description = "일기 개수, 3일 이내의 일기 존재 유무, 공유 일기장 유무 추가적인 데이터")
     @ApiResponses(value = {
@@ -62,10 +57,18 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 편집 실패")
     })
     @PutMapping()
-    public ResponseEntity<Object> updateBoard(@RequestBody BoardRequest boardRequest) {
-        boardService.updateBoard(boardRequest);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", "일기장 편집 성공");
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Void> updateBoard(@RequestBody BoardDto boardDto) {
+        boardService.updateBoard(boardDto);
+        return ResponseEntity.ok().build();
+    }
+    @Operation(summary = "히어로 섹션 조회 API", description = "사용자 이름, 사람 수, 일기 개수, 공유 일기장 존재 유무")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "success", description = "히어로 조회 성공"),
+            @ApiResponse(responseCode = "fail", description = "실패함")
+    })
+    @GetMapping(value = "hero")
+    public ResponseEntity<HeroResponse> getHero() {
+        HeroResponse heroResponse = boardService.getHero();
+        return ResponseEntity.ok(heroResponse);
     }
 }
