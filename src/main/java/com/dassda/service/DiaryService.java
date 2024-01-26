@@ -12,9 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,7 +41,7 @@ public class DiaryService {
                         () -> new IllegalStateException("존재하지 않음")
                 );
     }
-    //돼라
+
     public void addDiary(DiaryRequest diaryRequest) throws Exception {
         Board board = boardRepository.findById(diaryRequest.getBoardId())
                 .orElseThrow(() -> new Exception("해당하는 보드가 없습니다."));
