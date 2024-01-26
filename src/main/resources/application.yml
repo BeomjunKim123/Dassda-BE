@@ -39,8 +39,12 @@ servlet:
     maxFileSize: 20MB
     maxRequestSize: 100MB
 
-itemImgLocation: /Users/proxy/items/item/
-uploadPath: file:/Users/proxy/items/
+#itemImgLocation: /Users/proxy/items/item/
+#uploadPath: file:/Users/proxy/items/
+
+itemImgLocation: /var/www/items/item/
+uploadPath: file:/var/www/items/
+
 
 jwt:
   secret-key: GaXmsBiD6L1Z2M3NorAExZp8gr3uPXDR6J6iZxe4pfYKTf0SV1+I0xGqmuPG+nmLVCl9/2+lYB/VFI+AgoFGpg==

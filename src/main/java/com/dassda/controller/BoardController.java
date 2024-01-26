@@ -1,6 +1,6 @@
 package com.dassda.controller;
 
-import com.dassda.request.BoardDto;
+import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
 import com.dassda.service.BoardService;
@@ -27,8 +27,8 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 추가 실패, 예외 처리 확인")
     })
     @PostMapping()
-    public ResponseEntity<Void> addBoard(@RequestBody BoardDto boardDto) {
-        boardService.addBoard(boardDto);
+    public ResponseEntity<Void> addBoard(@RequestBody BoardRequest boardRequest) {
+        boardService.addBoard(boardRequest);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기장 삭제 API", description = "일기장 아이디 값으로 삭제")
@@ -57,8 +57,8 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 편집 실패")
     })
     @PutMapping()
-    public ResponseEntity<Void> updateBoard(@RequestBody BoardDto boardDto) {
-        boardService.updateBoard(boardDto);
+    public ResponseEntity<Void> updateBoard(@RequestBody BoardRequest boardRequest) {
+        boardService.updateBoard(boardRequest);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "히어로 섹션 조회 API", description = "사용자 이름, 사람 수, 일기 개수, 공유 일기장 존재 유무")

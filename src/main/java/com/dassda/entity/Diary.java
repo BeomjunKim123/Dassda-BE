@@ -27,6 +27,9 @@ public class Diary {
     @JoinColumn(name = "sticker_id", referencedColumnName = "id")
     private Sticker sticker;
 
+    @Column(name = "diary_title")
+    private String diaryTitle;
+
     @Column(name = "content")
     private String diaryContent;
 
@@ -38,4 +41,5 @@ public class Diary {
 
     @Column(name = "back_up")
     private boolean backUp;
+
 }

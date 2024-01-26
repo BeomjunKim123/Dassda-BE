@@ -19,7 +19,12 @@ public class SwaggerConfig {
     public GroupedOpenApi api() {
         return GroupedOpenApi.builder()
                 .group("default")
-                .packagesToScan("com.dassda")
+                .packagesToScan("com.dassda",
+                        "com.dassda.kakao",
+                        "com.dassda.oauth",
+                        "com.dassda.request",
+                        "com.dassda.response",
+                        "com.dassda.token")
                 .addOpenApiCustomizer(openAPIDefinition())
                 .build();
     }

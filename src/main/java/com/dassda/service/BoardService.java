@@ -6,7 +6,7 @@ import com.dassda.repository.BoardRepository;
 import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.repository.ShareRepository;
-import com.dassda.request.BoardDto;
+import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
 import lombok.RequiredArgsConstructor;
@@ -35,22 +35,24 @@ public class BoardService {
                 .getName();
         return memberRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new IllegalStateException("다시 로그인 해주세요."));
+                .orElseThrow(
+                        () -> new IllegalStateException("다시 로그인 해주세요.")
+                );
     }
-    public void addBoard(BoardDto boardDto) {
+    public void addBoard(BoardRequest boardRequest) {
         Optional<Member> member = memberRepository.findByEmail(email().getEmail());
         //Dto에 있는 데이터 말고 다른 값을 클라이언트에서 추가적으로 요청했을 때
         //스프링에서 객체로 바인딩할 때 자동으로 무시함
-        if(boardDto.getBoardTitle().length() > 10) {
+        if(boardRequest.getBoardTitle().length() > 10) {
             throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
         }
 
         if(member.isPresent()) {
             Board board = new Board();
             board.setMember(member.get());
-            board.setTitle(boardDto.getBoardTitle());
-            board.setImageNumber(boardDto.getImageNumber());
-            board.setAppearanceType(boardDto.getAppearanceType());
+            board.setTitle(boardRequest.getBoardTitle());
+            board.setImageNumber(boardRequest.getImageNumber());
+            board.setAppearanceType(boardRequest.getAppearanceType());
             board.setRegDate(LocalDateTime.now());
             board.setShared(false);
             board.setBackUp(false);
@@ -101,10 +103,10 @@ public class BoardService {
         Boolean badge = diaryRepository.existsDiariesInLastThreeDays(startDate, endDate);
         return badge;
     }
-    public void updateBoard(BoardDto boardDto) {
-        Optional<Board> boardInfo = boardRepository.findById(boardDto.getId());
+    public void updateBoard(BoardRequest boardRequest) {
+        Optional<Board> boardInfo = boardRepository.findById(boardRequest.getId());
 
-        if(boardDto.getBoardTitle().length() > 10) {
+        if(boardRequest.getBoardTitle().length() > 10) {
             throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
         }
 
@@ -126,7 +128,6 @@ public class BoardService {
         heroResponse.setMemberCount(diaryCount);
         Boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
         heroResponse.setShared(isShared);
-
         return heroResponse;
     }
 }
