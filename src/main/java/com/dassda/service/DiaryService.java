@@ -63,7 +63,7 @@ public class DiaryService {
             String oriImgName = file.getOriginalFilename();
             String imgName = "";
             String imgUrl = "";
-
+//mm
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
                 imgUrl = "/images/item/" + imgName;
