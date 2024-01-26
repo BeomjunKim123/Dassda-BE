@@ -42,8 +42,8 @@ servlet:
 #itemImgLocation: /Users/proxy/items/item/
 #uploadPath: file:/Users/proxy/items/
 
-itemImgLocation: /home/appdata/items/item/
-uploadPath: /home/appdata/items/
+itemImgLocation: /home/root/items/item/
+uploadPath: /home/root/items/
 
 
 jwt:
