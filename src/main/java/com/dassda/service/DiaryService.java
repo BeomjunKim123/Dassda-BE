@@ -28,7 +28,7 @@ public class DiaryService {
     private final StickerRepository stickerRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryImgRepository diaryImgRepository;
-    
+
     @Value("${itemImgLocation}")
     private String itemImgLocation;
 
@@ -43,6 +43,7 @@ public class DiaryService {
                         () -> new IllegalStateException("존재하지 않음")
                 );
     }
+    //돼라
     public void addDiary(DiaryRequest diaryRequest) throws Exception {
         Board board = boardRepository.findById(diaryRequest.getBoardId())
                 .orElseThrow(() -> new Exception("해당하는 보드가 없습니다."));
