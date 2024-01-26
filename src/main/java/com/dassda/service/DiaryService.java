@@ -28,7 +28,7 @@ public class DiaryService {
     private final StickerRepository stickerRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryImgRepository diaryImgRepository;
-    //
+    
     @Value("${itemImgLocation}")
     private String itemImgLocation;
 
