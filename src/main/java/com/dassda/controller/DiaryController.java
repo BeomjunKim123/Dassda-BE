@@ -40,8 +40,8 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "조회 실패 오류 찾으셈")
     })
     @GetMapping()
-    public ResponseEntity<List<DiaryResponse>> getDiary(@RequestParam Long boardId) {
-        List<DiaryResponse> diaryResponses = diaryService.getDiaries(boardId);
+    public ResponseEntity<List<DiaryResponse>> getDiary(@RequestParam Long boardId, @RequestParam String date) {
+        List<DiaryResponse> diaryResponses = diaryService.getDiaries(boardId, date);
         return ResponseEntity.ok(diaryResponses);
     }
 
@@ -51,7 +51,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "수정 실패 오류 찾으셈")
     })
     @PutMapping()
-    public ResponseEntity<Void> updateDiary(@RequestBody DiaryRequest diaryRequest) {
+    public ResponseEntity<Void> updateDiary(@RequestBody DiaryRequest diaryRequest) throws Exception {
         diaryService.updateDiary(diaryRequest);
         return ResponseEntity.ok().build();
     }

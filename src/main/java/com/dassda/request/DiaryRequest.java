@@ -9,13 +9,18 @@ import java.util.List;
 
 @Getter
 @Setter
-@Schema(description = "일기 조회 요청 데이터")
 public class DiaryRequest {
+    @Schema(description = "diary_id")
     private Long id;
+    @Schema
     private Long boardId;
+    @Schema(description = "일기 제목")
     private String diaryTitle;
+    @Schema(description = "일기 내용")
     private String contents;
+    @Schema(description = "sticker_id")
     private Long stickerId;
+    @Schema(description = "멀티파트 이미지 배열")
     private List<MultipartFile> diaryImgs;
 
 }

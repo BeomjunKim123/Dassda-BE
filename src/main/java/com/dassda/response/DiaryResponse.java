@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -21,6 +22,6 @@ public class DiaryResponse {
     private String contents;
     private Integer likesCount;
     private Integer commentCount;
-    private List<List<Reply>> commentList;
+    private Map<Integer, List<Reply>> commentList;
 
 }

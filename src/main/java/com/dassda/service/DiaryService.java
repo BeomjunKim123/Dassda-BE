@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -74,6 +77,12 @@ public class DiaryService {
     }
 
     private String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws Exception {
+
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
         UUID uuid = UUID.randomUUID();
         String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         String savedFileName = uuid.toString() + extension;
@@ -84,21 +93,44 @@ public class DiaryService {
         return savedFileName;
     }
 
-    public List<DiaryResponse> getDiaries(Long boardId) {
+    public List<DiaryResponse> getDiaries(Long boardId, String date) {
+//        String dateOfDay = date.substring(0, 10);
+        date = date.replace("\"", "");
+        LocalDate day = LocalDate.parse(date);
+
 
         return null;
     }
 
-    public void updateDiary(DiaryRequest diaryRequest) {
+    public void updateDiary(DiaryRequest diaryRequest) throws Exception {
         Optional<Diary> diary = diaryRepository.findById(diaryRequest.getId());
         Optional<Sticker> sticker = stickerRepository.findById(diaryRequest.getStickerId());
         List<DiaryImg> diaryImg = diaryImgRepository.findByDiaryId(diaryRequest.getId());
+        for(DiaryImg image : diaryImg) {
+            diaryImgRepository.delete(image);
+        }
+
+        for(MultipartFile file : diaryRequest.getDiaryImgs()) {
+            DiaryImg diaryImgs = new DiaryImg();
+            String oriImgName = file.getOriginalFilename();
+            String imgName = "";
+            String imgUrl = "";
+            if(!StringUtils.isEmpty(oriImgName)) {
+                imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
+                imgUrl = "/images/item/" + imgName;
+            }
+            diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
+            diaryImgs.setDiary(diary.get());
+            diaryImgRepository.save(diaryImgs);
+        }
+
         Diary updateDiaryInfo = new Diary();
         updateDiaryInfo.setSticker(sticker.get());
         updateDiaryInfo.setDiaryTitle(diaryRequest.getDiaryTitle());
         updateDiaryInfo.setDiaryContent(diaryRequest.getContents());
         updateDiaryInfo.setUpdateDate(LocalDateTime.now());
         diaryRepository.save(updateDiaryInfo);
+
     }
 
     public void deleteDiary(Long diaryId) {
