@@ -22,7 +22,7 @@ public class Diary {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id", referencedColumnName = "id")
     private Member writes;
-
+    //양방향 방법도 있음
     @OneToOne
     @JoinColumn(name = "sticker_id", referencedColumnName = "id")
     private Sticker sticker;

@@ -63,7 +63,6 @@ public class DiaryService {
             String oriImgName = file.getOriginalFilename();
             String imgName = "";
             String imgUrl = "";
-//mm
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
                 imgUrl = "/images/item/" + imgName;
@@ -102,7 +101,7 @@ public class DiaryService {
         diaryRepository.save(updateDiaryInfo);
     }
 
-    public void deleteDiary() {
+    public void deleteDiary(Long diaryId) {
 
     }
 

@@ -6,10 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "일기장 요청 데이터")
 public class BoardRequest {
+    @Schema
     private Long id;
+    @Schema
     private String boardTitle;
+    @Schema
     private Long imageNumber;
+    @Schema
     private Long appearanceType;
 }

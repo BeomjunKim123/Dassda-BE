@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/diary")
+@CrossOrigin("http://localhost:3000/**")
 public class DiaryController {
 
     private final DiaryService diaryService;
@@ -62,7 +63,7 @@ public class DiaryController {
     })
     @DeleteMapping("/{diaryId}")
     public ResponseEntity<Void> deleteDiary(@PathVariable Long diaryId) {
-
+        diaryService.deleteDiary(diaryId);
         return ResponseEntity.ok().build();
     }
 

@@ -30,6 +30,7 @@ public class CalenderService {
         return calenderMonthResponse;
     }
     //공유 일기장은 채팅과 비슷함 작성자 id도 따로 저장해줘야함.그래야 누가 썻는지 암
+    //1급 컬렉션
     public List<CalenderDayResponse> getDiaries(Long boardId, String date) {
         date = date.replace("\"", "");
         LocalDate day = LocalDate.parse(date);

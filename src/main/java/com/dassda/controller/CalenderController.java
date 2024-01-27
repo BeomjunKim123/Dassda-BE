@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/calender")
+@CrossOrigin("http://localhost:3000/**")
 public class CalenderController {
 
     private final CalenderService calenderService;

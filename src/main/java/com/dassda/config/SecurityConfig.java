@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 .requestMatchers("/login/**", "/index/**", "/**").permitAll()
                                 .requestMatchers("/oauth/**", "/swagger-ui/**", "/v3/api-docs/**", "/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
                                 .requestMatchers("/v2/user/**").permitAll()
-                                .requestMatchers("https://localhost:3000").permitAll()
+                                .requestMatchers("http://localhost:3000/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 
