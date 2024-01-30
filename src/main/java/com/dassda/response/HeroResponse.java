@@ -7,12 +7,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "히어로 섹션 조회 응답 데이터")
 public class HeroResponse {
-
+    @Schema
     private String nickname;
+    @Schema(description = "나를 제외한 인원 수")
     private Long memberCount;
+    @Schema(description = "공유하고 있는 일기 수")
     private Long diaryCount;
+    @Schema(description = "공유 일기 여부")
     private boolean isShared;
+    @Schema
+    private boolean isAlerted;
 
 }

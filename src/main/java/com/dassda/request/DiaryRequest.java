@@ -20,6 +20,8 @@ public class DiaryRequest {
     private String contents;
     @Schema(description = "sticker_id")
     private Long stickerId;
+    @Schema
+    private String date;
     @Schema(description = "멀티파트 이미지 배열")
     private List<MultipartFile> diaryImgs;
 

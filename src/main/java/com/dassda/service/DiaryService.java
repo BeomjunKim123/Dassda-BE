@@ -46,6 +46,8 @@ public class DiaryService {
     }
 
     public void addDiary(DiaryRequest diaryRequest) throws Exception {
+
+        //예외 처리 일기장 테이블의 공유 여부를 조회하고 아닐때 다른사람이 등록하려 하면 예외처리
         Board board = boardRepository.findById(diaryRequest.getBoardId())
                 .orElseThrow(() -> new Exception("해당하는 보드가 없습니다."));
         Sticker sticker = stickerRepository.findById(diaryRequest.getStickerId())
@@ -56,7 +58,7 @@ public class DiaryService {
         diary.setWrites(member());
         diary.setDiaryTitle(diaryRequest.getDiaryTitle());
         diary.setDiaryContent(diaryRequest.getContents());
-        diary.setRegDate(LocalDateTime.now());
+        diary.setRegDate(LocalDateTime.now());//----------> 문자열 date로 받았으니 localdatetime으로 변경해서 셋해주기
         diary.setUpdateDate(LocalDateTime.now());
         diary.setBackUp(false);
         diaryRepository.save(diary);
