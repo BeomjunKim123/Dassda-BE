@@ -1,21 +1,21 @@
 server:
   port: 8080
 
-spring:
-  resources:
-    static-location: file:/Users/proxy/items/item/
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ssda
-    username: root
-    password: Dongcci92!!
-
 #spring:
+#  resources:
+#    static-location: file:/Users/proxy/items/item/
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://118.67.143.25:3306/ssda
-#    username: ssda
-#    password: 1234
+#    url: jdbc:mysql://localhost:3306/ssda
+#    username: root
+#    password: Dongcci92!!
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.67.143.25:3306/ssda
+    username: ssda
+    password: 1234
 
 jpa:
   properties:
@@ -41,11 +41,11 @@ servlet:
     maxFileSize: 20MB
     maxRequestSize: 100MB
 
-itemImgLocation: /Users/proxy/items/item/
-uploadPath: file:/Users/proxy/items/
+#itemImgLocation: /Users/proxy/items/item/
+#uploadPath: file:/Users/proxy/items/
 
-#itemImgLocation: /home/root/items/item/
-#uploadPath: /home/root/items/
+itemImgLocation: /home/root/items/item/
+uploadPath: /home/root/items/
 
 
 jwt:

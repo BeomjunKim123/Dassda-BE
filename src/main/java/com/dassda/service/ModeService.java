@@ -49,7 +49,7 @@ public class ModeService {
 
 //            Optional<DiaryImg> diaryImg = diaryImgRepository.findFirstByDiaryId(diary.getId(), PageRequest.of(0, 1));
             String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diary.getId());
-            String thumbUrl = "http://localhost:8080" + diaryImg;
+            String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
             calenderDayResponse.setThumbnailUrl(thumbUrl);
 
 
