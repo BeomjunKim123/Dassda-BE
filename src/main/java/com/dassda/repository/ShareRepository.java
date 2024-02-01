@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ShareRepository extends JpaRepository<Share, Long> {
-    Long countByBoardId(Long boardId);
-    Long countByMemberId(Long memberId);
+    Integer countByBoardId(Long boardId);
+    Integer countByMemberId(Long memberId);
 }

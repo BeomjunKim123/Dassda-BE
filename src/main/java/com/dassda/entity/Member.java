@@ -81,4 +81,5 @@ public class Member implements UserDetails {
         this.birthday = birthday;
         this.oAuthProvider = oAuthProvider;
     }
+
 }

@@ -21,10 +21,10 @@ public class Board {
     private Member member;
 
     @Column(name = "design")
-    private Long imageNumber;
+    private Integer imageNumber;
 
     @Column(name = "style")
-    private Long appearanceType;
+    private Integer appearanceType;
 
     @Column(name = "board_title")
     private String title;

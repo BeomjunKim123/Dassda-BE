@@ -8,20 +8,21 @@ import java.util.List;
 
 @Getter
 @Setter
-@Schema(description = "일기장 조회 응답 데이터")
+
 @AllArgsConstructor
 @NoArgsConstructor
 public class BoardResponse {
+
     private Long id;
-    private Long imageNumber;
-    private Long appearanceType;
+    private Integer imageNumber;
+    private Integer appearanceType;
     private String title;
     private boolean isShared;
     private LocalDateTime regDate;
-    private Long diaryCount;
-    private Long memberCount;
+    private Integer diaryCount;
+    private Integer memberCount;
     private boolean newBadge;
-    private boolean backUp;
+
 }
 //빌더 패턴
 //    private BoardResponse convertToBoardResponse(Board board) {

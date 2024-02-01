@@ -1,17 +1,14 @@
 package com.dassda.controller;
 
-import com.dassda.entity.Diary;
 import com.dassda.request.DiaryRequest;
-import com.dassda.response.DiaryResponse;
+import com.dassda.response.DiaryDetailResponse;
 import com.dassda.service.DiaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,16 +31,18 @@ public class DiaryController {
         return ResponseEntity.ok().build();
     }
 
+
     @Operation(summary = "일기 상제 조회 API", description = "일기 제목, 좋아요 수, 댓글 수, 사진, 멤버 정보들")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "일기 조회 성공"),
             @ApiResponse(responseCode = "fail", description = "조회 실패 오류 찾으셈")
     })
     @GetMapping()
-    public ResponseEntity<List<DiaryResponse>> getDiary(@RequestParam Long boardId, @RequestParam String date) {
-        List<DiaryResponse> diaryResponses = diaryService.getDiaries(boardId, date);
-        return ResponseEntity.ok(diaryResponses);
+    public ResponseEntity<List<DiaryDetailResponse>> getDiary(@RequestParam Long boardId, @RequestParam String date) {
+        List<DiaryDetailResponse> diaryDetailRespons = diaryService.getDiaries(boardId, date);
+        return ResponseEntity.ok(diaryDetailRespons);
     }
+
 
     @Operation(summary = "일기 수정 API", description = "일기 수정할 내용을 보내주셈")
     @ApiResponses(value = {
@@ -56,6 +55,7 @@ public class DiaryController {
         return ResponseEntity.ok().build();
     }
 
+
     @Operation(summary = "일기 삭제 API", description = "일기 번호 보내주면 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "일기 삭제 성공"),
@@ -67,23 +67,25 @@ public class DiaryController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "기분 예측 API", description = "2주~4주까지는 예측이 어려움. 후에는 요일별로 통계를 내서 기분을 예측하기")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "success", description = "기분 예측 성공"),
-            @ApiResponse(responseCode = "fail", description = "예측 실패")
-    })
-    @GetMapping(value = "predict")
-    public ResponseEntity<?> predictEmotion() {
-        return null;
-    }
 
     @Operation(summary = "좋아요 토글 API", description = "일기 번호 보내주면 토글 됌")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "좋아요 성공"),
             @ApiResponse(responseCode = "fail", description = "좋아요 실패")
     })
-    @PostMapping(value = "likes")
-    public ResponseEntity<?> toggleLikes() {
+    @PostMapping("/{diaryId}/likes")
+    public ResponseEntity<?> toggleLikes(@PathVariable Long diaryId) {
+        return null;
+    }
+
+
+    @Operation(summary = "좋아요 조회 API", description = "좋아요 닉네임 사람 좋아요 수 보내기")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "success", description = "좋아요 조회 성공"),
+            @ApiResponse(responseCode = "fail", description = "좋아요 조회 실패")
+    })
+    @GetMapping("/{diaryId}/likes")
+    public ResponseEntity<?> getLikes(@PathVariable Long diaryId) {
         return null;
     }
 }

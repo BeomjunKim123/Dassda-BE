@@ -28,7 +28,7 @@ public class BoardService {
     private final DiaryRepository diaryRepository;
     private final ShareRepository shareRepository;
 
-    private Member email() {
+    private Member member() {
         String email = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -40,17 +40,16 @@ public class BoardService {
                 );
     }
     public void addBoard(BoardRequest boardRequest) {
-        Optional<Member> member = memberRepository.findByEmail(email().getEmail());
-        //Dto에 있는 데이터 말고 다른 값을 클라이언트에서 추가적으로 요청했을 때
-        //스프링에서 객체로 바인딩할 때 자동으로 무시함
-        if(boardRequest.getBoardTitle().length() > 10) {
+        Optional<Member> member = memberRepository.findByEmail(member().getEmail());
+
+        if(boardRequest.getTitle().length() > 10) {
             throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
         }
 
         if(member.isPresent()) {
             Board board = new Board();
             board.setMember(member.get());
-            board.setTitle(boardRequest.getBoardTitle());
+            board.setTitle(boardRequest.getTitle());
             board.setImageNumber(boardRequest.getImageNumber());
             board.setAppearanceType(boardRequest.getAppearanceType());
             board.setRegDate(LocalDateTime.now());
@@ -62,16 +61,18 @@ public class BoardService {
         }
     }
     public void deleteBoard(Long boardId) {
-        Optional<Board> board = boardRepository.findById(boardId);
+        Optional<Board> boardOptional = boardRepository.findById(boardId);
 
-        if(board.isPresent()) {
-            boardRepository.delete(board.get());
+        if(boardOptional.isPresent()) {
+            Board board = boardOptional.get();
+            board.setBackUp(true);
+            boardRepository.save(board);
         } else {
             throw new IllegalStateException("삭제된 일기장입니다.");
         }
     }
     public List<BoardResponse> getBoard() {
-        Optional<Member> member = memberRepository.findByEmail(email().getEmail());
+        Optional<Member> member = memberRepository.findByEmail(member().getEmail());
 
         if(member.isPresent()) {
             Long memberId = member.get().getId();
@@ -84,8 +85,8 @@ public class BoardService {
         }
     }
     private BoardResponse convertToBoard(Board board) {
-        Long diaryCount = diaryRepository.countByBoardId(board.getId());
-        Long memberCount = shareRepository.countByBoardId(board.getId());
+        Integer diaryCount = diaryRepository.countByBoardId(board.getId());
+        Integer memberCount = shareRepository.countByBoardId(board.getId());
         BoardResponse boardResponse = new BoardResponse();
         boardResponse.setId(board.getId());
         boardResponse.setImageNumber(board.getImageNumber());
@@ -103,15 +104,18 @@ public class BoardService {
         Boolean badge = diaryRepository.existsDiariesInLastThreeDays(startDate, endDate);
         return badge;
     }
-    public void updateBoard(BoardRequest boardRequest) {
-        Optional<Board> boardInfo = boardRepository.findById(boardRequest.getId());
+    public void updateBoard(Long boardId, BoardRequest boardRequest) {
+        Optional<Board> boardInfo = boardRepository.findById(boardId);
 
-        if(boardRequest.getBoardTitle().length() > 10) {
+        if(boardRequest.getTitle().length() > 10) {
             throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
         }
 
         if(boardInfo.isPresent()) {
             Board board = boardInfo.get();
+            board.setTitle(boardRequest.getTitle());
+            board.setImageNumber(boardRequest.getImageNumber());
+            board.setAppearanceType(boardRequest.getAppearanceType());
             boardRepository.save(board);
         } else {
             throw new IllegalStateException("삭제된 일기장입니다.");
@@ -119,15 +123,15 @@ public class BoardService {
     }
     public HeroResponse getHero() {
         HeroResponse heroResponse = new HeroResponse();
-        Optional<Member> member = memberRepository.findByEmail(email().getEmail());
+        Optional<Member> member = memberRepository.findByEmail(member().getEmail());
         Long memberId = member.get().getId();
         heroResponse.setNickname(member.get().getNickname());
-        Long shareCount = shareRepository.countByMemberId(memberId);
+        Integer shareCount = shareRepository.countByMemberId(memberId);
         heroResponse.setMemberCount(shareCount);
-        Long diaryCount = diaryRepository.countIsSharedDiaries(memberId);
+        Integer diaryCount = diaryRepository.countIsSharedDiaries(memberId);
         heroResponse.setMemberCount(diaryCount);
         Boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
-        heroResponse.setShared(isShared);
+        heroResponse.setHasSharedBoard(isShared);
         return heroResponse;
     }
 }

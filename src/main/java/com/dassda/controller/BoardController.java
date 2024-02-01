@@ -31,16 +31,20 @@ public class BoardController {
         boardService.addBoard(boardRequest);
         return ResponseEntity.ok().build();
     }
+
+
     @Operation(summary = "일기장 삭제 API", description = "일기장 아이디 값으로 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "일기장 삭제 완료"),
             @ApiResponse(responseCode = "fail", description = "일기장 삭제 실패, 예외 처리 확인")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
         boardService.deleteBoard(boardId);
         return ResponseEntity.ok().build();
     }
+
+
     @Operation(summary = "일기장 조회 API", description = "일기 개수, 3일 이내의 일기 존재 유무, 공유 일기장 유무 추가적인 데이터")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "일기장 조회 성공"),
@@ -51,16 +55,20 @@ public class BoardController {
         List<BoardResponse> boards = boardService.getBoard();
         return ResponseEntity.ok(boards);
     }
+
+
     @Operation(summary = "일기장 편집 API", description = "일기장 편집 PUT")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "일기장 편집 성공"),
             @ApiResponse(responseCode = "fail", description = "일기장 편집 실패")
     })
-    @PutMapping()
-    public ResponseEntity<Void> updateBoard(@RequestBody BoardRequest boardRequest) {
-        boardService.updateBoard(boardRequest);
+    @PutMapping("/{boardId}")
+    public ResponseEntity<Void> updateBoard(@PathVariable Long boardId, @RequestBody BoardRequest boardRequest) {
+        boardService.updateBoard(boardId, boardRequest);
         return ResponseEntity.ok().build();
     }
+
+
     @Operation(summary = "히어로 섹션 조회 API", description = "사용자 이름, 사람 수, 일기 개수, 공유 일기장 존재 유무")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "히어로 조회 성공"),

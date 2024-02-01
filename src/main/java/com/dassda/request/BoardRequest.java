@@ -7,12 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class BoardRequest {
+
     @Schema
-    private Long id;
+    private String title;
     @Schema
-    private String boardTitle;
+    private Integer imageNumber;
     @Schema
-    private Long imageNumber;
-    @Schema
-    private Long appearanceType;
+    private Integer appearanceType;
+
 }

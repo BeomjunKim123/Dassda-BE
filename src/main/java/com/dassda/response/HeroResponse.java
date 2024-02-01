@@ -8,15 +8,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class HeroResponse {
+
     @Schema
     private String nickname;
     @Schema(description = "나를 제외한 인원 수")
-    private Long memberCount;
+    private int memberCount;
     @Schema(description = "공유하고 있는 일기 수")
-    private Long diaryCount;
+    private int diaryCount;
     @Schema(description = "공유 일기 여부")
-    private boolean isShared;
-    @Schema
-    private boolean isAlerted;
+    private boolean hasSharedBoard;
 
 }

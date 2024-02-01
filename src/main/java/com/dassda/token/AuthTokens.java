@@ -13,11 +13,11 @@ import lombok.Setter;
 @Schema(description = "토큰")
 public class AuthTokens {
     private String accessToken;
-    private String refreshToken;
+//    private String refreshToken;
 //    private String grantType;
 //    private Long expiresIn;
-    public static AuthTokens of(String accessToken, String refreshToken) {
-        return new AuthTokens(accessToken, refreshToken);
+    public static AuthTokens of(String accessToken) {
+        return new AuthTokens(accessToken);
     }
 }
 

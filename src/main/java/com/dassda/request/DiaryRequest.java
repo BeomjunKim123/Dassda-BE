@@ -10,19 +10,18 @@ import java.util.List;
 @Getter
 @Setter
 public class DiaryRequest {
-    @Schema(description = "diary_id")
     private Long id;
     @Schema
     private Long boardId;
     @Schema(description = "일기 제목")
-    private String diaryTitle;
+    private String title;
     @Schema(description = "일기 내용")
     private String contents;
     @Schema(description = "sticker_id")
-    private Long stickerId;
+    private Long emotionId;
     @Schema
-    private String date;
+    private String selectedDate;
     @Schema(description = "멀티파트 이미지 배열")
-    private List<MultipartFile> diaryImgs;
+    private List<MultipartFile> images;
 
 }

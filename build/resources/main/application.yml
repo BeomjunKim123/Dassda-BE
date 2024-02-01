@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  resources:
+    static-location: file:/Users/proxy/items/item/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ssda

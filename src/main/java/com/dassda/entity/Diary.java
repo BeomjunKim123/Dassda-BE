@@ -1,5 +1,6 @@
 package com.dassda.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class Diary {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "write_id", referencedColumnName = "id")
-    private Member writes;
+    private Member member;
     //양방향 방법도 있음
     @OneToOne
     @JoinColumn(name = "sticker_id", referencedColumnName = "id")
@@ -36,8 +37,14 @@ public class Diary {
     @Column(name = "reg_date")
     private LocalDateTime regDate;
 
+    @Column(name = "select_date")
+    private LocalDateTime selectDate;
+
     @Column(name = "update_date")
     private LocalDateTime updateDate;
+
+    @Column(name = "read_status")
+    private boolean isRead;
 
     @Column(name = "back_up")
     private boolean backUp;

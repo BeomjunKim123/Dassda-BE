@@ -22,7 +22,7 @@ public class AuthTokensGenerator {
         String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
         String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredAt);
 
-        return AuthTokens.of(accessToken, refreshToken);
+        return AuthTokens.of(accessToken);
     }
     public Long extractMemberId(String accessToken) {
         return Long.valueOf(jwtTokenProvider.extractSubject(accessToken));
