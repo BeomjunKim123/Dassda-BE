@@ -48,8 +48,17 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "FROM Diary d WHERE d.id = :diaryId", nativeQuery = true)
     String findDiaryWithTimeAge(Long diaryId);
 
-//    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.board.id = :boardId AND d.isRead = :false")
-//    boolean existNewDiary(@Param("boardId") Long boardId);
+    @Query("SELECT d FROM Diary d WHERE d.board.isShared = false AND d.board.id = :boardId AND NOT EXISTS (" +
+            "SELECT rd FROM ReadDiary rd WHERE rd.diary.id = d.id)")
+    List<Diary> findSharedDiariesNotRead(Long boardId);
+
+    @Query(value = "SELECT * FROM diary d WHERE d.board_id = :boardId ORDER BY DATE(select_date) DESC, TIME(select_date) ASC", nativeQuery = true)
+    List<Diary> findAllDiariesSortedByDateAndTime(Long boardId);
+
+    @Query("SELECT CASE WHEN COUNT(rd) > 0 THEN true ELSE false END FROM ReadDiary rd WHERE rd.diary.board.id = :boardId AND rd.readId.id = :memberId")
+    boolean existsByBoardIdAndMemberId(Long boardId, Long memberId);
+
+    List<Diary> findByBoardIdAndMemberIdNot(Long boardId, Long memberId);
 
 
 }

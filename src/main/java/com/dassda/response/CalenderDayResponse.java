@@ -22,8 +22,9 @@ public class CalenderDayResponse {
     private Long boardId;
     private Long emotionId;
     private String thumbnailUrl;
-    private Integer likeCount;
-    private Integer commentCount;
+    private String title;
+    private int likeCount;
+    private int commentCount;
     private LocalDateTime selectedDate;
     private String timeStamp;
 

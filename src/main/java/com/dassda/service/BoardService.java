@@ -78,6 +78,7 @@ public class BoardService {
             Long memberId = member.get().getId();
             List<Board> boards = boardRepository.findByMemberId(memberId);
             return boards.stream()
+                    .filter(board -> !board.isBackUp())
                     .map(this::convertToBoard)
                     .collect(Collectors.toList());
         } else {
@@ -126,11 +127,11 @@ public class BoardService {
         Optional<Member> member = memberRepository.findByEmail(member().getEmail());
         Long memberId = member.get().getId();
         heroResponse.setNickname(member.get().getNickname());
-        Integer shareCount = shareRepository.countByMemberId(memberId);
+        int shareCount = shareRepository.countByMemberId(memberId);
         heroResponse.setMemberCount(shareCount);
-        Integer diaryCount = diaryRepository.countIsSharedDiaries(memberId);
+        int diaryCount = diaryRepository.countIsSharedDiaries(memberId);
         heroResponse.setMemberCount(diaryCount);
-        Boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
+        boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
         heroResponse.setHasSharedBoard(isShared);
         return heroResponse;
     }

@@ -37,12 +37,13 @@ public class DiaryService {
     private String itemImgLocation;
 
     private Member member() {
-        String email = SecurityContextHolder
-                .getContext()
-                .getAuthentication()
-                .getName();
         return memberRepository
-                .findByEmail(email)
+                .findByEmail(
+                        SecurityContextHolder
+                                .getContext()
+                                .getAuthentication()
+                                .getName()
+                )
                 .orElseThrow(
                         () -> new IllegalStateException("존재하지 않음")
                 );

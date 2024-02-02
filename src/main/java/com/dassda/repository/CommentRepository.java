@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Integer countByDiaryId(Long diaryId);
+    int countByDiaryId(Long diaryId);
 }

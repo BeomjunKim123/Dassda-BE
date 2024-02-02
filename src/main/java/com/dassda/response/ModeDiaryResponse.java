@@ -12,12 +12,15 @@ import java.time.LocalDateTime;
 public class ModeDiaryResponse {
 
     private Long id;
-    private Member member;
+    private Long memberId;
+    private String nickname;
     private Long boardId;
-    private Sticker emotionId;
+    private Long emotionId;
     private String thumbnailUrl;
-    private Long likeCount;
-    private Long commentCount;
+    private String title;
+    private int likeCount;
+    private int commentCount;
     private LocalDateTime regDate;
     private LocalDateTime selectDate;
+    private String timeStamp;
 }
