@@ -90,5 +90,6 @@ public class ModeController {
     public ResponseEntity<Void> setReadAllStatus(@RequestParam Long boardId) {
         modeService.setReadAllStatus(boardId);
         return ResponseEntity.ok().build();
+        //커밋날라가
     }
 }
