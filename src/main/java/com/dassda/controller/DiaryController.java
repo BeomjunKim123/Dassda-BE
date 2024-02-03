@@ -38,7 +38,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "조회 실패 오류 찾으셈")
     })
     @GetMapping()
-    public ResponseEntity<List<DiaryDetailResponse>> getDiary(@RequestParam Long boardId, @RequestParam String date) {
+    public ResponseEntity<List<DiaryDetailResponse>> getDiary(@RequestParam(value = "boardId") Long boardId, @RequestParam(value = "date") String date) {
         List<DiaryDetailResponse> diaryDetailRespons = diaryService.getDiaries(boardId, date);
         return ResponseEntity.ok(diaryDetailRespons);
     }
@@ -62,7 +62,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "삭제 실패 오류 찾으셈")
     })
     @DeleteMapping("/{diaryId}")
-    public ResponseEntity<Void> deleteDiary(@PathVariable Long diaryId) {
+    public ResponseEntity<Void> deleteDiary(@PathVariable(value = "diaryId") Long diaryId) {
         diaryService.deleteDiary(diaryId);
         return ResponseEntity.ok().build();
     }
@@ -74,7 +74,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "좋아요 실패")
     })
     @PostMapping("/{diaryId}/likes")
-    public ResponseEntity<?> toggleLikes(@PathVariable Long diaryId) {
+    public ResponseEntity<?> toggleLikes(@PathVariable(value = "diaryId") Long diaryId) {
         return null;
     }
 
@@ -85,7 +85,7 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "좋아요 조회 실패")
     })
     @GetMapping("/{diaryId}/likes")
-    public ResponseEntity<?> getLikes(@PathVariable Long diaryId) {
+    public ResponseEntity<?> getLikes(@PathVariable(value = "diaryId") Long diaryId) {
         return null;
     }
 }
