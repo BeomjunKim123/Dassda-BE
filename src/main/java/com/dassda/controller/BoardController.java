@@ -39,7 +39,7 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 삭제 실패, 예외 처리 확인")
     })
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable(value = "boardId") Long boardId) {
         boardService.deleteBoard(boardId);
         return ResponseEntity.ok().build();
     }
@@ -63,7 +63,7 @@ public class BoardController {
             @ApiResponse(responseCode = "fail", description = "일기장 편집 실패")
     })
     @PutMapping("/{boardId}")
-    public ResponseEntity<Void> updateBoard(@PathVariable Long boardId, @RequestBody BoardRequest boardRequest) {
+    public ResponseEntity<Void> updateBoard(@PathVariable(value = "boardId") Long boardId, @RequestBody BoardRequest boardRequest) {
         boardService.updateBoard(boardId, boardRequest);
         return ResponseEntity.ok().build();
     }
