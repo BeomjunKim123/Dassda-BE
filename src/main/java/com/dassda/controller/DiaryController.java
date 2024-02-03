@@ -38,8 +38,12 @@ public class DiaryController {
             @ApiResponse(responseCode = "fail", description = "조회 실패 오류 찾으셈")
     })
     @GetMapping()
-    public ResponseEntity<List<DiaryDetailResponse>> getDiary(@RequestParam(value = "boardId") Long boardId, @RequestParam(value = "date") String date) {
-        List<DiaryDetailResponse> diaryDetailRespons = diaryService.getDiaries(boardId, date);
+    public ResponseEntity<DiaryDetailResponse> getDiary(
+            @RequestParam(value = "memberId") Long memberId,
+            @RequestParam(value = "boardId") Long boardId,
+            @RequestParam(value = "date") String date
+    ) {
+        DiaryDetailResponse diaryDetailRespons = diaryService.getDiaries(memberId, boardId, date);
         return ResponseEntity.ok(diaryDetailRespons);
     }
 

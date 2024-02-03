@@ -48,7 +48,7 @@ public class ModeService {
         return calenderMonthResponse;
     }
 
-    //1급 컬렉션
+    //1급 컬렉션도 사용해보자
     public List<CalenderDayResponse> getDayOfDiary(Long boardId, String date) {
         LocalDate day = LocalDate.parse(date);
         List<CalenderDayResponse> list = new ArrayList<>();
@@ -60,21 +60,21 @@ public class ModeService {
             calenderDayResponse.setNickname(diary.getMember().getNickname());
             calenderDayResponse.setBoardId(diary.getBoard().getId());
             calenderDayResponse.setEmotionId(diary.getSticker().getId());
-
-            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diary.getId());
+            Long diaryId = diary.getId();
+            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
             String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
             calenderDayResponse.setThumbnailUrl(thumbUrl);
             calenderDayResponse.setTitle(diary.getDiaryTitle());
 
-            int likeCount = likesRepository.countByDiaryId(diary.getId());
+            int likeCount = likesRepository.countByDiaryId(diaryId);
             calenderDayResponse.setLikeCount(likeCount);
 
-            int commentCount = commentRepository.countByDiaryId(diary.getId());
+            int commentCount = commentRepository.countByDiaryId(diaryId);
             calenderDayResponse.setCommentCount(commentCount);
 
             calenderDayResponse.setSelectedDate(diary.getSelectDate());
 
-            String time = diaryRepository.findDiaryWithTimeAge(diary.getId());
+            String time = diaryRepository.findDiaryWithTimeAge(diaryId);
             calenderDayResponse.setTimeStamp(time);
 
             list.add(calenderDayResponse);
@@ -86,7 +86,8 @@ public class ModeService {
 
     public NewExistResponse existNewDiary(Long boardId) {
         NewExistResponse newExistResponse = new NewExistResponse();
-        if (diaryRepository.existsByBoardIdAndMemberId(boardId, member().getId())) {
+        Long memberId = member().getId();
+        if (diaryRepository.existsByBoardIdAndMemberId(boardId, memberId)) {
             newExistResponse.setNexExist(true);
         } else {
             newExistResponse.setNexExist(false);
@@ -105,21 +106,22 @@ public class ModeService {
             modeDiaryResponse.setBoardId(diary.getBoard().getId());
             modeDiaryResponse.setEmotionId(diary.getSticker().getId());
 
-            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diary.getId());
+            Long diaryId = diary.getId();
+            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
             String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
             modeDiaryResponse.setThumbnailUrl(thumbUrl);
             modeDiaryResponse.setTitle(diary.getDiaryTitle());
 
-            int likeCount = likesRepository.countByDiaryId(diary.getId());
+            int likeCount = likesRepository.countByDiaryId(diaryId);
             modeDiaryResponse.setLikeCount(likeCount);
 
-            int commentCount = commentRepository.countByDiaryId(diary.getId());
+            int commentCount = commentRepository.countByDiaryId(diaryId);
             modeDiaryResponse.setCommentCount(commentCount);
 
             modeDiaryResponse.setRegDate(diary.getRegDate());
             modeDiaryResponse.setSelectDate(diary.getSelectDate());
 
-            String time = diaryRepository.findDiaryWithTimeAge(diary.getId());
+            String time = diaryRepository.findDiaryWithTimeAge(diaryId);
             modeDiaryResponse.setTimeStamp(time);
             modeDiaryResponseList.add(modeDiaryResponse);
         }
@@ -130,7 +132,10 @@ public class ModeService {
     public List<ModeDiaryResponse> getAllDiary(Long boardId, int pageSize, int lastViewId) {
         List<ModeDiaryResponse> modeDiaryResponseList = new ArrayList<>();
         List<Diary> diaryList = diaryRepository.findAllDiariesSortedByDateAndTime(boardId);
-        for (int i = lastViewId; i < pageSize; i++) {
+
+        int startIndex = Math.max(lastViewId, 0);
+        int endIndex = Math.min(startIndex + pageSize, diaryList.size());
+        for (int i = startIndex; i < endIndex; i++) {
             ModeDiaryResponse modeDiaryResponse = new ModeDiaryResponse();
             modeDiaryResponse.setId(diaryList.get(i).getId());
             modeDiaryResponse.setMemberId(diaryList.get(i).getMember().getId());
@@ -138,21 +143,22 @@ public class ModeService {
             modeDiaryResponse.setBoardId(diaryList.get(i).getBoard().getId());
             modeDiaryResponse.setEmotionId(diaryList.get(i).getSticker().getId());
 
-            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryList.get(i).getId());
+            Long diaryId = diaryList.get(i).getId();
+            String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
             String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
             modeDiaryResponse.setThumbnailUrl(thumbUrl);
             modeDiaryResponse.setTitle(diaryList.get(i).getDiaryTitle());
 
-            int likeCount = likesRepository.countByDiaryId(diaryList.get(i).getId());
+            int likeCount = likesRepository.countByDiaryId(diaryId);
             modeDiaryResponse.setLikeCount(likeCount);
 
-            int commentCount = commentRepository.countByDiaryId(diaryList.get(i).getId());
+            int commentCount = commentRepository.countByDiaryId(diaryId);
             modeDiaryResponse.setCommentCount(commentCount);
 
             modeDiaryResponse.setRegDate(diaryList.get(i).getRegDate());
             modeDiaryResponse.setSelectDate(diaryList.get(i).getSelectDate());
 
-            String time = diaryRepository.findDiaryWithTimeAge(diaryList.get(i).getId());
+            String time = diaryRepository.findDiaryWithTimeAge(diaryId);
             modeDiaryResponse.setTimeStamp(time);
             modeDiaryResponseList.add(modeDiaryResponse);
         }

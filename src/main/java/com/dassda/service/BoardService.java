@@ -127,10 +127,13 @@ public class BoardService {
         Optional<Member> member = memberRepository.findByEmail(member().getEmail());
         Long memberId = member.get().getId();
         heroResponse.setNickname(member.get().getNickname());
+
         int shareCount = shareRepository.countByMemberId(memberId);
         heroResponse.setMemberCount(shareCount);
+
         int diaryCount = diaryRepository.countIsSharedDiaries(memberId);
         heroResponse.setMemberCount(diaryCount);
+
         boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
         heroResponse.setHasSharedBoard(isShared);
         return heroResponse;
