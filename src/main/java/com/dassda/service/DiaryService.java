@@ -2,6 +2,7 @@ package com.dassda.service;
 
 import com.dassda.entity.*;
 import com.dassda.repository.*;
+import com.dassda.request.DiaryImgRequest;
 import com.dassda.request.DiaryRequest;
 import com.dassda.response.DiaryDetailResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class DiaryService {
     private final DiaryImgRepository diaryImgRepository;
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
+    private final ReadDiaryRepository readDiaryRepository;
 
     @Value("${itemImgLocation}")
     private String itemImgLocation;
@@ -51,11 +53,15 @@ public class DiaryService {
 
     public void addDiary(DiaryRequest diaryRequest) throws Exception {
         Board board = boardRepository.findById(diaryRequest.getBoardId())
-                .orElseThrow(() -> new Exception("해당하는 보드가 없습니다."));
+                .orElseThrow(() -> new Exception("해당 일기장이 없다."));
         Sticker sticker = stickerRepository.findById(diaryRequest.getEmotionId())
-                .orElseThrow(() -> new Exception("해당하는 스티커가 없습니다."));
+                .orElseThrow(() -> new Exception("해당 이모지가 없다."));
 
         LocalDateTime selectTime = LocalDateTime.parse(diaryRequest.getSelectedDate());
+
+        if(diaryRepository.exitsByDiaryAtSelectDate(diaryRequest.getBoardId(), selectTime)) {
+            throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
+        }
 
         Diary diary = new Diary();
         diary.setBoard(board);
@@ -81,6 +87,7 @@ public class DiaryService {
             }
             diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImg.setDiary(diary);
+            diaryImg.setBackUp(false);
             diaryImgRepository.save(diaryImg);
         }
     }
@@ -102,36 +109,54 @@ public class DiaryService {
         return savedFileName;
     }
 
-    public List<DiaryDetailResponse> getDiaries(Long boardId, String date) {
+    public DiaryDetailResponse getDiaries(Long memberId, Long boardId, String date) {
         LocalDateTime selectDate = LocalDateTime.parse(date);
-        List<Diary> selectDiary = diaryRepository.findByBoardIdAndRegDateWithFetchJoin(boardId, selectDate);
+        Optional<Diary> diary = diaryRepository.findByBoardIdInSelectDate(boardId, selectDate);
 
-        List<DiaryDetailResponse> diaryDetailResponses = new ArrayList<>();
-
-        for (Diary detail : selectDiary) {
-            DiaryDetailResponse diaryDetailResponse = new DiaryDetailResponse();
-
-            diaryDetailResponse.setId(detail.getId());
-
-            diaryDetailResponse.setWriterId(detail.getMember().getId());
-            diaryDetailResponse.setNickname(detail.getMember().getNickname());
-            diaryDetailResponse.setProfileUrl(detail.getMember().getProfile_image_url());
-
-            diaryDetailResponse.setEmotionId(detail.getSticker().getId());
-            diaryDetailResponse.setTitle(detail.getDiaryTitle());
-            diaryDetailResponse.setContents(detail.getDiaryContent());
-            diaryDetailResponse.setRegDate(detail.getRegDate());
-            diaryDetailResponse.setLikeCount(likesRepository.countByDiaryId(detail.getId()));
-            diaryDetailResponse.setCommentCount(commentRepository.countByDiaryId(detail.getId()));
-
-            List<DiaryImg> diaryImgs = diaryImgRepository.findByDiaryId(detail.getId());
-            diaryDetailResponse.setImages(diaryImgs);
-
-            diaryDetailResponses.add(diaryDetailResponse);
-
+        if(!diary.isPresent()) {
+            throw new IllegalStateException("해당 날짜에 일기가 존재하지 않습니다.");
         }
 
-        return diaryDetailResponses;
+        if(diary.get().isBackUp()) {
+            throw new IllegalStateException("삭제된 일기입니다.");
+        }
+
+        DiaryDetailResponse diaryDetailResponse = new DiaryDetailResponse();
+        diaryDetailResponse.setId(diary.get().getId());
+        diaryDetailResponse.setMemberId(diary.get().getMember().getId());
+        diaryDetailResponse.setNickname(diary.get().getMember().getNickname());
+        diaryDetailResponse.setProfileUrl(diary.get().getMember().getProfile_image_url());
+        diaryDetailResponse.setEmotionId(diary.get().getSticker().getId());
+
+        List<DiaryImgRequest> imgRequests = diaryImgRepository
+                .findByDiaryId(diary.get().getId())
+                        .stream()
+                                .map(diaryImg -> new DiaryImgRequest(diaryImg.getId(), "http://118.67.143.25:8080" + diaryImg.getImgUrl()))
+                                        .collect(Collectors.toList());
+        diaryDetailResponse.setImages(imgRequests);
+
+        diaryDetailResponse.setTitle(diary.get().getDiaryTitle());
+        diaryDetailResponse.setContents(diary.get().getDiaryContent());
+        diaryDetailResponse.setRegDate(diary.get().getRegDate());
+        diaryDetailResponse.setSelectDate(diary.get().getSelectDate());
+
+        int likeCount = likesRepository.countByDiaryId(diary.get().getId());
+        diaryDetailResponse.setLikeCount(likeCount);
+
+        int commentCount = commentRepository.countByDiaryId(diary.get().getId());
+        diaryDetailResponse.setCommentCount(commentCount);
+
+        if(memberId == member().getId()) {
+            diaryDetailResponse.setOwned(true);
+
+        } else {
+            diaryDetailResponse.setOwned(false);
+            ReadDiary readDiary = new ReadDiary();
+            readDiary.setReadId(member());
+            readDiary.setDiary(diary.get());
+            readDiaryRepository.save(readDiary);
+        }
+    return diaryDetailResponse;
     }
 
     public void updateDiary(DiaryRequest diaryRequest) throws Exception {

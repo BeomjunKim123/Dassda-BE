@@ -27,6 +27,9 @@ public class DiaryImg {
     @Column(name = "img_url")
     private String imgUrl;
 
+    @Column(name = "back_up")
+    private boolean backUp;
+
     public void updateDiaryImg(String oriImgName, String imgName, String imgUrl) {
         this.oriImgName = oriImgName;
         this.imgName = imgName;

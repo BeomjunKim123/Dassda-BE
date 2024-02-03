@@ -28,8 +28,10 @@ public class ModeController {
             @ApiResponse(responseCode = "fail", description = "실패함 확인좀")
     })
     @GetMapping("/month")
-    public ResponseEntity<CalenderMonthResponse> getMonthOfExistDiary(@RequestParam(value = "boardId") Long boardId, @RequestParam(value = "date") String date) {
-        System.out.println(date);
+    public ResponseEntity<CalenderMonthResponse> getMonthOfExistDiary(
+            @RequestParam(value = "boardId") Long boardId,
+            @RequestParam(value = "date") String date
+    ) {
         CalenderMonthResponse calenderMonthResponse = modeService.getMonthOfExistDiary(boardId, date);
         return ResponseEntity.ok(calenderMonthResponse);
     }
@@ -41,7 +43,9 @@ public class ModeController {
             @ApiResponse(responseCode = "fail", description = "실패함 확인좀")
     })
     @GetMapping("/day")
-    public ResponseEntity<List<CalenderDayResponse>> getDayOfDiary(@RequestParam(value = "boardId") Long boardId, @RequestParam(value = "date") String date) {
+    public ResponseEntity<List<CalenderDayResponse>> getDayOfDiary(
+            @RequestParam(value = "boardId") Long boardId, @RequestParam(value = "date") String date
+    ) {
         List<CalenderDayResponse> calenderDayResponse = modeService.getDayOfDiary(boardId, date);
         return ResponseEntity.ok(calenderDayResponse);
     }
@@ -52,7 +56,9 @@ public class ModeController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @GetMapping(value = "exist")
-    public ResponseEntity<NewExistResponse> existNewDiary(@RequestParam(value = "boardId") Long boardId) {
+    public ResponseEntity<NewExistResponse> existNewDiary(
+            @RequestParam(value = "boardId") Long boardId
+    ) {
         NewExistResponse newExistResponse = modeService.existNewDiary(boardId);
         return ResponseEntity.ok(newExistResponse);
     }
@@ -63,7 +69,9 @@ public class ModeController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @GetMapping(value = "new")
-    public ResponseEntity<List<ModeDiaryResponse>> getReadNotDiary(@RequestParam(value = "boardId") Long boardId) {
+    public ResponseEntity<List<ModeDiaryResponse>> getReadNotDiary(
+            @RequestParam(value = "boardId") Long boardId
+    ) {
         List<ModeDiaryResponse> diaryList = modeService.getReadNotDiary(boardId);
         return ResponseEntity.ok(diaryList);
     }
@@ -72,10 +80,14 @@ public class ModeController {
     @Operation(summary = "전체 모아보기 API", description = "무한 스크롤 일기장 아이디, 스크롤 단위, 마지막 일기 아이디")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "모아보기 응답 성공"),
-            @ApiResponse(responseCode = "fila", description = "실패")
+            @ApiResponse(responseCode = "fail", description = "실패")
     })
     @GetMapping(value = "all")
-    public ResponseEntity<List<ModeDiaryResponse>> getAllDairy(@RequestParam(value = "boardId") Long boardId, @RequestParam(value = "pageSize") int pageSize, @RequestParam(value = "lastViewId") int lastViewId) {
+    public ResponseEntity<List<ModeDiaryResponse>> getAllDairy(
+            @RequestParam(value = "boardId") Long boardId,
+            @RequestParam(value = "pageSize") int pageSize,
+            @RequestParam(value = "lastViewId") int lastViewId
+    ) {
         List<ModeDiaryResponse> diaryList = modeService.getAllDiary(boardId, pageSize, lastViewId);
         return ResponseEntity.ok(diaryList);
     }

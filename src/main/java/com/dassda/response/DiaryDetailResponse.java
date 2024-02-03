@@ -1,6 +1,7 @@
 package com.dassda.response;
 
 import com.dassda.entity.DiaryImg;
+import com.dassda.request.DiaryImgRequest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,18 +12,17 @@ import java.util.List;
 @Getter
 public class DiaryDetailResponse {
     private Long id;
-//    private Member writer;
-    private Long writerId;
+    private Long memberId;
     private String nickname;
     private String profileUrl;
-
     private Long emotionId;
-    private List<DiaryImg> images;
+    private List<DiaryImgRequest> images;
     private String title;
     private String contents;
     private LocalDateTime regDate;
-    private Integer likeCount;
-    private Integer commentCount;
+    private LocalDateTime selectDate;
+    private int likeCount;
+    private int commentCount;
     private boolean isOwned;
 
 }

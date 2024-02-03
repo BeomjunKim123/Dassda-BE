@@ -69,15 +69,10 @@ public class JwtTokenProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
-        System.out.println(claims);
         String subject = claims.getSubject();
-        System.out.println(subject);
-
         Member member = new Member();
         Optional<Member> memberInfo = memberRepository.findById(Long.valueOf(subject));
-
         UserDetails userDetails = loadUserDetails(memberInfo.get().getEmail());
-        System.out.println(userDetails);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
