@@ -87,7 +87,7 @@ public class BoardService {
     }
     private BoardResponse convertToBoard(Board board) {
         Integer diaryCount = diaryRepository.countByBoardId(board.getId());
-        Integer memberCount = shareRepository.countByBoardId(board.getId());
+        Integer memberCount = Math.toIntExact(shareRepository.countByBoardId(board.getId()));
         BoardResponse boardResponse = new BoardResponse();
         boardResponse.setId(board.getId());
         boardResponse.setImageNumber(board.getImageNumber());
@@ -127,7 +127,7 @@ public class BoardService {
         Optional<Member> member = memberRepository.findByEmail(member().getEmail());
         Long memberId = member.get().getId();
         heroResponse.setNickname(member.get().getNickname());
-        int shareCount = shareRepository.countByMemberId(memberId);
+        int shareCount = Math.toIntExact(shareRepository.countByMemberId(memberId));
         heroResponse.setMemberCount(shareCount);
         int diaryCount = diaryRepository.countIsSharedDiaries(memberId);
         heroResponse.setMemberCount(diaryCount);

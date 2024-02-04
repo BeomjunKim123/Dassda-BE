@@ -1,9 +1,11 @@
 package com.dassda.token;
 
 import com.dassda.jwt.JwtTokenProvider;
+import com.dassda.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Date;
 
 @Component
@@ -13,6 +15,8 @@ public class AuthTokensGenerator {
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisService redisService;
+
     public AuthTokens generate(Long memberId) {
         long now = (new Date()).getTime();
         Date accessTokenExpiredAt = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -21,6 +25,8 @@ public class AuthTokensGenerator {
         String subject = memberId.toString();
         String accessToken = jwtTokenProvider.generate(subject, accessTokenExpiredAt);
         String refreshToken = jwtTokenProvider.generate(subject, refreshTokenExpiredAt);
+
+        redisService.setValues(refreshToken, subject, Duration.ofDays(30));
 
         return AuthTokens.of(accessToken);
     }
