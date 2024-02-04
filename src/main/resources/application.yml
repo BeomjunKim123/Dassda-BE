@@ -1,52 +1,118 @@
-server:
-  port: 8080
-
+#server:
+#  port: 8080
+#
+##spring:
+##  resources:
+##    static-location: file:/Users/proxy/items/item/
+##  datasource:
+##    driver-class-name: com.mysql.cj.jdbc.Driver
+##    url: jdbc:mysql://localhost:3306/ssda
+##    username: root
+##    password: Dongcci92!!
+#
 #spring:
-#  resources:
-#    static-location: file:/Users/proxy/items/item/
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/ssda
+#    url: jdbc:mysql://118.67.143.25:3306/ssda
+#    username: ssda
+#    password: 1234
+#
+#jpa:
+#  properties:
+#    hibernate:
+#      show_sql: true
+#      format_sql: true
+#  hibernate:
+#    ddl-auto: update
+#  database-platform: org.hibernate.dialect.MySQL8Dialect
+#
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        boot: DEBUG
+#      hibernate:
+#        type:
+#          descriptor:
+#            sql: trace
+#
+#servlet:
+#  multipart:
+#    maxFileSize: 20MB
+#    maxRequestSize: 100MB
+#
+##itemImgLocation: /Users/proxy/items/item/
+##uploadPath: file:/Users/proxy/items/
+#
+#itemImgLocation: /home/root/items/item/
+#uploadPath: /home/root/items/
+#
+#
+#jwt:
+#  secret-key: GaXmsBiD6L1Z2M3NorAExZp8gr3uPXDR6J6iZxe4pfYKTf0SV1+I0xGqmuPG+nmLVCl9/2+lYB/VFI+AgoFGpg==
+#
+#oauth:
+#  kakao:
+#    client-id: 992ac8b159b158f4299b493df0509202
+#    url:
+#      auth: https://kauth.kakao.com
+#      api: https://kapi.kakao.com
+
+##############################################
+
+#server:
+#  port: 8080
+#
+##spring:
+##  datasource:
+##    driver-class-name: com.mysql.cj.jdbc.Driver
+##    url: jdbc:mysql://localhost:3306/ssda
+##    username: root
+##    password: Dongcci92!!
+#
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:3306/ssda #jdbc:mysql://118.67.143.25:3306/ssda
 #    username: root
-#    password: Dongcci92!!
-
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://118.67.143.25:3306/ssda
-    username: ssda
-    password: 1234
-
-jpa:
-  properties:
-    hibernate:
-      show_sql: true
-      format_sql: true
-  hibernate:
-    ddl-auto: update
-  database-platform: org.hibernate.dialect.MySQL8Dialect
-
-logging:
-  level:
-    org:
-      springframework:
-        boot: DEBUG
-      hibernate:
-        type:
-          descriptor:
-            sql: trace
-
-servlet:
-  multipart:
-    maxFileSize: 20MB
-    maxRequestSize: 100MB
-
-#itemImgLocation: /Users/proxy/items/item/
-#uploadPath: file:/Users/proxy/items/
-
-itemImgLocation: /home/root/items/item/
-uploadPath: /home/root/items/
-
+#    password: 1234
+#
+#jpa:
+#  properties:
+#    hibernate:
+#      show_sql: true
+#      format_sql: true
+#  hibernate:
+#    ddl-auto: create
+#  database-platform: org.hibernate.dialect.MySQL8Dialect
+#
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        boot: DEBUG
+#      hibernate:
+#        type:
+#          descriptor:
+#            sql: trace
+#
+#servlet:
+#  multipart:
+#    maxFileSize: 20MB
+#    maxRequestSize: 100MB
+#
+#item-img-location: /Users/pizza/Desktop/image/
+#upload-path: file:/Users/pizza/Desktop/image/
+#
+#jwt:
+#  secret-key: GaXmsBiD6L1Z2M3NorAExZp8gr3uPXDR6J6iZxe4pfYKTf0SV1+I0xGqmuPG+nmLVCl9/2+lYB/VFI+AgoFGpg==
+#
+#oauth:
+#  kakao:
+#    client-id: 992ac8b159b158f4299b493df0509202
+#    url:
+#      auth: https://kauth.kakao.com
+#      api: https://kapi.kakao.com
 
 jwt:
   secret-key: GaXmsBiD6L1Z2M3NorAExZp8gr3uPXDR6J6iZxe4pfYKTf0SV1+I0xGqmuPG+nmLVCl9/2+lYB/VFI+AgoFGpg==
@@ -57,3 +123,42 @@ oauth:
     url:
       auth: https://kauth.kakao.com
       api: https://kapi.kakao.com
+
+
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+      force: true
+      enabled: true
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ssda
+    username: root
+    password: 12345678
+  thymeleaf:
+    cache: false
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
+    # Redis 설정 추가
+  redis:
+    host: localhost
+    port: 6379
+    # password: your_redis_password (설정 필요시 사용)
+
+  # Here are the custom properties
+itemImgLocation: /Users/pizza/Desktop/image/
+upload-path: file:/Users/pizza/Desktop/image/
+

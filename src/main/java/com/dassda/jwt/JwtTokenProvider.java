@@ -2,6 +2,7 @@ package com.dassda.jwt;
 
 import com.dassda.entity.Member;
 import com.dassda.repository.MemberRepository;
+import com.dassda.service.RedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -23,8 +24,11 @@ import java.util.Optional;
 public class JwtTokenProvider {
     private final Key key;
     private final MemberRepository memberRepository;
-    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository) {
+    private final RedisService redisService;
+
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository, RedisService redisService) {
         this.memberRepository = memberRepository;
+        this.redisService = redisService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -80,5 +84,21 @@ public class JwtTokenProvider {
         Member member = memberRepository.findByEmail(subject)
                 .orElseThrow(() -> new UsernameNotFoundException("유저 없다"));
         return new User(subject, "", Collections.emptyList());
+    }
+
+    //Redis에서 리프레시 토큰 존재 여부 확인
+    public boolean existRefreshToken(String refreshToken) {
+        return redisService.getValues(refreshToken) != null;
+    }
+
+    public long getRemainingExpiration(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            long expMillis = claims.getExpiration().getTime();
+            long nowMillis = System.currentTimeMillis();
+            return expMillis - nowMillis;
+        } catch (JwtException e) {
+            return 0; //만료되었거나 유효하지 않은 토큰인 경우
+        }
     }
 }
