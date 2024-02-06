@@ -1,5 +1,6 @@
 package com.dassda.controller;
 
+import com.dassda.request.CommentRequest;
 import com.dassda.response.CommentResponse;
 import com.dassda.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,8 +23,8 @@ public class CommentController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @PostMapping()
-    public ResponseEntity<Void> addComment(@PathVariable Long diaryId) {
-        commentService.addComment(diaryId);
+    public ResponseEntity<Void> addComment(@PathVariable Long diaryId, @RequestBody CommentRequest commentRequest) {
+        commentService.addComment(diaryId, commentRequest);
         return ResponseEntity.ok().build();
     }
 
