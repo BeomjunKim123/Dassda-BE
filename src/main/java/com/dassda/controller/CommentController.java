@@ -1,7 +1,7 @@
 package com.dassda.controller;
 
-import com.dassda.request.CommentRequest;
-import com.dassda.response.CommentResponse;
+import com.dassda.request.CommentOrReplyRequest;
+import com.dassda.response.CommentOrReplyResponse;
 import com.dassda.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,8 +25,8 @@ public class CommentController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @PostMapping()
-    public ResponseEntity<Void> addComment(@PathVariable Long diaryId, @RequestBody CommentRequest commentRequest) {
-        commentService.addComment(diaryId, commentRequest);
+    public ResponseEntity<Void> addComment(@PathVariable(value = "diaryId") Long diaryId, @RequestBody CommentOrReplyRequest commentOrReplyRequest) {
+        commentService.addComment(diaryId, commentOrReplyRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -34,8 +36,8 @@ public class CommentController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @PutMapping("/{commentId}")
-    public ResponseEntity<Void> updateComment(@PathVariable Long diaryId, @PathVariable Long commentId) {
-        commentService.updateComment(diaryId, commentId);
+    public ResponseEntity<Void> updateComment(@PathVariable(value = "diaryId") Long diaryId, @PathVariable(value = "commentId") Long commentId, @RequestBody CommentOrReplyRequest commentOrReplyRequest) {
+        commentService.updateComment(diaryId, commentId, commentOrReplyRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -47,9 +49,9 @@ public class CommentController {
             @ApiResponse(responseCode = "fail", description = "실패함")
     })
     @GetMapping()
-    public ResponseEntity<CommentResponse> getComment(@PathVariable Long diaryId, @RequestParam int pageSize, @RequestParam int lastViewId) {
-        CommentResponse commentResponse = commentService.getComment(diaryId, pageSize, lastViewId);
-        return ResponseEntity.ok(commentResponse);
+    public ResponseEntity<List<CommentOrReplyResponse>> getComment(@PathVariable(value = "diaryId") Long diaryId, @RequestParam(value = "pageSize") int pageSize, @RequestParam(value = "lastViewId") int lastViewId) {
+        List<CommentOrReplyResponse> commentOrReplyResponse = commentService.getComment(diaryId, pageSize, lastViewId);
+        return ResponseEntity.ok(commentOrReplyResponse);
     }
 
 
@@ -60,7 +62,7 @@ public class CommentController {
             @ApiResponse(responseCode = "fail", description = "실패")
     })
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long diaryId, @PathVariable Long commentId) {
+    public ResponseEntity<Void> deleteComment(@PathVariable(value = "diaryId") Long diaryId, @PathVariable(value = "commentId") Long commentId) {
         commentService.deleteComment(diaryId, commentId);
         return ResponseEntity.ok().build();
     }
