@@ -17,7 +17,7 @@ public class Comment {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id", referencedColumnName = "id")
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member write;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,5 +32,8 @@ public class Comment {
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;
+
+    @Column(name = "back_up")
+    private boolean backUp;
 
 }

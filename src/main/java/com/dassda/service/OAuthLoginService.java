@@ -51,6 +51,7 @@ public class OAuthLoginService {
                 .age_range(oAuthInfoResponse.getAge_range())
                 .profile_image_url(oAuthInfoResponse.getProfile_image_url())
                 .birthday(oAuthInfoResponse.getBirthday())
+                .font(1)
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
                 .build();
         return memberRepository.save(member).getId();

@@ -1,17 +1,29 @@
 package com.dassda.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.CustomLog;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
+@Table(name = "setting")
 @Getter
 @Setter
 public class Setting {
 
     @Id
-    private Long userId;
-    private String fontSize;
-    private String fontType;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "write_id", referencedColumnName = "id")
+    private Member member;
+
+    private String QaContents;
+
+    private String starPoint;
+
+    private LocalDateTime regDate;
 }

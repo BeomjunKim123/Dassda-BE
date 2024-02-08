@@ -6,14 +6,20 @@ import com.dassda.entity.Share;
 import com.dassda.repository.BoardRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.repository.ShareRepository;
+import com.dassda.request.ShareRequest;
+import com.dassda.response.ShareResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Formatter;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,32 +30,40 @@ public class ShareService {
     private final ShareRepository shareRepository;
 
     //초대 생성 로직
-    public Share createInvitation(Long boardId, Long memberId, String name, String profileImageUrl, String title) throws NoSuchAlgorithmException {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + boardId));
+    public ShareResponse createInvitation(Long boardId, ShareRequest request) throws NoSuchAlgorithmException {
+        //특정 일기장에 대한 기존 초대링크 학인
+        Optional<Share> existingShare = shareRepository.findByBoardIdAndExpiryDateAfter(boardId);
+        ShareResponse shareResponse = new ShareResponse();
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + memberId));
+        Share share;
+        String hashValue;
+        if (existingShare.isPresent()) {
+            share = existingShare.get();
+            shareResponse.setShareLink("http://localhost:8080/share?hash=" + share.getHashValue());
+            return shareResponse;
+        } else {
+            Board board = boardRepository.findById(boardId)
+                    .orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + boardId));
 
-        //현재 시간 +7일로 만료 날짜 설정
-        LocalDateTime expiryDate = LocalDateTime.now().plusDays(7);
-        //해시값 생성을 위한 입력 데이터 조합
-        String hashInput = String.format("%s|%s|%d|%s|%s", name, profileImageUrl, boardId, title, expiryDate);
-        //해시값 생성
-        String hashValue = generateHash(hashInput);
+            Member member = memberRepository.findById(request.getMemberId())
+                    .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + request.getMemberId()));
 
-        Share share = new Share();
-        share.setHashValue(hashValue);
-        share.setBoard(board);
-        share.setMember(member);
-        share.setExpiryDate(expiryDate);
+            //현재 시간 +7일로 만료 날짜 설정
+            LocalDateTime expiryDate = LocalDateTime.now().plusDays(7);
+            //해시값 생성을 위한 입력 데이터 조합
+            String hashInput = String.format("%s|%s|%d|%s|%s", request.getName(), request.getProfileImageUrl(), boardId, request.getTitle(), expiryDate);
+            //해시값 생성
+            hashValue = generateHash(hashInput);
 
-        //초대 링크 생성 (여기서는 해값만을 사용하지만, 실제로는 이 값을 URL의 파라미터로 사용)
-        String invitationLink = "https://yourapp.com/invite?hash=" + hashValue;
-        //초대 링크 저장
-        //invitation.setInvitationLink(invitationLink);
+            share = new Share();
+            share.setHashValue(hashValue);
+            share.setBoard(board);
+            share.setMember(member);
 
-        return shareRepository.save(share);
+            shareRepository.save(share);
+            shareResponse.setShareLink("http://localhost:8080/share?hash=" + hashValue);
+            return shareResponse;
+        }
     }
 
     private String generateHash(String input) throws NoSuchAlgorithmException {
@@ -65,21 +79,26 @@ public class ShareService {
 
     }
 
-    //초대 링크 접근 처리
-    public Board accessInvitation(String hashValue) {
-        Share share = shareRepository.findByHashValue(hashValue)
-                .orElseThrow(() -> new EntityNotFoundException("Invitation not found with hash value: " + hashValue));
-
-        if(share.getExpiryDate().isBefore(LocalDateTime.now())) {
-            throw new EntityNotFoundException("Invitation Link is expired");
-        }
-        return share.getBoard();
-    }
 
 
-    public boolean isInvitedUser(Long currentUserId, String hashValue) {
-        Share share = shareRepository.findByHashValue(hashValue)
-                .orElseThrow(() -> new EntityNotFoundException("Invitation not found with hash value: " + hashValue));
-        return share.getMember().getId().equals(currentUserId);
-    }
+//
+//    public boolean isInvitedUser(Long currentUserId, String hashValue) {
+//        Share share = shareRepository.findByHashValue(hashValue)
+//                .orElseThrow(() -> new EntityNotFoundException("Invitation not found with hash value: " + hashValue));
+//        return share.getMember().getId().equals(currentUserId);
+//    }
+//
+//    public ResponseEntity<?> processSharedAccess(Long boardId, String hash, Authentication authentication) {
+//        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+//            String currentUsername = authentication.getName();
+//            Member currentMember = memberRepository.findByEmail(currentUsername)
+//                    .orElseThrow(() -> new EntityNotFoundException("Member not found with username: " + currentUsername));
+//            Long currentUserId = currentMember.getId();
+//
+//            try {
+//                Board board = this.acceptAndRetrieve(boardId, hash, currentUserId);
+//
+//            }
+
+
 }

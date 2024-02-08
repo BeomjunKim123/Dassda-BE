@@ -128,14 +128,14 @@ public class ModeService {
 
         return modeDiaryResponseList;
     }
-
+    //마지막 id 값이 9 라면 다음 무한 스크롤에서는 9부터 시작이 아니라 다음 일기부터 시작
     public List<ModeDiaryResponse> getAllDiary(Long boardId, int pageSize, int lastViewId) {
         List<ModeDiaryResponse> modeDiaryResponseList = new ArrayList<>();
         List<Diary> diaryList = diaryRepository.findAllDiariesSortedByDateAndTime(boardId);
 
-        int startIndex = Math.max(lastViewId, 0);
-        int endIndex = Math.min(startIndex + pageSize, diaryList.size());
-        for (int i = startIndex; i < endIndex; i++) {
+
+        int endIndex = Math.min(lastViewId + pageSize, diaryList.size());
+        for (int i = lastViewId; i < endIndex; i++) {
             ModeDiaryResponse modeDiaryResponse = new ModeDiaryResponse();
             modeDiaryResponse.setId(diaryList.get(i).getId());
             modeDiaryResponse.setMemberId(diaryList.get(i).getMember().getId());
