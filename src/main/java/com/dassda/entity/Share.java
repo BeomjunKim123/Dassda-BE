@@ -30,5 +30,5 @@ public class Share {
     @Column(name = "hash_Value")
     private String hashValue; //해시된 초대 링크 값
 
-
+//02.08 6시32분
 }
