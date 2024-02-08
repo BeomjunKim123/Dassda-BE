@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InvitationRequest {
+public class ShareRequest {
 
     private Long boardId;
     private Long memberId;
