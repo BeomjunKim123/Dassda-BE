@@ -31,4 +31,7 @@ public class Reply {
 
     private LocalDateTime updateDate;
 
+    @Column(name = "back_up")
+    private boolean backUp;
+
 }
