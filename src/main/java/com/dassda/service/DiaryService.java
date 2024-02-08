@@ -146,7 +146,7 @@ public class DiaryService {
         int commentCount = commentRepository.countByDiaryId(diary.get().getId());
         diaryDetailResponse.setCommentCount(commentCount);
 
-        if(memberId == member().getId()) {
+        if(memberId == diary.get().getMember().getId()) {
             diaryDetailResponse.setOwned(true);
 
         } else {

@@ -74,13 +74,14 @@ public class Member implements UserDetails {
 
     @Builder
     public Member(String email, String nickname, String gender,
-                  String age_range, String profile_image_url, String birthday, OAuthProvider oAuthProvider) {
+                  String age_range, String profile_image_url, String birthday, int font, OAuthProvider oAuthProvider) {
         this.email = email;
         this.nickname = nickname;
         this.gender = gender;
         this.age_range = age_range;
         this.profile_image_url = profile_image_url;
         this.birthday = birthday;
+        this.font = font;
         this.oAuthProvider = oAuthProvider;
     }
 
