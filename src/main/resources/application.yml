@@ -19,7 +19,7 @@ spring:
     username: ssda
     password: 1234
   redis:
-    host: localhost
+    host: 106.10.33.98
     port: 6379
 
 jpa:
