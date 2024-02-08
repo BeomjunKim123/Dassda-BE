@@ -33,6 +33,8 @@ public class Member implements UserDetails {
 
     private String birthday;
 
+    private int font;
+
     private OAuthProvider oAuthProvider;
 
     @Override

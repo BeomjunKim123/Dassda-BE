@@ -32,14 +32,7 @@ public class MemberController {
         Long memberId = authTokensGenerator.extractMemberId(accessToken);
         return ResponseEntity.ok(memberRepository.findById(memberId).get());
     }
-    @PostMapping(value = "logout")
-    public ResponseEntity<Object> findByLogout(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization");
-        oAuthLoginService.logout(accessToken);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", "로그아웃 성공");
-        return ResponseEntity.ok(response);
-    }
+    
     @PostMapping("/update")
     public ResponseEntity<Void> updateMembers() {
         return null;
