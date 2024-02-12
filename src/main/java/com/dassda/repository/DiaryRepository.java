@@ -45,7 +45,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "WHEN DATE(d.select_date) > DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), DATE(d.select_date)) / 7), '주 전') " +
             "ELSE CONCAT(FLOOR(DATEDIFF(CURDATE(), DATE(d.select_date)) / 30), '개월 전') " +
             "END " +
-            "FROM Diary d WHERE d.id = :diaryId", nativeQuery = true)
+            "FROM diary d WHERE d.id = :diaryId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("diaryId") Long diaryId);
 
     @Query("SELECT d FROM Diary d WHERE d.board.isShared = true AND d.board.id = :boardId AND d.member.id != :memberId AND NOT EXISTS " +
