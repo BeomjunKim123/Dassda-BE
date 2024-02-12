@@ -50,7 +50,7 @@ servlet:
 #uploadPath: file:/Users/proxy/items/
 
 itemImgLocation: /app/items
-uploadPath: /app/items
+uploadPath: /app
 
 
 jwt:
