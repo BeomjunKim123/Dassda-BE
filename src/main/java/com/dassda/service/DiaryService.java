@@ -83,7 +83,7 @@ public class DiaryService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "/images/item/" + imgName;
+                imgUrl = "/app/items/" + imgName;
             }
             diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImg.setDiary(diary);
@@ -174,7 +174,7 @@ public class DiaryService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "/images/item/" + imgName;
+                imgUrl = "/app/items/" + imgName;
             }
             diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImgs.setDiary(diary.get());
