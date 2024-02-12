@@ -9,6 +9,6 @@ public class LikesResponse {
 
     private String nickname;
     private String profileUrl;
-    private Integer likeCount;
+    private int likeCount;
 
 }

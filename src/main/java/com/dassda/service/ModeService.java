@@ -97,7 +97,7 @@ public class ModeService {
 
     public List<ModeDiaryResponse> getReadNotDiary(Long boardId) {
         List<ModeDiaryResponse> modeDiaryResponseList = new ArrayList<>();
-        List<Diary> diaryList = diaryRepository.findSharedDiariesNotRead(boardId);
+        List<Diary> diaryList = diaryRepository.findSharedDiariesNotRead(boardId, member().getId());
         for(Diary diary : diaryList) {
             ModeDiaryResponse modeDiaryResponse = new ModeDiaryResponse();
             modeDiaryResponse.setId(diary.getId());

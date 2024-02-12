@@ -43,9 +43,6 @@ public class Diary {
     @Column(name = "update_date")
     private LocalDateTime updateDate;
 
-    @Column(name = "read_status")
-    private boolean isRead;
-
     @Column(name = "back_up")
     private boolean backUp;
 

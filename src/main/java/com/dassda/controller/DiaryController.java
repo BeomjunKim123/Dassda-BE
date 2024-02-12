@@ -1,8 +1,12 @@
 package com.dassda.controller;
 
+
+
 import com.dassda.request.DiaryRequest;
 import com.dassda.response.DiaryDetailResponse;
+import com.dassda.response.LikesResponse;
 import com.dassda.service.DiaryService;
+import com.dassda.service.LikesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,10 +19,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/diary")
-@CrossOrigin("http://localhost:3000/**")
+@CrossOrigin
 public class DiaryController {
 
     private final DiaryService diaryService;
+    private final LikesService likesService;
 
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @ApiResponses(value = {
@@ -79,7 +84,8 @@ public class DiaryController {
     })
     @PostMapping("/{diaryId}/likes")
     public ResponseEntity<?> toggleLikes(@PathVariable(value = "diaryId") Long diaryId) {
-        return null;
+        likesService.toggleLike(diaryId);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -90,6 +96,7 @@ public class DiaryController {
     })
     @GetMapping("/{diaryId}/likes")
     public ResponseEntity<?> getLikes(@PathVariable(value = "diaryId") Long diaryId) {
-        return null;
+        List<LikesResponse> likesResponse = likesService.getLikesForDiary(diaryId);
+        return ResponseEntity.ok(likesResponse);
     }
 }

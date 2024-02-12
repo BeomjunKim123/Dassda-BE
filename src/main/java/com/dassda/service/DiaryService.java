@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -72,7 +73,6 @@ public class DiaryService {
         diary.setRegDate(LocalDateTime.now());
         diary.setSelectDate(selectTime);
         diary.setUpdateDate(LocalDateTime.now());
-        diary.setRead(false);
         diary.setBackUp(false);
         diaryRepository.save(diary);
 
@@ -108,10 +108,11 @@ public class DiaryService {
         fos.close();
         return savedFileName;
     }
-
+    @Transactional
     public DiaryDetailResponse getDiaries(Long memberId, Long boardId, String date) {
-        LocalDateTime selectDate = LocalDateTime.parse(date);
-        Optional<Diary> diary = diaryRepository.findByBoardIdInSelectDate(boardId, selectDate);
+        String dateparsing = date.substring(0, 10);
+        LocalDate selectDate = LocalDate.parse(dateparsing);
+        Optional<Diary> diary = diaryRepository.findByMemberIdAndBoardIdAndSelectDate(memberId, boardId, selectDate);
 
         if(!diary.isPresent()) {
             throw new IllegalStateException("해당 날짜에 일기가 존재하지 않습니다.");
@@ -146,9 +147,8 @@ public class DiaryService {
         int commentCount = commentRepository.countByDiaryId(diary.get().getId());
         diaryDetailResponse.setCommentCount(commentCount);
 
-        if(memberId == diary.get().getMember().getId()) {
+        if(member().getId() == diary.get().getMember().getId()) {
             diaryDetailResponse.setOwned(true);
-
         } else {
             diaryDetailResponse.setOwned(false);
             ReadDiary readDiary = new ReadDiary();

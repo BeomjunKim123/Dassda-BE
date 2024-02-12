@@ -14,8 +14,8 @@ import java.util.Optional;
 
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
-    @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
-    Optional<Diary> findByBoardIdInSelectDate(@Param("boardId") Long boardId, @Param("selectDate") LocalDateTime selectDate);
+    @Query("SELECT d FROM Diary d WHERE d.member.id = :memberId AND d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
+    Optional<Diary> findByMemberIdAndBoardIdAndSelectDate(@Param(value = "memberId") Long memberId, @Param(value = "boardId") Long boardId, @Param(value = "selectDate") LocalDate selectDate);
 
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
     boolean exitsByDiaryAtSelectDate(@Param("boardId") Long boardId, @Param("selectDate") LocalDateTime selectDate);
@@ -48,9 +48,9 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "FROM Diary d WHERE d.id = :diaryId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("diaryId") Long diaryId);
 
-    @Query("SELECT d FROM Diary d WHERE d.board.isShared = false AND d.board.id = :boardId AND NOT EXISTS " +
+    @Query("SELECT d FROM Diary d WHERE d.board.isShared = true AND d.board.id = :boardId AND d.member.id != :memberId AND NOT EXISTS " +
             "(SELECT rd FROM ReadDiary rd WHERE rd.diary.id = d.id) ORDER BY d.selectDate DESC")
-    List<Diary> findSharedDiariesNotRead(@Param("boardId") Long boardId);
+    List<Diary> findSharedDiariesNotRead(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
 
     @Query(value = "SELECT * FROM diary d WHERE d.board_id = :boardId ORDER BY DATE(select_date) DESC, TIME(select_date) ASC", nativeQuery = true)
     List<Diary> findAllDiariesSortedByDateAndTime(@Param("boardId") Long boardId);
