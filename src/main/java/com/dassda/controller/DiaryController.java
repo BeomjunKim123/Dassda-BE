@@ -26,10 +26,6 @@ public class DiaryController {
     private final LikesService likesService;
 
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "success", description = "일기 작성 성공"),
-            @ApiResponse(responseCode = "fail", description = "작성 실패 오류 찾으셈")
-    })
     @PostMapping()
     public ResponseEntity<Void> addDiary(@ModelAttribute DiaryRequest diaryRequest) throws Exception {
         diaryService.addDiary(diaryRequest);

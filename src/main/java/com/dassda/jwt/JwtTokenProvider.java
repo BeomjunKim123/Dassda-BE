@@ -2,7 +2,7 @@ package com.dassda.jwt;
 
 import com.dassda.entity.Member;
 import com.dassda.repository.MemberRepository;
-import com.dassda.service.RedisService;
+import com.dassda.service.ShareRedisService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -24,11 +24,11 @@ import java.util.Optional;
 public class JwtTokenProvider {
     private final Key key;
     private final MemberRepository memberRepository;
-    private final RedisService redisService;
+    private final ShareRedisService shareRedisService;
 
-    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository, RedisService redisService) {
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository, ShareRedisService shareRedisService) {
         this.memberRepository = memberRepository;
-        this.redisService = redisService;
+        this.shareRedisService = shareRedisService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -88,7 +88,7 @@ public class JwtTokenProvider {
 
     //Redis에서 리프레시 토큰 존재 여부 확인
     public boolean existRefreshToken(String refreshToken) {
-        return redisService.getValues(refreshToken) != null;
+        return shareRedisService.getValues(refreshToken) != null;
     }
 
     public long getRemainingExpiration(String token) {

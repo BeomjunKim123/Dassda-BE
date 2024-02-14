@@ -1,14 +1,25 @@
 package com.dassda.config;
 
 import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.Operation;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.customizers.OpenApiCustomizer;
+import org.springdoc.core.customizers.OperationCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.HandlerMethod;
+import io.swagger.v3.oas.models.Operation;
+import io.swagger.v3.oas.models.media.Content;
+import io.swagger.v3.oas.models.media.MediaType;
+import io.swagger.v3.oas.models.parameters.RequestBody;
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.web.method.HandlerMethod;
 
 @Configuration
 public class SwaggerConfig {
@@ -37,6 +48,24 @@ public class SwaggerConfig {
                             .in(SecurityScheme.In.HEADER)
                             .scheme("Bearer")
                             .name("Authorization Bearer도 붙이셈")));
+        };
+    }
+
+    @Bean
+    public OperationCustomizer customContentTypeCustomizer() {
+        return (Operation operation, HandlerMethod handlerMethod) -> {
+            if(operation.getRequestBody() != null &&
+                    operation.getRequestBody().getContent().containsKey("application/json")) {
+                Content content = operation.getRequestBody().getContent();
+                // 'multipart/form-data' 미디어 타입을 추가
+                content.addMediaType("multipart/form-data", new MediaType());
+
+                // 수정된 Content로 RequestBody 업데이트
+                RequestBody requestBody = operation.getRequestBody();
+                requestBody.setContent(content);
+                operation.setRequestBody(requestBody);
+            }
+            return operation;
         };
     }
 }

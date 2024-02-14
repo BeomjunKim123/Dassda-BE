@@ -5,12 +5,15 @@ package com.dassda.service;
 import com.dassda.entity.Diary;
 import com.dassda.entity.Likes;
 import com.dassda.entity.Member;
+import com.dassda.event.DiaryCreatedEvent;
+import com.dassda.event.LikeCreatedEvent;
 import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.LikesRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.response.LikesResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class LikesService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final LikesRepository likesRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private Member member() {
         return memberRepository
                 .findByEmail(
@@ -51,6 +55,7 @@ public class LikesService {
             like.setMember(member());
             like.setDiary(diary);
             likesRepository.save(like);
+            eventPublisher.publishEvent(new LikeCreatedEvent(this, like));
         } else {
             likesRepository.delete(likesOptional.get());
         }

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class HeroResponse {
 
-    @Schema
+    @Schema(name = "닉네임")
     private String nickname;
     @Schema(description = "나를 제외한 인원 수")
     private int memberCount;

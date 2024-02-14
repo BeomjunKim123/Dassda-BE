@@ -3,12 +3,15 @@ package com.dassda.service;
 import com.dassda.entity.Comment;
 import com.dassda.entity.Member;
 import com.dassda.entity.Reply;
+import com.dassda.event.DiaryCreatedEvent;
+import com.dassda.event.ReplyCreatedEvent;
 import com.dassda.repository.CommentRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.repository.ReplyRepository;
 import com.dassda.request.CommentOrReplyRequest;
 import com.dassda.response.CommentOrReplyResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ public class ReplyService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final ReplyRepository replyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     private Member member() {
         return memberRepository
@@ -47,6 +51,7 @@ public class ReplyService {
         reply.setUpdateDate(LocalDateTime.now());
         reply.setBackUp(false);
         replyRepository.save(reply);
+        eventPublisher.publishEvent(new ReplyCreatedEvent(this, reply));
     }
 
     public void updateReply(Long commentId, Long replyId, CommentOrReplyRequest commentOrReplyRequest) {

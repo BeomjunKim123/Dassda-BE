@@ -1,12 +1,15 @@
 package com.dassda.service;
 
 import com.dassda.entity.*;
+import com.dassda.event.DiaryCreatedEvent;
 import com.dassda.repository.*;
 import com.dassda.request.DiaryImgRequest;
 import com.dassda.request.DiaryRequest;
 import com.dassda.response.DiaryDetailResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +38,7 @@ public class DiaryService {
     private final LikesRepository likesRepository;
     private final CommentRepository commentRepository;
     private final ReadDiaryRepository readDiaryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Value("${itemImgLocation}")
     private String itemImgLocation;
@@ -90,6 +94,8 @@ public class DiaryService {
             diaryImg.setBackUp(false);
             diaryImgRepository.save(diaryImg);
         }
+
+        eventPublisher.publishEvent(new DiaryCreatedEvent(this, diary));
     }
 
     private String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws Exception {
@@ -138,7 +144,10 @@ public class DiaryService {
 
         diaryDetailResponse.setTitle(diary.get().getDiaryTitle());
         diaryDetailResponse.setContents(diary.get().getDiaryContent());
-        diaryDetailResponse.setRegDate(diary.get().getRegDate());
+
+        String time = diaryRepository.findDiaryWithTimeAge(diary.get().getId());
+        diaryDetailResponse.setTimeStamp(time);
+
         diaryDetailResponse.setSelectDate(diary.get().getSelectDate());
 
         int likeCount = likesRepository.countByDiaryId(diary.get().getId());

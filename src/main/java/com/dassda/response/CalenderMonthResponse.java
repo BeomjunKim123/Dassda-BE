@@ -9,5 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class CalenderMonthResponse {
+    @Schema(name = "1개월에 일기 유무")
     List<String> dateList;
 }

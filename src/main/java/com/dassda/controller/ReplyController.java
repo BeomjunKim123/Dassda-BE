@@ -20,10 +20,6 @@ public class ReplyController {
     private final ReplyService replyService;
 
     @Operation(summary = "답글 작성 API", description = "다이어리 아이디, 댓글 아이디 보내주면 작성 가능")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "success", description = "답글 성공"),
-            @ApiResponse(responseCode = "fail", description = "실패")
-    })
     @PostMapping()
     public ResponseEntity<CommentOrReplyRequest> addReply(
             @PathVariable(value = "commentId") Long commentId,

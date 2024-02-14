@@ -3,12 +3,15 @@ package com.dassda.service;
 import com.dassda.entity.Comment;
 import com.dassda.entity.Diary;
 import com.dassda.entity.Member;
+import com.dassda.event.CommentCreatedEvent;
+import com.dassda.event.DiaryCreatedEvent;
 import com.dassda.repository.CommentRepository;
 import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.request.CommentOrReplyRequest;
 import com.dassda.response.CommentOrReplyResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final CommentRepository commentRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     private Member member() {
         return memberRepository
@@ -38,15 +42,15 @@ public class CommentService {
     public void addComment(Long diaryId, CommentOrReplyRequest commentOrReplyRequest) {
         Optional<Diary> diaryOptional = diaryRepository.findById(diaryId);
         Comment comment = new Comment();
-        comment.setWrite(member());
+        comment.setMember(member());
         comment.setDiary(diaryOptional.get());
         comment.setComment(commentOrReplyRequest.getContents());
         comment.setRegDate(LocalDateTime.now());
         comment.setUpdateDate(LocalDateTime.now());
         comment.setBackUp(false);
         commentRepository.save(comment);
+        eventPublisher.publishEvent(new CommentCreatedEvent(this, comment));
     }
-
     public void updateComment(Long diaryId, Long commentId, CommentOrReplyRequest commentOrReplyRequest) {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         Comment comment = commentOptional.get();
@@ -66,12 +70,12 @@ public class CommentService {
             CommentOrReplyResponse commentOrReplyResponse = new CommentOrReplyResponse();
             Comment comment = commentList.get(i);
             commentOrReplyResponse.setId(comment.getId());
-            commentOrReplyResponse.setNickname(comment.getWrite().getNickname());
-            commentOrReplyResponse.setProfilUrl(comment.getWrite().getProfile_image_url());
+            commentOrReplyResponse.setNickname(comment.getMember().getNickname());
+            commentOrReplyResponse.setProfilUrl(comment.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(comment.getComment());
             commentOrReplyResponse.setRegDate(comment.getRegDate());
 
-            if (member().getId() == comment.getWrite().getId()) {
+            if (member().getId() == comment.getMember().getId()) {
                 commentOrReplyResponse.setOwned(true);
             } else {
                 commentOrReplyResponse.setOwned(false);

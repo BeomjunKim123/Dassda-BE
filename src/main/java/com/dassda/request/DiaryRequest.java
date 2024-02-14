@@ -10,8 +10,9 @@ import java.util.List;
 @Getter
 @Setter
 public class DiaryRequest {
+    @Schema(name = "일기")
     private Long id;
-    @Schema
+    @Schema(name = "일기장 아이디")
     private Long boardId;
     @Schema(description = "일기 제목")
     private String title;
@@ -19,7 +20,7 @@ public class DiaryRequest {
     private String contents;
     @Schema(description = "sticker_id")
     private Long emotionId;
-    @Schema
+    @Schema(name = "선택된 날짜")
     private String selectedDate;
     @Schema(description = "멀티파트 이미지 배열")
     private List<MultipartFile> images;

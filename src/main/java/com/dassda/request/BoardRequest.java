@@ -8,11 +8,11 @@ import lombok.Setter;
 @Setter
 public class BoardRequest {
 
-    @Schema
+    @Schema(name = "일기장 작성 제목")
     private String title;
-    @Schema
+    @Schema(name = "일기장 디자인")
     private Integer imageNumber;
-    @Schema
+    @Schema(name = "일기장 스타일")
     private Integer appearanceType;
 
 }
