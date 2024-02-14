@@ -58,7 +58,7 @@ public class NotificationEventListener {
 
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("notificationTypeId", 1);
-        notificationData.put("isRead", 0);
+        notificationData.put("isRead", false);
         notificationData.put("regDate", LocalDateTime.now());
         notificationData.put("writerId", diary.get().getMember().getId());
         notificationData.put("boardId", diary.get().getBoard().getId());
@@ -78,7 +78,7 @@ public class NotificationEventListener {
 
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("notificationTypeId", 2);
-        notificationData.put("isRead", 0);
+        notificationData.put("isRead", false);
         notificationData.put("regDate", LocalDateTime.now());
         notificationData.put("writerId", diary.get().getMember().getId());
         notificationData.put("boardId", diary.get().getBoard().getId());
@@ -98,7 +98,7 @@ public class NotificationEventListener {
 
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("notificationTypeId", 3);
-        notificationData.put("isRead", 0);
+        notificationData.put("isRead", false);
         notificationData.put("regDate", LocalDateTime.now());
         notificationData.put("writerId", diary.get().getMember().getId());
         notificationData.put("boardId", diary.get().getBoard().getId());
@@ -115,7 +115,7 @@ public class NotificationEventListener {
 
         Map<String, Object> notificationData = new HashMap<>();
         notificationData.put("notificationTypeId", 4);
-        notificationData.put("isRead", 0);
+        notificationData.put("isRead", false);
         notificationData.put("regDate", LocalDateTime.now());
         notificationData.put("writerId", diary.getMember().getId());
         notificationData.put("boardId", diary.getBoard().getId());
