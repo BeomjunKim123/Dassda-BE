@@ -28,6 +28,9 @@ public class Board {
     @Column(name = "board_title")
     private String title;
 
+    @Column(name = "share_link")
+    private String shareLinkHash;
+
     @Column(name = "share")
     private boolean isShared;
 

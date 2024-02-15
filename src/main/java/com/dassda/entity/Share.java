@@ -19,16 +19,14 @@ public class Share {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "board_id", referencedColumnName = "id")
-    private Board board; //연관된 일기장
+    private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id", referencedColumnName = "id")
-    private Member member; //초대한 사용자
+    private Member member;
 
-    @Column(name = "hash_Value")
-    private String hashValue; //해시된 초대 링크 값
+    private LocalDateTime regDate;
 
-//02.08 6시32분
 }

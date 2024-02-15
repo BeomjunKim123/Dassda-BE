@@ -13,5 +13,6 @@ public class LikesResponse {
     private String profileUrl;
     @Schema(name = "좋아요 수")
     private int likeCount;
+    private boolean likedByCurrentUser;
 
 }

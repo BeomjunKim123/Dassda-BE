@@ -148,7 +148,7 @@ public class DiaryService {
         String time = diaryRepository.findDiaryWithTimeAge(diary.get().getId());
         diaryDetailResponse.setTimeStamp(time);
 
-        diaryDetailResponse.setSelectDate(diary.get().getSelectDate());
+        diaryDetailResponse.setSelectedDate(diary.get().getSelectDate());
 
         int likeCount = likesRepository.countByDiaryId(diary.get().getId());
         diaryDetailResponse.setLikeCount(likeCount);

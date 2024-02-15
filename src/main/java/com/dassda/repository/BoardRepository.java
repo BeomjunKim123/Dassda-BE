@@ -12,4 +12,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByMemberId(Long memberId);
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Board b Where b.member.id = :memberId AND b.isShared = true")
     boolean existsSharedBoardByMemberId(@Param("memberId") Long memberId);
+
+    Optional<Board>findByShareLinkHash(String shareLinkHash);
 }

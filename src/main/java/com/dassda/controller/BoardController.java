@@ -3,6 +3,7 @@ package com.dassda.controller;
 import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
+import com.dassda.response.MembersResponse;
 import com.dassda.service.BoardService;
 import com.dassda.service.ShareRedisService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.management.LockInfo;
 import java.util.List;
 
 @RestController
@@ -27,7 +29,6 @@ public class BoardController {
         boardService.addBoard(boardRequest);
         return ResponseEntity.ok().build();
     }
-
 
     @Operation(summary = "일기장 삭제 API", description = "일기장 아이디 값으로 삭제")
     @DeleteMapping("/{boardId}")
@@ -58,5 +59,14 @@ public class BoardController {
     public ResponseEntity<HeroResponse> getHero() {
         HeroResponse heroResponse = boardService.getHero();
         return ResponseEntity.ok(heroResponse);
+    }
+
+    @Operation(summary = "공유 일기장 멤버 조회 API", description = "boardId 에 대한 멤버들 정보 조회")
+    @GetMapping("/{boardId}/members")
+    public ResponseEntity<List<MembersResponse>> getMembers(
+            @PathVariable(value = "boardId") Long boardId
+            ) {
+        List<MembersResponse> memberList = boardService.getMembers(boardId);
+        return ResponseEntity.ok(memberList);
     }
 }

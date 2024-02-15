@@ -28,7 +28,6 @@ public class LikesService {
     private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final LikesRepository likesRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private Member member() {
         return memberRepository
                 .findByEmail(
@@ -55,7 +54,6 @@ public class LikesService {
             like.setMember(member());
             like.setDiary(diary);
             likesRepository.save(like);
-            eventPublisher.publishEvent(new LikeCreatedEvent(this, like));
         } else {
             likesRepository.delete(likesOptional.get());
         }
@@ -63,7 +61,8 @@ public class LikesService {
     @Transactional
     public List<LikesResponse> getLikesForDiary(Long diaryId) {
         List<Likes> likesList = likesRepository.findActiveLikesByDiaryId(diaryId);
-        int likeCount = likesRepository.countByDiaryId(diaryId);
+        //int likeCount = likesRepository.countByDiaryId(diaryId);
+        Long currentUserId = member().getId();
 
         return likesList.stream()
                 .map(like -> {
@@ -72,6 +71,8 @@ public class LikesService {
                     response.setNickname(member.getNickname());
                     response.setProfileUrl(member.getProfile_image_url());
                     response.setLikeCount(likesRepository.countByDiaryId(like.getDiary().getId()));
+                    // 현재 사용자가 좋아요를 했는지 여부 설정
+                    response.setLikedByCurrentUser(likesRepository.existsMemberIdAndDiaryId(currentUserId, diaryId));
                     System.out.println(member.getNickname());
                     return response;
                 })

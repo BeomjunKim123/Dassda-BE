@@ -18,12 +18,12 @@ public class Setting {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "write_id", referencedColumnName = "id")
+    @JoinColumn(name = "member_id", referencedColumnName = "id")
     private Member member;
 
     private String QaContents;
 
-    private String starPoint;
+    private int starPoint;
 
     private LocalDateTime regDate;
 }

@@ -88,7 +88,7 @@ public class ReplyService {
             CommentOrReplyResponse commentOrReplyResponse = new CommentOrReplyResponse();
             commentOrReplyResponse.setId(reply.getId());
             commentOrReplyResponse.setNickname(reply.getMember().getNickname());
-            commentOrReplyResponse.setProfilUrl(reply.getMember().getProfile_image_url());
+            commentOrReplyResponse.setProfileUrl(reply.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(reply.getReply());
             commentOrReplyResponse.setRegDate(LocalDateTime.now());
 

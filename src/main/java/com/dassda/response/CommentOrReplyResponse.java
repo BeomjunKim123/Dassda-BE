@@ -14,7 +14,7 @@ public class CommentOrReplyResponse {
     @Schema(name = "닉네임")
     private String nickname;
     @Schema(name = "프로필 사진")
-    private String profilUrl;
+    private String profileUrl;
     @Schema(name = "댓글, 답글 내용")
     private String contents;
     @Schema(name = "등록일")

@@ -71,7 +71,7 @@ public class CommentService {
             Comment comment = commentList.get(i);
             commentOrReplyResponse.setId(comment.getId());
             commentOrReplyResponse.setNickname(comment.getMember().getNickname());
-            commentOrReplyResponse.setProfilUrl(comment.getMember().getProfile_image_url());
+            commentOrReplyResponse.setProfileUrl(comment.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(comment.getComment());
             commentOrReplyResponse.setRegDate(comment.getRegDate());
 

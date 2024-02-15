@@ -4,15 +4,19 @@ import com.dassda.entity.Member;
 import com.dassda.jwt.JwtTokenProvider;
 import com.dassda.oauth.RequestOAuthInfoService;
 import com.dassda.repository.MemberRepository;
+import com.dassda.request.MembersRequest;
+import com.dassda.service.MemberService;
 import com.dassda.service.OAuthLoginService;
 import com.dassda.service.ShareRedisService;
 import com.dassda.token.AuthTokensGenerator;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +32,8 @@ public class MemberController {
     private final OAuthLoginService oAuthLoginService;
     private final ShareRedisService shareRedisService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberService memberService;
+
 
     @GetMapping
     public ResponseEntity<List<Member>> findAll() {
@@ -72,12 +78,12 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "프로필 사진 수정 API", description = "사진 수정하기")
     @PostMapping("/update")
-    public ResponseEntity<Void> updateMembers() {
-        return null;
-    }
-    @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteMembers() {
-        return null;
+    public ResponseEntity<Void> updateProfile(
+            @ModelAttribute MembersRequest membersRequest
+            ) throws Exception {
+        memberService.updateProfile(membersRequest);
+        return ResponseEntity.ok().build();
     }
 }

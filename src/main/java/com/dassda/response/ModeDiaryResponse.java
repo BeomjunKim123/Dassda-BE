@@ -32,7 +32,7 @@ public class ModeDiaryResponse {
     @Schema(name = "")
     private LocalDateTime regDate;
     @Schema(name = "")
-    private LocalDateTime selectDate;
+    private LocalDateTime selectedDate;
     @Schema(name = "")
     private String timeStamp;
 }

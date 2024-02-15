@@ -119,7 +119,7 @@ public class ModeService {
             modeDiaryResponse.setCommentCount(commentCount);
 
             modeDiaryResponse.setRegDate(diary.getRegDate());
-            modeDiaryResponse.setSelectDate(diary.getSelectDate());
+            modeDiaryResponse.setSelectedDate(diary.getSelectDate());
 
             String time = diaryRepository.findDiaryWithTimeAge(diaryId);
             modeDiaryResponse.setTimeStamp(time);
@@ -156,7 +156,7 @@ public class ModeService {
             modeDiaryResponse.setCommentCount(commentCount);
 
             modeDiaryResponse.setRegDate(diaryList.get(i).getRegDate());
-            modeDiaryResponse.setSelectDate(diaryList.get(i).getSelectDate());
+            modeDiaryResponse.setSelectedDate(diaryList.get(i).getSelectDate());
 
             String time = diaryRepository.findDiaryWithTimeAge(diaryId);
             modeDiaryResponse.setTimeStamp(time);

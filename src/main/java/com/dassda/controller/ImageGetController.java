@@ -18,12 +18,12 @@ import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/images/item/{filename}")
+@RequestMapping("/Users/proxy/items/item/{filename}")
 public class ImageGetController {
 
     @GetMapping()
-    public ResponseEntity<Resource> getImage(@PathVariable String filename) throws MalformedURLException {
-        Path filePath = Paths.get("/home/root/items/item/" + filename);
+    public ResponseEntity<Resource> getImage(@PathVariable(value = "filename") String filename) throws MalformedURLException {
+        Path filePath = Paths.get("/Users/proxy/items/item/" + filename);
         Resource resource = new UrlResource(filePath.toUri());
         return ResponseEntity
                 .ok()

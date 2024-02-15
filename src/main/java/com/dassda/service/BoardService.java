@@ -2,6 +2,7 @@ package com.dassda.service;
 
 import com.dassda.entity.Board;
 import com.dassda.entity.Member;
+import com.dassda.entity.Share;
 import com.dassda.repository.BoardRepository;
 import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.MemberRepository;
@@ -9,12 +10,14 @@ import com.dassda.repository.ShareRepository;
 import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
+import com.dassda.response.MembersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -134,6 +137,20 @@ public class BoardService {
         boolean isShared = boardRepository.existsSharedBoardByMemberId(memberId);
         heroResponse.setHasSharedBoard(isShared);
         return heroResponse;
+    }
+
+    public List<MembersResponse> getMembers(Long boardId) {
+        List<MembersResponse> membersResponseList = new ArrayList<>();
+        List<Share> shareList = shareRepository.findByBoardIdAboutMembers(boardId);
+
+        for (Share share : shareList) {
+            MembersResponse membersResponse = new MembersResponse();
+            membersResponse.setNickname(share.getMember().getNickname());
+            membersResponse.setProfileUrl(share.getMember().getProfile_image_url());
+            membersResponse.setRegDate(share.getRegDate());
+            membersResponseList.add(membersResponse);
+        }
+        return membersResponseList;
     }
 }
 
