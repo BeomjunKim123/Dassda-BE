@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-@CrossOrigin("http://localhost:3000/**")
+@CrossOrigin
 public class AuthController {
     private final OAuthLoginService oAuthLoginService;
     @PostMapping("/kakao")

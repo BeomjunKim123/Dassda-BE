@@ -1,0 +1,133 @@
+package com.dassda.utils;
+
+import com.dassda.entity.*;
+import com.dassda.event.*;
+import com.dassda.repository.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
+@Component
+@RequiredArgsConstructor
+public class NotificationEventListener {
+
+    private final RedisTemplate<String, String> redisTemplate;
+    private final ObjectMapper objectMapper;
+    private final MemberRepository memberRepository;
+    private final DiaryRepository diaryRepository;
+    private final CommentRepository commentRepository;
+
+    private Member member() {
+        return GetMember.getCurrentMember();
+    }
+    private Diary diary(Long diaryId) {
+        return diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new IllegalStateException("일기가 존재하지 않습니다."));
+    }
+    private void parseJson(Map<String, Object> notificationData) {
+        String notificationJson = "";
+        try {
+            notificationJson = objectMapper.writeValueAsString(notificationData);
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        Long index = redisTemplate.opsForValue().increment("1");
+        String key = "notification:" + member().getId() + ":" + index;
+        redisTemplate.opsForValue().set(key, notificationJson, 30, TimeUnit.DAYS);
+    }
+    @EventListener
+    public void onCommentCreated(CommentCreatedEvent event) {
+        Comment comment = event.getComment();
+        Diary diary = diary(comment.getDiary().getId());
+
+        if(!comment.getMember().getId().equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 1);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", diary.getMember().getId());
+                put("boardId", diary.getBoard().getId());
+                put("boardTitle", diary.getBoard().getTitle());
+                put("diaryId", diary.getId());
+                put("commentId", comment.getId());
+                put("commentContent", comment.getComment());
+                put("commentWriterNickname", comment.getMember().getNickname());
+            }};
+            parseJson(notificationData);
+        }
+    }
+    @EventListener
+    public void onReplyCreated(ReplyCreatedEvent event) {
+        Reply reply = event.getReply();
+        Optional<Comment> comment = commentRepository.findById(reply.getComment().getId());
+        Diary diary = diary(comment.get().getDiary().getId());
+
+        if(!reply.getMember().getId().equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 2);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", diary.getMember().getId());
+                put("boardId", diary.getBoard().getId());
+                put("boardTitle", diary.getBoard().getTitle());
+                put("diaryId", diary.getId());
+                put("commentId", reply.getComment().getId());
+                put("replyId", reply.getId());
+                put("replyContent", reply.getReply());
+                put("replyWriterNickname", reply.getMember().getNickname());
+            }};
+            parseJson(notificationData);
+        }
+    }
+    @EventListener
+    public void onLikeCreated(LikeCreatedEvent event) {
+        Likes likes = event.getLikes();
+        Diary diary = diary(likes.getDiary().getId());
+
+        if(!likes.getMember().getId().equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 3);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", diary.getMember().getId());
+                put("boardId", diary.getBoard().getId());
+                put("boardTitle", diary.getBoard().getTitle());
+                put("diaryId", diary.getId());
+                put("likeId", likes.getId());
+                put("likeMemberNickname", likes.getMember().getNickname());
+            }};
+            parseJson(notificationData);
+        }
+    }
+    @EventListener
+    public void onDiaryCreated(DiaryCreatedEvent event) {
+        Diary diary = event.getDiary();
+        Long writerId = diary.getMember().getId();
+
+        if(!writerId.equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 4);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", diary.getMember().getId());
+                put("boardId", diary.getBoard().getId());
+                put("boardTitle", diary.getBoard().getTitle());
+                put("diaryId", diary.getId());
+            }};
+            parseJson(notificationData);
+        }
+    }
+    @EventListener
+    public void onShareCreated(NewMemberEvent event) {
+
+    }
+}

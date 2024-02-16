@@ -7,7 +7,8 @@ import com.dassda.repository.MemberRepository;
 import com.dassda.request.MembersRequest;
 import com.dassda.service.MemberService;
 import com.dassda.service.OAuthLoginService;
-import com.dassda.service.ShareRedisService;
+import com.dassda.service.RedisService;
+import com.dassda.token.AuthTokens;
 import com.dassda.token.AuthTokensGenerator;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,7 @@ public class MemberController {
     private final AuthTokensGenerator authTokensGenerator;
     private final RequestOAuthInfoService requestOAuthInfoService;
     private final OAuthLoginService oAuthLoginService;
-    private final ShareRedisService shareRedisService;
+    private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
@@ -64,12 +64,12 @@ public class MemberController {
         }
 
         //Redis에서 Refresh Token 삭제
-        shareRedisService.delValues(accessToken);
+        redisService.delValues(accessToken);
 
         //Access Token을 블랙리스트에 추가
         long remainingTime = jwtTokenProvider.getRemainingExpiration(accessToken);
         if (remainingTime > 0) {
-            shareRedisService.addToBlacklist(accessToken, Duration.ofMillis(remainingTime));
+            redisService.addToBlacklist(accessToken, Duration.ofMillis(remainingTime));
         }
 
         //로그아웃 성공 응답
@@ -77,12 +77,16 @@ public class MemberController {
         response.put("success", "로그아웃 성공");
         return ResponseEntity.ok(response);
     }
+    @Operation(summary = "리프레시 토큰 API", description = "로그인 유지를 위해")
+    @PatchMapping()
+    public ResponseEntity<AuthTokens> refreshToken(HttpServletRequest request) {
+        AuthTokens authTokens = redisService.getValues(request);
+        return ResponseEntity.ok(authTokens);
+    }
 
     @Operation(summary = "프로필 사진 수정 API", description = "사진 수정하기")
     @PostMapping("/update")
-    public ResponseEntity<Void> updateProfile(
-            @ModelAttribute MembersRequest membersRequest
-            ) throws Exception {
+    public ResponseEntity<Void> updateProfile(@ModelAttribute MembersRequest membersRequest) throws Exception {
         memberService.updateProfile(membersRequest);
         return ResponseEntity.ok().build();
     }

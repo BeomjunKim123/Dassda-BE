@@ -2,7 +2,8 @@ package com.dassda.jwt;
 
 import com.dassda.entity.Member;
 import com.dassda.repository.MemberRepository;
-import com.dassda.service.ShareRedisService;
+import com.dassda.service.RedisService;
+import groovy.lang.Lazy;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -21,14 +22,13 @@ import java.util.Date;
 import java.util.Optional;
 @Component
 @Slf4j
+
 public class JwtTokenProvider {
     private final Key key;
     private final MemberRepository memberRepository;
-    private final ShareRedisService shareRedisService;
 
-    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository, ShareRedisService shareRedisService) {
+    public JwtTokenProvider(@Value("${jwt.secret-key}") String secretKey, MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.shareRedisService = shareRedisService;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
@@ -62,7 +62,7 @@ public class JwtTokenProvider {
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
         } catch (ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
+            return true;
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
         } catch (IllegalArgumentException e) {
@@ -85,12 +85,6 @@ public class JwtTokenProvider {
                 .orElseThrow(() -> new UsernameNotFoundException("유저 없다"));
         return new User(subject, "", Collections.emptyList());
     }
-
-    //Redis에서 리프레시 토큰 존재 여부 확인
-    public boolean existRefreshToken(String refreshToken) {
-        return shareRedisService.getValues(refreshToken) != null;
-    }
-
     public long getRemainingExpiration(String token) {
         try {
             Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
@@ -99,6 +93,28 @@ public class JwtTokenProvider {
             return expMillis - nowMillis;
         } catch (JwtException e) {
             return 0; //만료되었거나 유효하지 않은 토큰인 경우
+        }
+    }
+    public String getRemainingTime(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            long expirationTimeMillis = claims.getExpiration().getTime();
+            long currentTimeMillis = System.currentTimeMillis();
+            long remainingTimeMillis = expirationTimeMillis - currentTimeMillis;
+
+            // 남은 시간을 분과 초로 계산
+            long minutes = (remainingTimeMillis / 1000) / 60;
+            long seconds = (remainingTimeMillis / 1000) % 60;
+
+            return String.format("%d분 %d초", minutes, seconds);
+        } catch (ExpiredJwtException e) {
+            // 토큰이 이미 만료된 경우
+            return "토큰이 만료되었습니다.";
         }
     }
 }

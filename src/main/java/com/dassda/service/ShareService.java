@@ -9,6 +9,7 @@ import com.dassda.repository.ShareRepository;
 import com.dassda.request.ShareRequest;
 import com.dassda.response.InviteInfoResponse;
 import com.dassda.response.ShareResponse;
+import com.dassda.utils.GetMember;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,19 +26,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ShareService {
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
     private final ShareRepository shareRepository;
-
-
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(() -> new IllegalStateException("다시 로그인"));
+        return GetMember.getCurrentMember();
     }
     public ShareResponse createInvitation(Long pathBoardId, ShareRequest request) throws NoSuchAlgorithmException, IllegalArgumentException {
         // 요청 본문의 boardId와 URL 경로의 boardId 일치 여부 확인
@@ -112,5 +103,8 @@ public class ShareService {
         share.setBoard(boardOptional.get());
         share.setRegDate(LocalDateTime.now());
         shareRepository.save(share);
+
+        boardOptional.get().setShared(true);
+        boardRepository.save(boardOptional.get());
     }
 }

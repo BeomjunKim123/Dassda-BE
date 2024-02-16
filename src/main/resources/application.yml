@@ -18,11 +18,10 @@ server:
 #    properties:
 #      mail:
 #        smtp:
-#          auth: true # 5
-#          timeout: 5000 # 6
+#          auth: true
+#          timeout: 5000
 #          starttls:
-#            enable: true # 7
-
+#            enable: true
 
 spring:
   datasource:
@@ -41,10 +40,10 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true # 5
-          timeout: 5000 # 6
+          auth: true
+          timeout: 5000
           starttls:
-            enable: true # 7
+            enable: true
 
 jpa:
   properties:

@@ -10,8 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class DiaryRequest {
-    @Schema(name = "일기")
-    private Long id;
     @Schema(name = "일기장 아이디")
     private Long boardId;
     @Schema(description = "일기 제목")

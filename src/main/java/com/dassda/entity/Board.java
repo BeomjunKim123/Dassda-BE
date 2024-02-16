@@ -1,7 +1,9 @@
 package com.dassda.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.time.LocalDateTime;
 @Table(name = "board")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +43,21 @@ public class Board {
 
     @Column(name = "back_up")
     private boolean backUp;
+
+    public Board(Member member, String title, Integer imageNumber, Integer appearanceType, LocalDateTime regDate, boolean isShared, boolean backUp) {
+        this.member = member;
+        this.title = title;
+        this.imageNumber = imageNumber;
+        this.appearanceType = appearanceType;
+        this.regDate = regDate;
+        this.isShared = isShared;
+        this.backUp = backUp;
+    }
+
+
+    public void updateDetails(String title, Integer imageNumber, Integer appearanceType) {
+        this.title = title;
+        this.imageNumber = imageNumber;
+        this.appearanceType = appearanceType;
+    }
 }

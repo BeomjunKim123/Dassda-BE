@@ -18,4 +18,6 @@ public class HeroResponse {
     @Schema(description = "공유 일기 여부")
     private boolean hasSharedBoard;
 
+    public HeroResponse(String nickname, int memberCount, int diaryCount, boolean hasSharedBoard) {
+    }
 }
