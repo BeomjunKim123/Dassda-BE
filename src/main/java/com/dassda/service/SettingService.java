@@ -5,6 +5,7 @@ import com.dassda.entity.Setting;
 import com.dassda.repository.MemberRepository;
 import com.dassda.repository.SettingRepository;
 import com.dassda.request.SettingRequest;
+import com.dassda.utils.GetMember;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -23,11 +24,7 @@ public class SettingService {
     private final MemberRepository memberRepository;
 
     private Member member() {
-        return memberRepository.findByEmail(
-                SecurityContextHolder.getContext()
-                        .getAuthentication().getName()
-        )
-                .orElseThrow(() -> new IllegalArgumentException("다시 로그인하세요"));
+        return GetMember.getCurrentMember();
     }
     @Transactional
     public void saveAndNotifySetting(SettingRequest request) {

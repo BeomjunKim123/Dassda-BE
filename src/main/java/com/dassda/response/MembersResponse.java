@@ -12,4 +12,7 @@ public class MembersResponse {
     private String nickname;
     private String profileUrl;
     private LocalDateTime regDate;
+
+    public MembersResponse(String nickname, String profileUrl, LocalDateTime regDate) {
+    }
 }

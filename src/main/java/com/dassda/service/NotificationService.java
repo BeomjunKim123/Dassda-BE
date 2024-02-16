@@ -3,6 +3,7 @@ package com.dassda.service;
 import com.dassda.entity.Member;
 import com.dassda.notificationResponse.*;
 import com.dassda.repository.MemberRepository;
+import com.dassda.utils.GetMember;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,11 +33,7 @@ public class NotificationService {
     private final ObjectMapper objectMapper;
 
     private Member member() {
-        return memberRepository.findByEmail(
-                SecurityContextHolder.getContext()
-                        .getAuthentication().getName()
-        )
-                .orElseThrow(() -> new IllegalStateException("없다"));
+        return GetMember.getCurrentMember();
     }
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
         String pattern = "notification:" + member().getId() + ":*";

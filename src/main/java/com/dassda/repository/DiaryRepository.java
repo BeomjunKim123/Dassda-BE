@@ -17,8 +17,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query("SELECT d FROM Diary d WHERE d.member.id = :memberId AND d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
     Optional<Diary> findByMemberIdAndBoardIdAndSelectDate(@Param(value = "memberId") Long memberId, @Param(value = "boardId") Long boardId, @Param(value = "selectDate") LocalDate selectDate);
 
-    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
-    boolean exitsByDiaryAtSelectDate(@Param("boardId") Long boardId, @Param("selectDate") LocalDateTime selectDate);
+    @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.member.id = :memberId AND d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = FUNCTION('DATE', :selectDate)")
+    boolean exitsByDiaryAtSelectDate(@Param("memberId") Long memberId, @Param("boardId") Long boardId, @Param("selectDate") LocalDateTime selectDate);
 
     Integer countByBoardId(Long boardId);
 

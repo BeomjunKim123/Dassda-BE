@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FontSettingRequest {
-
     private Long memberId;
     private int font;
 }

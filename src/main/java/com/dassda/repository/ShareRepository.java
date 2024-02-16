@@ -15,5 +15,11 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
     int countByMemberId(Long memberId);
     @Query("SELECT s FROM Share s WHERE s.board.id = :boardId")
     List<Share> findByBoardIdAboutMembers(@Param(value = "boardId") Long boardId);
+
+    Share findByBoardIdAndMemberId(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
+
+    boolean existsById(Long memberId);
+
+    Optional<Share> findByMemberId(@Param("memberId") Long memberId);
 }
 
