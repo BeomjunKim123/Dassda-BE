@@ -87,10 +87,10 @@ public class ModeService {
     public NewExistResponse existNewDiary(Long boardId) {
         NewExistResponse newExistResponse = new NewExistResponse();
         Long memberId = member().getId();
-        if (diaryRepository.existsByBoardIdAndMemberId(boardId, memberId)) {
-            newExistResponse.setNexExist(true);
+        if (readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId) && !diaryRepository.findByMemberId(boardId, memberId)) {
+            newExistResponse.setNewExist(true);
         } else {
-            newExistResponse.setNexExist(false);
+            newExistResponse.setNewExist(false);
         }
         return newExistResponse;
     }

@@ -113,7 +113,6 @@ public class NotificationEventListener {
         Diary diary = event.getDiary();
         Long writerId = diary.getMember().getId();
 
-        if(!writerId.equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 4);
                 put("isRead", false);
@@ -124,7 +123,6 @@ public class NotificationEventListener {
                 put("diaryId", diary.getId());
             }};
             parseJson(notificationData);
-        }
     }
     @EventListener
     public void onShareCreated(NewMemberEvent event) {

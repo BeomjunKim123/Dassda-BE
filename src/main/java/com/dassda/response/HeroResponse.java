@@ -19,5 +19,9 @@ public class HeroResponse {
     private boolean hasSharedBoard;
 
     public HeroResponse(String nickname, int memberCount, int diaryCount, boolean hasSharedBoard) {
+        this.nickname = nickname;
+        this.memberCount = memberCount;
+        this.diaryCount = diaryCount;
+        this.hasSharedBoard = hasSharedBoard;
     }
 }

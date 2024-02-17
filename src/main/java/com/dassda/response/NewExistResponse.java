@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 public class NewExistResponse {
     @Schema(name = "")
-    private boolean nexExist;
+    private boolean newExist;
 
 }

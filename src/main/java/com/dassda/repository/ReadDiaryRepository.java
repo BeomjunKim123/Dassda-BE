@@ -14,4 +14,7 @@ public interface ReadDiaryRepository extends JpaRepository<ReadDiary, Long> {
             "WHERE d.board.id = :boardId AND d.member.id != :memberId " +
             "AND rd.id IS NULL")
     boolean existsUnreadDiaries(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
+
+    @Query("SELECT CASE WHEN COUNT(rd) > 0 THEN false ELSE true END FROM ReadDiary rd WHERE rd.diary.board.id = :boardId AND rd.readId.id = :memberId")
+    boolean isUnreadByBoardIdAndMemberId(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
 }
