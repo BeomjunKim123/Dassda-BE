@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 .requestMatchers("/login/**", "/index/**", "/**").permitAll()
                                 .requestMatchers("/oauth/**", "/swagger-ui/**", "/v3/api-docs/**", "/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
                                 .requestMatchers("/v2/user/**").permitAll()
-                                .requestMatchers("http://localhost:3000/**").permitAll()
+                                .requestMatchers("https://ssda-front-tan.vercel.app/").permitAll()
                                 .anyRequest().authenticated()
                 )
 
@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://ssda-front-tan.vercel.app/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
