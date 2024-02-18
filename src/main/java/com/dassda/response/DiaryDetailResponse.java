@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class DiaryDetailResponse {
     @Schema(name = "작성일부터 과거로 일수")
     private String timeStamp;
     @Schema
-    private LocalDateTime selectedDate;
+    private LocalDate selectedDate;
     @Schema
     private int likeCount;
     @Schema

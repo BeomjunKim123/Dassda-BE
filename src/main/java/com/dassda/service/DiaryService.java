@@ -56,7 +56,7 @@ public class DiaryService {
                 .orElseThrow(() -> new IllegalStateException("해당 스티커가 없다."));
     }
 
-    private void validateDiaryDate(Long boardId, LocalDateTime selectDate) {
+    private void validateDiaryDate(Long boardId, LocalDate selectDate) {
         if (diaryRepository.exitsByDiaryAtSelectDate(member().getId(), boardId, selectDate)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
@@ -69,14 +69,15 @@ public class DiaryService {
 
         Board board = findBoard(boardId);
         Sticker sticker = findSticker(emotionId);
-        LocalDateTime selectTime = LocalDateTime.parse(diaryRequest.getSelectedDate());
+        LocalDate selectTime = LocalDateTime.parse(diaryRequest.getSelectedDate()).toLocalDate();
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
-        if (!selectTime.isBefore(LocalDate.now().minusYears(5).atStartOfDay())) {
+        LocalDate date = LocalDate.now();
+        if (!selectTime.isBefore(date.minusYears(5))) {
             throw new IllegalStateException("5년 전 일기 작성 불가");
         }
-        if(selectTime.toLocalDate().isAfter(LocalDate.now())) {
+        if(selectTime.isAfter(LocalDate.now())) {
             throw new IllegalStateException("미래 일기 불가");
         }
         Optional<Share> share = shareRepository.findByMemberIdAndBoardId(memberId, boardId);

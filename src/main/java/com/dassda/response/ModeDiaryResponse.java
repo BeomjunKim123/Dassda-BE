@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -32,7 +33,7 @@ public class ModeDiaryResponse {
     @Schema(name = "")
     private LocalDateTime regDate;
     @Schema(name = "")
-    private LocalDateTime selectedDate;
+    private LocalDate selectedDate;
     @Schema(name = "")
     private String timeStamp;
 }
