@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/setting")
+@CrossOrigin
 public class SettingController {
 
     private final SettingService settingService;

@@ -10,6 +10,7 @@ import com.dassda.repository.MemberRepository;
 import com.dassda.repository.ReplyRepository;
 import com.dassda.request.CommentOrReplyRequest;
 import com.dassda.response.CommentOrReplyResponse;
+import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,14 +31,7 @@ public class ReplyService {
     private final ApplicationEventPublisher eventPublisher;
 
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(() -> new IllegalStateException("존재하지 않은 멤버"));
+        return GetMember.getCurrentMember();
     }
 
 
@@ -56,6 +50,9 @@ public class ReplyService {
 
     public void updateReply(Long commentId, Long replyId, CommentOrReplyRequest commentOrReplyRequest) {
         Optional<Reply> replyOptional = replyRepository.findById(replyId);
+        if (!replyOptional.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("작성한 사용자가 아닙니다");
+        }
         Reply reply = replyOptional.get();
         reply.setId(reply.getId());
         reply.setReply(commentOrReplyRequest.getContents());
@@ -65,6 +62,9 @@ public class ReplyService {
 
     public void deleteReply(Long commentId, Long replyId) {
         Optional<Reply> replyOptional = replyRepository.findById(replyId);
+        if (!replyOptional.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("작성한 사용자가 아닙니다");
+        }
         if(replyOptional.isPresent()) {
             Reply reply = replyOptional.get();
             reply.setBackUp(true);

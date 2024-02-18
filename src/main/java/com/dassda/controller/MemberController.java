@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
+@CrossOrigin
 public class MemberController {
     private final MemberRepository memberRepository;
     private final AuthTokensGenerator authTokensGenerator;

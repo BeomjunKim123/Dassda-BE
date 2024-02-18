@@ -34,7 +34,7 @@ public class ModeService {
 
     public CalenderMonthResponse getMonthOfExistDiary(Long boardId, String date) {
         LocalDate month = LocalDate.parse(date);
-        List<String> monthList = diaryRepository.findDiaryDatesByMonth(boardId, month.getMonthValue());
+        List<String> monthList = diaryRepository.findDiaryDatesByMonth(boardId, month);
         CalenderMonthResponse calenderMonthResponse = new CalenderMonthResponse();
         calenderMonthResponse.setDateList(monthList);
         return calenderMonthResponse;

@@ -73,6 +73,9 @@ public class DiaryService {
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
+        if (!selectTime.isBefore(LocalDate.now().minusYears(5).atStartOfDay())) {
+            throw new IllegalStateException("5년 전 일기 작성 불가");
+        }
         if(selectTime.toLocalDate().isAfter(LocalDate.now())) {
             throw new IllegalStateException("미래 일기 불가");
         }
@@ -188,6 +191,9 @@ public class DiaryService {
 
     public void updateDiary(Long diaryId, DiaryRequest diaryRequest) throws Exception {
         Optional<Diary> diary = diaryRepository.findById(diaryId);
+        if(!diary.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("내가 작성한 일기가 아닙니다");
+        }
         Optional<Sticker> sticker = stickerRepository.findById(diaryRequest.getEmotionId());
         List<DiaryImg> diaryImg = diaryImgRepository.findByDiaryId(diaryId);
         for(DiaryImg image : diaryImg) {
@@ -219,6 +225,9 @@ public class DiaryService {
 
     public void deleteDiary(Long diaryId) {
         Optional<Diary> diaryOptional = diaryRepository.findById(diaryId);
+        if(!diaryOptional.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("내가 작성한 일기가 아닙니다");
+        }
         if(diaryOptional.isPresent()) {
             Diary diary = diaryOptional.get();
             diary.setBackUp(true);

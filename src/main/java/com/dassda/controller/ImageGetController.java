@@ -7,10 +7,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -19,6 +16,7 @@ import java.nio.file.Paths;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/app/items/{filename}")
+@CrossOrigin
 public class ImageGetController {
 
     @GetMapping()

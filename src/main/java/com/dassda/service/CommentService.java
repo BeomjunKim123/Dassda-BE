@@ -10,6 +10,7 @@ import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.request.CommentOrReplyRequest;
 import com.dassda.response.CommentOrReplyResponse;
+import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,20 +25,13 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final MemberRepository memberRepository;
+
     private final DiaryRepository diaryRepository;
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
 
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(() -> new IllegalStateException("존재하지 않음"));
+        return GetMember.getCurrentMember();
     }
     public void addComment(Long diaryId, CommentOrReplyRequest commentOrReplyRequest) {
         Optional<Diary> diaryOptional = diaryRepository.findById(diaryId);
@@ -53,6 +47,9 @@ public class CommentService {
     }
     public void updateComment(Long diaryId, Long commentId, CommentOrReplyRequest commentOrReplyRequest) {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
+        if (!commentOptional.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("작성한 댓글이 아닙니다");
+        }
         Comment comment = commentOptional.get();
         comment.setId(commentOptional.get().getId());
         comment.setComment(commentOrReplyRequest.getContents());
@@ -93,6 +90,9 @@ public class CommentService {
 
     public void deleteComment(Long diaryId, Long commentId) {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
+        if (!commentOptional.get().getMember().getId().equals(member().getId())) {
+            throw new IllegalStateException("작성한 사용자가 아닙니다.");
+        }
         if(commentOptional.isPresent()) {
             Comment comment = commentOptional.get();
             comment.setBackUp(true);
