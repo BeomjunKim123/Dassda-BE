@@ -20,6 +20,8 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     boolean existsById(Long memberId);
 
-    Optional<Share> findByMemberId(@Param("memberId") Long memberId);
+    Optional<Share> findByMemberIdAndBoardId(Long memberId, Long boardId);
+
+    boolean existsByBoardIdAndMemberId(Long boardId, Long memberId);
 }
 

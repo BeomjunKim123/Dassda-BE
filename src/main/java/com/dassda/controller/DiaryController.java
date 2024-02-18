@@ -1,7 +1,5 @@
 package com.dassda.controller;
 
-
-
 import com.dassda.request.DiaryRequest;
 import com.dassda.response.DiaryDetailResponse;
 import com.dassda.response.LikesResponse;
@@ -43,7 +41,7 @@ public class DiaryController {
     @PutMapping("/{diaryId}")
     public ResponseEntity<Void> updateDiary(
             @PathVariable(value = "diaryId") Long diaryId,
-            @RequestBody DiaryRequest diaryRequest
+            @ModelAttribute DiaryRequest diaryRequest
             ) throws Exception {
         diaryService.updateDiary(diaryId, diaryRequest);
         return ResponseEntity.ok().build();

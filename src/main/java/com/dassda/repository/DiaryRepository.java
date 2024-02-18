@@ -62,4 +62,6 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByBoardIdAndMemberIdNot(Long boardId, Long memberId);
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.member.id = :memberId AND d.board.id = :boardId")
     boolean findByMemberId(@Param("boardId") Long boardId, @Param("memberId") Long memeberId);
+
+    List<Diary> findByBoardId(Long boardId);
 }
