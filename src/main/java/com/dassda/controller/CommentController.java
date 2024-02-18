@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/diary/{diaryId}/comment")
+@CrossOrigin
 public class CommentController {
 
     private final CommentService commentService;

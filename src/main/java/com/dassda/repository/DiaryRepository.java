@@ -31,8 +31,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.regDate BETWEEN :startDate AND :endDate")
     boolean existsDiariesInLastThreeDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query(value = "SELECT SUBSTRING(d.select_date, 1, 10) FROM diary d WHERE d.board_id = :boardId AND MONTH(d.select_date) = :month", nativeQuery = true)
-    List<String> findDiaryDatesByMonth(@Param("boardId") Long boardId, @Param("month") int month);
+    @Query(value = "SELECT SUBSTRING(d.select_date, 1, 10) FROM diary d WHERE d.board_id = :boardId AND DATE(d.select_date) = :month", nativeQuery = true)
+    List<String> findDiaryDatesByMonth(@Param("boardId") Long boardId, @Param("month") LocalDate month);
 
     @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :day")
     List<Diary> findByBoardIdAndDay(@Param("boardId") Long boardId, @Param("day") LocalDate day);
@@ -64,4 +64,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     boolean findByMemberId(@Param("boardId") Long boardId, @Param("memberId") Long memeberId);
 
     List<Diary> findByBoardId(Long boardId);
+
 }

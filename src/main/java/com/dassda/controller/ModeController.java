@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/mode")
-@CrossOrigin("http://localhost:3000/**")
+@CrossOrigin
 public class ModeController {
 
     private final ModeService modeService;

@@ -24,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
+@CrossOrigin
 public class ShareController {
 
     private final ShareService shareService;
