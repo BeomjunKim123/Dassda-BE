@@ -73,10 +73,10 @@ public class DiaryService {
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
-        LocalDate date = LocalDate.now();
-        if (!selectTime.isBefore(date.minusYears(5))) {
-            throw new IllegalStateException("5년 전 일기 작성 불가");
-        }
+//        LocalDate date = LocalDate.now();
+//        if (!selectTime.isBefore(date.minusYears(5))) {
+//            throw new IllegalStateException("5년 전 일기 작성 불가");
+//        }
         if(selectTime.isAfter(LocalDate.now())) {
             throw new IllegalStateException("미래 일기 불가");
         }
