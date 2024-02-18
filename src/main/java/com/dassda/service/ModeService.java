@@ -8,6 +8,7 @@ import com.dassda.response.CalenderDayResponse;
 import com.dassda.response.CalenderMonthResponse;
 import com.dassda.response.ModeDiaryResponse;
 import com.dassda.response.NewExistResponse;
+import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -28,16 +29,7 @@ public class ModeService {
     private final MemberRepository memberRepository;
 
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(
-                        () -> new IllegalStateException("존재하지 않음")
-                );
+        return GetMember.getCurrentMember();
     }
 
     public CalenderMonthResponse getMonthOfExistDiary(Long boardId, String date) {

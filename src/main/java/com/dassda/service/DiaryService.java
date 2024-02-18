@@ -73,7 +73,10 @@ public class DiaryService {
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
-        Optional<Share> share = shareRepository.findByMemberId(memberId);
+        if(selectTime.toLocalDate().isAfter(LocalDate.now())) {
+            throw new IllegalStateException("미래 일기 불가");
+        }
+        Optional<Share> share = shareRepository.findByMemberIdAndBoardId(memberId, boardId);
             if(boardRepository.existsMemberIdAboutBoardId(memberId, boardId) || share.isPresent() && shareRepository.existsById(memberId) && Objects.equals(boardId, share.get().getBoard().getId())) {
                 Diary diary = new Diary();
                 diary.setBoard(board);
@@ -87,23 +90,26 @@ public class DiaryService {
                 diary.setBackUp(false);
                 diaryRepository.save(diary);
 
-                for(MultipartFile file : diaryRequest.getImages()) {
-                    DiaryImg diaryImg = new DiaryImg();
-                    String oriImgName = file.getOriginalFilename();
-                    String imgName = "";
-                    String imgUrl = "";
-                    if(!StringUtils.isEmpty(oriImgName)) {
-                        imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                        imgUrl = "/app/items/" + imgName;
+                if(diaryRequest.getImages().isEmpty()) {
+                    diaryImgRepository.save(null);
+                } else {
+                    for(MultipartFile file : diaryRequest.getImages()) {
+                        DiaryImg diaryImg = new DiaryImg();
+                        String oriImgName = file.getOriginalFilename();
+                        String imgName = "";
+                        String imgUrl = "";
+                        if(!StringUtils.isEmpty(oriImgName)) {
+                            imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
+                            imgUrl = "http://118.67.143.25:8080/app/items/" + imgName;
+                        }
+                        diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
+                        diaryImg.setDiary(diary);
+                        diaryImg.setBackUp(false);
+                        diaryImgRepository.save(diaryImg);
                     }
-                    diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
-                    diaryImg.setDiary(diary);
-                    diaryImg.setBackUp(false);
-                    diaryImgRepository.save(diaryImg);
                 }
 
                 eventPublisher.publishEvent(new DiaryCreatedEvent(this, diary));
-
         }
          else {
             throw new IllegalArgumentException("참여한 일기장에만 일기를 작성할 수 있습니다.");
@@ -150,7 +156,7 @@ public class DiaryService {
         List<DiaryImgRequest> imgRequests = diaryImgRepository
                 .findByDiaryId(diary.get().getId())
                         .stream()
-                                .map(diaryImg -> new DiaryImgRequest(diaryImg.getId(), "http://118.67.143.25:8080" + diaryImg.getImgUrl()))
+                                .map(diaryImg -> new DiaryImgRequest(diaryImg.getId(), diaryImg.getImgUrl().isEmpty() ? null : diaryImg.getImgUrl() ))
                                         .collect(Collectors.toList());
         diaryDetailResponse.setImages(imgRequests);
 

@@ -33,16 +33,18 @@ public class NotificationEventListener {
         return diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new IllegalStateException("일기가 존재하지 않습니다."));
     }
-    private void parseJson(Map<String, Object> notificationData) {
+    private void parseJson(Map<String, Object> notificationData, Long memberId) {
         String notificationJson = "";
         try {
             notificationJson = objectMapper.writeValueAsString(notificationData);
         }catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        Long index = redisTemplate.opsForValue().increment("1");
-        String key = "notification:" + member().getId() + ":" + index;
-        redisTemplate.opsForValue().set(key, notificationJson, 30, TimeUnit.DAYS);
+        if(member().getId() != memberId) {
+            Long index = redisTemplate.opsForValue().increment("1");
+            String key = "notification:" + member().getId() + ":" + memberId + ":" + index;
+            redisTemplate.opsForValue().set(key, notificationJson, 30, TimeUnit.DAYS);
+        }
     }
     @EventListener
     public void onCommentCreated(CommentCreatedEvent event) {
@@ -54,7 +56,7 @@ public class NotificationEventListener {
                 put("notificationTypeId", 1);
                 put("isRead", false);
                 put("regDate", LocalDateTime.now());
-                put("writerId", diary.getMember().getId());
+                put("writerId", comment.getMember().getId());
                 put("boardId", diary.getBoard().getId());
                 put("boardTitle", diary.getBoard().getTitle());
                 put("diaryId", diary.getId());
@@ -62,7 +64,7 @@ public class NotificationEventListener {
                 put("commentContent", comment.getComment());
                 put("commentWriterNickname", comment.getMember().getNickname());
             }};
-            parseJson(notificationData);
+            parseJson(notificationData, diary.getMember().getId());
         }
     }
     @EventListener
@@ -76,7 +78,7 @@ public class NotificationEventListener {
                 put("notificationTypeId", 2);
                 put("isRead", false);
                 put("regDate", LocalDateTime.now());
-                put("writerId", diary.getMember().getId());
+                put("writerId", reply.getMember().getId());
                 put("boardId", diary.getBoard().getId());
                 put("boardTitle", diary.getBoard().getTitle());
                 put("diaryId", diary.getId());
@@ -85,7 +87,7 @@ public class NotificationEventListener {
                 put("replyContent", reply.getReply());
                 put("replyWriterNickname", reply.getMember().getNickname());
             }};
-            parseJson(notificationData);
+            parseJson(notificationData, reply.getMember().getId());
         }
     }
     @EventListener
@@ -98,21 +100,21 @@ public class NotificationEventListener {
                 put("notificationTypeId", 3);
                 put("isRead", false);
                 put("regDate", LocalDateTime.now());
-                put("writerId", diary.getMember().getId());
+                put("writerId", likes.getMember().getId());
                 put("boardId", diary.getBoard().getId());
                 put("boardTitle", diary.getBoard().getTitle());
                 put("diaryId", diary.getId());
                 put("likeId", likes.getId());
                 put("likeMemberNickname", likes.getMember().getNickname());
             }};
-            parseJson(notificationData);
+            parseJson(notificationData, likes.getMember().getId());
         }
     }
     @EventListener
     public void onDiaryCreated(DiaryCreatedEvent event) {
         Diary diary = event.getDiary();
         Long writerId = diary.getMember().getId();
-
+        if (!diary.getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 4);
                 put("isRead", false);
@@ -122,10 +124,25 @@ public class NotificationEventListener {
                 put("boardTitle", diary.getBoard().getTitle());
                 put("diaryId", diary.getId());
             }};
-            parseJson(notificationData);
+            parseJson(notificationData, diary.getMember().getId());
+        }
     }
     @EventListener
     public void onShareCreated(NewMemberEvent event) {
+        Share share = event.getShare();
+        Long joinId = share.getMember().getId();
+        if (!share.getMember().getId().equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 3);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", share.getMember().getId());
+                put("boardId", share.getBoard().getId());
+                put("boardTitle", share.getBoard().getTitle());
+                put("newMemberNickname", share.getMember().getNickname());
+            }};
+            parseJson(notificationData, share.getMember().getId());
+        }
 
     }
 }

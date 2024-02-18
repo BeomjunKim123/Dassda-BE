@@ -1,6 +1,7 @@
 package com.dassda.service;
 
 import com.dassda.entity.Board;
+import com.dassda.entity.Diary;
 import com.dassda.entity.Member;
 import com.dassda.entity.Share;
 import com.dassda.repository.BoardRepository;
@@ -49,6 +50,11 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalStateException("삭제된 일기장입니다."));
         board.setBackUp(true);
+        List<Diary> diaryList = diaryRepository.findByBoardId(board.getId());
+        diaryList.stream()
+                        .filter(diary -> !diary.isBackUp())
+                        .forEach(diary -> diary.setBackUp(true));
+        diaryRepository.saveAll(diaryList);
         boardRepository.save(board);
     }
     public List<BoardResponse> getBoard() {
