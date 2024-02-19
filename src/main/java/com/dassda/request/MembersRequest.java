@@ -8,8 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
 public class MembersRequest {
-
     private MultipartFile profileUrl;
     private String nickname;
-
 }

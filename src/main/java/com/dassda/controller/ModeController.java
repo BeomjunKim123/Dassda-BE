@@ -32,7 +32,6 @@ public class ModeController {
         return ResponseEntity.ok(calenderMonthResponse);
     }
 
-
     @Operation(summary = "일별 일기 조회 API", description = "년월일을 보내주면 해당하는 날에 일기 조회(디폴트는 오늘)")
     @GetMapping("/day")
     public ResponseEntity<List<CalenderDayResponse>> getDayOfDiary(
@@ -60,7 +59,6 @@ public class ModeController {
         return ResponseEntity.ok(diaryList);
     }
 
-
     @Operation(summary = "전체 모아보기 API", description = "무한 스크롤 일기장 아이디, 스크롤 단위, 마지막 일기 아이디")
     @GetMapping(value = "all")
     public ResponseEntity<List<ModeDiaryResponse>> getAllDairy(
@@ -71,7 +69,6 @@ public class ModeController {
         List<ModeDiaryResponse> diaryList = modeService.getAllDiary(boardId, pageSize, lastViewId);
         return ResponseEntity.ok(diaryList);
     }
-
 
     @Operation(summary = "전체 읽음 처리 API", description = "일기장 아이디를 보내주면 로그인한 사용자 기준 전체 읽음 처리")
     @PostMapping(value = "read")

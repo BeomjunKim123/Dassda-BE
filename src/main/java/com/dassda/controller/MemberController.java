@@ -29,33 +29,30 @@ import java.util.Map;
 public class MemberController {
     private final MemberRepository memberRepository;
     private final AuthTokensGenerator authTokensGenerator;
-    private final RequestOAuthInfoService requestOAuthInfoService;
-    private final OAuthLoginService oAuthLoginService;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
-
+    @Operation(summary = "공유 일기장 멤버 정보 API", description = "공유 일기장에 참여중인 멤버들의 정보를 보여준다.")
     @GetMapping
     public ResponseEntity<List<Member>> findAll() {
         return ResponseEntity.ok(memberRepository.findAll());
     }
+
+    @Operation(summary = "액세스 토큰에 해당하는 멤버 API", description = "토큰을 보내주면 토근에 저장되어 있는 멤버의 정보를 응답한다.")
     @GetMapping("/{accessToken}")
     public ResponseEntity<Member> findByAccessToken(@PathVariable String accessToken) {
         Long memberId = authTokensGenerator.extractMemberId(accessToken);
         return ResponseEntity.ok(memberRepository.findById(memberId).get());
     }
 
+    @Operation(summary = "로그아웃 API", description = "헤더에 담긴 액세스 토큰의 만료 기간을 마감시킨다.")
     @PostMapping(value = "logout")
     public ResponseEntity<Object> findByLogout(HttpServletRequest request) {
         String accessToken = request.getHeader("Authorization");
-
-        //Access Token검증
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or missing Acceess Token");
         }
-
-        //Access Token에서 회원 ID추출 및 검증
         Long memberId;
         try {
             String subject = jwtTokenProvider.extractSubject(accessToken);
@@ -63,29 +60,24 @@ public class MemberController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Access Token");
         }
-
-        //Redis에서 Refresh Token 삭제
         redisService.delValues(accessToken);
-
-        //Access Token을 블랙리스트에 추가
         long remainingTime = jwtTokenProvider.getRemainingExpiration(accessToken);
         if (remainingTime > 0) {
             redisService.addToBlacklist(accessToken, Duration.ofMillis(remainingTime));
         }
-
-        //로그아웃 성공 응답
         Map<String, Object> response = new HashMap<>();
         response.put("success", "로그아웃 성공");
         return ResponseEntity.ok(response);
     }
-    @Operation(summary = "리프레시 토큰 API", description = "로그인 유지를 위해")
+
+    @Operation(summary = "리프레시 토큰 API", description = "만료된 액세스을 요청하면 리프레시 토큰을 조회하고 새로운 액세스 토큰을 응답한다.")
     @PatchMapping()
     public ResponseEntity<AuthTokens> refreshToken(HttpServletRequest request) {
         AuthTokens authTokens = redisService.getValues(request);
         return ResponseEntity.ok(authTokens);
     }
 
-    @Operation(summary = "프로필 사진 수정 API", description = "사진 수정하기")
+    @Operation(summary = "프로필 정보 수정 API", description = "사진, 닉네임 둘 중 하나를 변경도 가능하다.")
     @PostMapping("/update")
     public ResponseEntity<Void> updateProfile(@ModelAttribute MembersRequest membersRequest) throws Exception {
         memberService.updateProfile(membersRequest);

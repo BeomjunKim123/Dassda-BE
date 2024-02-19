@@ -54,7 +54,7 @@ public class ModeService {
             calenderDayResponse.setEmotionId(diary.getSticker().getId());
             Long diaryId = diary.getId();
             String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
-            String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
+            String thumbUrl = diaryImg;
             calenderDayResponse.setThumbnailUrl(thumbUrl);
             calenderDayResponse.setTitle(diary.getDiaryTitle());
 
@@ -79,7 +79,7 @@ public class ModeService {
     public NewExistResponse existNewDiary(Long boardId) {
         NewExistResponse newExistResponse = new NewExistResponse();
         Long memberId = member().getId();
-        if (readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId) && !diaryRepository.findByMemberId(boardId, memberId)) {
+        if (readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId) && !diaryRepository.existsByMemberIdAndBoardId(boardId, memberId)) {
             newExistResponse.setNewExist(true);
         } else {
             newExistResponse.setNewExist(false);
@@ -100,7 +100,7 @@ public class ModeService {
 
             Long diaryId = diary.getId();
             String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
-            String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
+            String thumbUrl = diaryImg;
             modeDiaryResponse.setThumbnailUrl(thumbUrl);
             modeDiaryResponse.setTitle(diary.getDiaryTitle());
 
@@ -137,7 +137,7 @@ public class ModeService {
 
             Long diaryId = diaryList.get(i).getId();
             String diaryImg = diaryImgRepository.findFirstByDiaryIdLimit(diaryId);
-            String thumbUrl = "http://118.67.143.25:8080" + diaryImg;
+            String thumbUrl = diaryImg;
             modeDiaryResponse.setThumbnailUrl(thumbUrl);
             modeDiaryResponse.setTitle(diaryList.get(i).getDiaryTitle());
 

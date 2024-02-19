@@ -21,7 +21,7 @@ public class ImageGetController {
 
     @GetMapping()
     public ResponseEntity<Resource> getImage(@PathVariable(value = "filename") String filename) throws MalformedURLException {
-        Path filePath = Paths.get("root/items/items" + filename);
+        Path filePath = Paths.get("/root/items/items" + filename);
         Resource resource = new UrlResource(filePath.toUri());
         return ResponseEntity
                 .ok()

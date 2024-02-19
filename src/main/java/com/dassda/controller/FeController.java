@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 @CrossOrigin
 public class FeController {
-    //
-    @GetMapping(value = "/")
+    @GetMapping()
     public String fePage() {
         return "index";
     }

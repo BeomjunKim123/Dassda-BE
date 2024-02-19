@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +66,31 @@ public class BoardService {
                 .map(this::convertToBoard)
                 .collect(Collectors.toList());
     }
+    
+//    public List<BoardResponse> getBoard() {
+//        Member currentMember = currentMember();
+//        Long currentMemberId = currentMember.getId();
+//
+//        // 현재 사용자가 소유한 일기장 조회
+//        List<Board> ownedBoards = boardRepository.findByMemberId(currentMemberId);
+//
+//        // 현재 사용자가 참여한 공유 일기장 조회
+//        List<Share> shares = shareRepository.findByMemberId(currentMemberId);
+//        List<Board> sharedBoards = shares.stream()
+//                .map(Share::getBoard)
+//                .collect(Collectors.toList());
+//
+//        // 소유한 일기장과 참여한 일기장을 합친 후 중복 제거
+//        List<Board> allBoards = Stream.concat(ownedBoards.stream(), sharedBoards.stream())
+//                .distinct()
+//                .collect(Collectors.toList());
+//
+//        // 변환 로직을 통해 BoardResponse 리스트 생성 및 반환
+//        return allBoards.stream()
+//                .filter(board -> !board.isBackUp()) // 백업되지 않은 일기장만 필터링
+//                .map(this::convertToBoard) // Board 객체를 BoardResponse DTO로 변환
+//                .collect(Collectors.toList());
+//    }
     private BoardResponse convertToBoard(Board board) {
         return new BoardResponse(board.getId(), board.getImageNumber(), board.getAppearanceType(),
                 board.getTitle(), board.getRegDate(), diaryRepository.countByBoardId(board.getId()),

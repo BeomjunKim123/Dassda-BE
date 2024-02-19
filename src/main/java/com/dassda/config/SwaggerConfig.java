@@ -51,21 +51,4 @@ public class SwaggerConfig {
         };
     }
 
-    @Bean
-    public OperationCustomizer customContentTypeCustomizer() {
-        return (Operation operation, HandlerMethod handlerMethod) -> {
-            if(operation.getRequestBody() != null &&
-                    operation.getRequestBody().getContent().containsKey("application/json")) {
-                Content content = operation.getRequestBody().getContent();
-                // 'multipart/form-data' 미디어 타입을 추가
-                content.addMediaType("multipart/form-data", new MediaType());
-
-                // 수정된 Content로 RequestBody 업데이트
-                RequestBody requestBody = operation.getRequestBody();
-                requestBody.setContent(content);
-                operation.setRequestBody(requestBody);
-            }
-            return operation;
-        };
-    }
 }

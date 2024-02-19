@@ -28,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 public class ShareController {
 
     private final ShareService shareService;
-    private final MemberRepository memberRepository;
 
     @Operation(summary = "공유 링크 생성 API", description = "일기장 정보를 링크에 담아서 응답")
     @PostMapping("/{boardId}/share")
@@ -39,7 +38,6 @@ public class ShareController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (EntityNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             throw new IllegalStateException("존재하지 않는 해시값");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("초대 링크 생성에 실패했습니다: " + e.getMessage());

@@ -6,5 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmotionResponse {
-    private String EmotionContent;
+    private String emotionContent;
+
+    public EmotionResponse(String emotionContent) {
+        this.emotionContent = emotionContent;
+    }
 }
