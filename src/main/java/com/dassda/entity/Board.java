@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Board {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,7 +54,6 @@ public class Board {
         this.isShared = isShared;
         this.backUp = backUp;
     }
-
 
     public void updateDetails(String title, Integer imageNumber, Integer appearanceType) {
         this.title = title;

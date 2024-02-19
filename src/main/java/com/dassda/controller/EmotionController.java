@@ -21,7 +21,7 @@ public class EmotionController {
     @Operation(summary = "기분 예측 API", description = "2주~4주까지는 예측이 어려움. 후에는 요일별로 통계를 내서 기분을 예측하기")
     @GetMapping()
     public ResponseEntity<EmotionResponse> predictEmotion() {
-        return ResponseEntity.ok(emotionService.GetEmotion());
+        return ResponseEntity.ok(emotionService.getRandomResponse());
     }
 
 }

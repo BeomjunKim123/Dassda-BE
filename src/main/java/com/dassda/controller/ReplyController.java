@@ -30,7 +30,6 @@ public class ReplyController {
         return ResponseEntity.ok().build();
     }
 
-
     @Operation(summary = "답글 수정 API", description = "다이어리 아이디, 댓글 아이디, 답글 아이디 보내주면 수정 가능")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "success", description = "답글 성공"),
@@ -45,7 +44,6 @@ public class ReplyController {
         replyService.updateReply(commentId, replyId, commentOrReplyRequest);
         return ResponseEntity.ok().build();
     }
-
 
     @Operation(summary = "답글 삭제 API", description = "다이어리 아이디, 댓글 아이디, 답글 아이디 보내주면 삭제 가능")
     @ApiResponses(value = {
