@@ -66,7 +66,7 @@ public class BoardService {
                 .map(this::convertToBoard)
                 .collect(Collectors.toList());
     }
-    
+
 //    public List<BoardResponse> getBoard() {
 //        Member currentMember = currentMember();
 //        Long currentMemberId = currentMember.getId();
