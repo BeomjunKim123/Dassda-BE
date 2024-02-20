@@ -1,18 +1,21 @@
 package com.dassda.service;
 
 import com.dassda.entity.Member;
+import com.dassda.entity.Share;
 import com.dassda.repository.MemberRepository;
+import com.dassda.repository.ShareRepository;
 import com.dassda.request.MembersRequest;
+import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,19 +24,14 @@ import java.util.UUID;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final ShareRepository shareRepository;
+
 
     @Value("${itemImgLocation}")
     private String itemImgLocation;
 
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(() -> new IllegalStateException("로그인 다시하셈"));
+        return GetMember.getCurrentMember();
     }
     public void updateProfile(MembersRequest membersRequest) throws Exception {
         Optional<Member> member = memberRepository.findById(member().getId());
@@ -69,4 +67,5 @@ public class MemberService {
         fos.close();
         return savedFileName;
     }
+
 }

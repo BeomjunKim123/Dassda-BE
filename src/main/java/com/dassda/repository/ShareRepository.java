@@ -28,5 +28,9 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     @Query("SELECT s.board FROM Share s WHERE s.member.id = :memberId")
     List<Board> findBoardsShared(@Param("memberId") Long memberId);
+
+    boolean existsByBoardId(Long boardId);
+
+    List<Share> findByBoardId(Long boardId);
 }
 

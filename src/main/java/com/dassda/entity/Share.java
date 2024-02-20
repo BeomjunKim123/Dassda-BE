@@ -29,4 +29,9 @@ public class Share {
 
     private LocalDateTime regDate;
 
+    public Share(Member member, Board board, LocalDateTime regDate) {
+        this.member = member;
+        this.board = board;
+        this.regDate = regDate;
+    }
 }

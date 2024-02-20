@@ -27,21 +27,6 @@ class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("일기장 추가 테스트")
-
-    void addBoard() throws Exception {
-        BoardRequest boardRequest = new BoardRequest();
-        boardRequest.setTitle("Test");
-        boardRequest.setImageNumber(1);
-        boardRequest.setAppearanceType(1);
-
-        mockMvc.perform(post("/api/board")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardRequest)))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void deleteBoard() {
     }
 

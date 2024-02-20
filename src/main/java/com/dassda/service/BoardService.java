@@ -14,10 +14,13 @@ import com.dassda.response.HeroResponse;
 import com.dassda.response.MembersResponse;
 import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,6 +34,7 @@ public class BoardService {
     private final DiaryRepository diaryRepository;
     private final ShareRepository shareRepository;
     private final ReadDiaryRepository readDiaryRepository;
+    private final NotificationService notificationService;
 
     private Member currentMember() {
         return GetMember.getCurrentMember();
@@ -40,7 +44,9 @@ public class BoardService {
     public void addBoard(BoardRequest boardRequest) {
         Board board = new Board(currentMember(), boardRequest.getTitle(), boardRequest.getImageNumber(),
                 boardRequest.getAppearanceType(), LocalDateTime.now(), false, false);
-        boardRepository.save(board);
+        board = boardRepository.save(board);
+        Share share = new Share(currentMember(), board, LocalDateTime.now());
+        shareRepository.save(share);
     }
 
     @Transactional
@@ -92,13 +98,23 @@ public class BoardService {
     }
     public HeroResponse getHero() {
         Member member = currentMember();
-        return new HeroResponse(member.getNickname(), Math.toIntExact(shareRepository.countByMemberId(member.getId())),
-                diaryRepository.countIsSharedDiaries(member.getId()), boardRepository.existsSharedBoardByMemberId(member.getId()));
+        return new HeroResponse(member.getNickname(),
+                Math.toIntExact(shareRepository.countByMemberId(member.getId())),
+                diaryRepository.countIsSharedDiaries(member.getId()),
+                boardRepository.existsSharedBoardByMemberId(member.getId()),
+                notificationService.existsNotification()
+        );
     }
 
     public List<MembersResponse> getMembers(Long boardId) {
+        if(!shareRepository.existsByBoardId(boardId)) {
+            throw new IllegalStateException("공유 일기장이 아닙니다.");
+        }
         return shareRepository.findByBoardIdAboutMembers(boardId).stream()
-                .map(share -> new MembersResponse(share.getMember().getNickname(), share.getMember().getProfile_image_url(), share.getRegDate()))
+                .map(share -> new MembersResponse(
+                        share.getMember().getNickname(),
+                        share.getMember().getProfile_image_url(),
+                        share.getRegDate()))
                 .collect(Collectors.toList());
     }
 

@@ -73,10 +73,7 @@ public class DiaryService {
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
-//        LocalDate date = LocalDate.now();
-//        if (!selectTime.isBefore(date.minusYears(5))) {
-//            throw new IllegalStateException("5년 전 일기 작성 불가");
-//        }
+
         if(selectTime.isAfter(LocalDate.now())) {
             throw new IllegalStateException("미래 일기 불가");
         }
@@ -208,7 +205,7 @@ public class DiaryService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "/root/items/" + imgName;
+                imgUrl = "http://118.67.143.25:8080/root/items/" + imgName;
             }
             diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImgs.setDiary(diary.get());

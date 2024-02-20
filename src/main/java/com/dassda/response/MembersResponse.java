@@ -14,5 +14,8 @@ public class MembersResponse {
     private LocalDateTime regDate;
 
     public MembersResponse(String nickname, String profileUrl, LocalDateTime regDate) {
+        this.nickname = nickname;
+        this.profileUrl = profileUrl;
+        this.regDate = regDate;
     }
 }

@@ -2,11 +2,9 @@ package com.dassda.controller;
 
 import com.dassda.entity.Member;
 import com.dassda.jwt.JwtTokenProvider;
-import com.dassda.oauth.RequestOAuthInfoService;
 import com.dassda.repository.MemberRepository;
 import com.dassda.request.MembersRequest;
 import com.dassda.service.MemberService;
-import com.dassda.service.OAuthLoginService;
 import com.dassda.service.RedisService;
 import com.dassda.token.AuthTokens;
 import com.dassda.token.AuthTokensGenerator;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -32,12 +29,6 @@ public class MemberController {
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-
-    @Operation(summary = "공유 일기장 멤버 정보 API", description = "공유 일기장에 참여중인 멤버들의 정보를 보여준다.")
-    @GetMapping
-    public ResponseEntity<List<Member>> findAll() {
-        return ResponseEntity.ok(memberRepository.findAll());
-    }
 
     @Operation(summary = "액세스 토큰에 해당하는 멤버 API", description = "토큰을 보내주면 토근에 저장되어 있는 멤버의 정보를 응답한다.")
     @GetMapping("/{accessToken}")

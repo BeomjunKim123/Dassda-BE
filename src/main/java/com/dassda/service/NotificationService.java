@@ -29,11 +29,15 @@ import java.util.stream.Collectors;
 public class NotificationService {
 
     private final StringRedisTemplate redisTemplate;
-    private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
 
     private Member member() {
         return GetMember.getCurrentMember();
+    }
+    public boolean existsNotification() {
+        String key = "notification:" + member().getId() + ":*";
+        Set<String> keys = redisTemplate.keys(key);
+        return keys != null && !keys.isEmpty();
     }
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
         String pattern = "notification:" + member().getId() + ":*";
