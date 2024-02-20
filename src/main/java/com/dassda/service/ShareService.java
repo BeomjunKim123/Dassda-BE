@@ -34,34 +34,23 @@ public class ShareService {
         return GetMember.getCurrentMember();
     }
     public ShareResponse createInvitation(Long boardId) throws NoSuchAlgorithmException, IllegalArgumentException {
-        // 요청 본문의 boardId와 URL 경로의 boardId 일치 여부 확인
-//        if (!pathBoardId.equals(pathBoardId)) {
-//            throw new IllegalArgumentException("URL 경로의 boardId와 요청 본문의 boardId가 일치하지 않습니다.");
-//        }
-
-        // boardId 유효성 확인
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + boardId));
         if (!board.getMember().getId().equals(member().getId())) {
             throw new IllegalStateException("일기장 소유자가 아니다");
         }
-        // 이미 저장된 공유 링크가 있는지 확인
         if (board.getShareLinkHash() != null && !board.getShareLinkHash().isEmpty()) {
-            // 기존 링크 재사용
-            return new ShareResponse("http://localhost:8080/api/boards/share/" + board.getShareLinkHash());
+            return new ShareResponse(board.getShareLinkHash());
         } else {
-            // 새 공유 링크 생성
             String hashValue = generateHash(boardId, LocalDateTime.now(), board);
             board.setShareLinkHash(hashValue);
             boardRepository.save(board);
 
-            return new ShareResponse("http://localhost:8080/api/boards/share/" + hashValue);
+            return new ShareResponse(hashValue);
         }
     }
 
     private String generateHash(Long boardId, LocalDateTime timestamp, Board board) throws NoSuchAlgorithmException {
-
-        // 요청 정보와 타임스탬프를 사용하여 고유한 해시 생성
         String input = String.format("%s|%s|%d|%s|%s",
                 board.getMember().getNickname(),
                 board.getMember().getProfile_image_url(),
@@ -74,7 +63,7 @@ public class ShareService {
 
         Formatter formatter = new Formatter();
 
-        for (int i = 0; i < hash.length && i < 16; i++) { // 16바이트(32자리 16진수 문자열)만 사용
+        for (int i = 0; i < hash.length && i < 16; i++) {
             formatter.format("%02x", hash[i]);
         }
         String result = formatter.toString();
@@ -86,14 +75,9 @@ public class ShareService {
     public InviteInfoResponse processSharedAccessByHash(String hashValue) {
         try {
             System.out.println("Processing shared access by hash: " + hashValue);
-            // 해시값으로 Board 조회
             Board board = boardRepository.findByShareLinkHash(hashValue)
                     .orElseThrow(() -> new EntityNotFoundException("해당 해시값에 유효한 보드가 없습니다."));
-
-            // 연관된 Member(초대한 사람) 정보 조회
             Member inviter = board.getMember();
-
-            // ShareResponse 객체 생성하여 반환
             return new InviteInfoResponse(inviter.getNickname(), inviter.getProfile_image_url(), board.getId(), board.getTitle());
         } catch (EntityNotFoundException e) {
             System.out.println("EntityNotFoundException: " + e.getMessage());
