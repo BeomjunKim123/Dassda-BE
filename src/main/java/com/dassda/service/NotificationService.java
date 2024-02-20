@@ -40,7 +40,7 @@ public class NotificationService {
         return keys != null && !keys.isEmpty();
     }
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
-        String pattern = "notification:*" + member().getId() + ":*";
+        String pattern = "notification:*" + ":" + member().getId() + ":*";
         List<Notification> notifications = new ArrayList<>();
 
         Set<String> keys = redisTemplate.keys(pattern);
