@@ -6,6 +6,8 @@ import com.dassda.response.LikesResponse;
 import com.dassda.service.DiaryService;
 import com.dassda.service.LikesService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

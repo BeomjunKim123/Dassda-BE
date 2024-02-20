@@ -1,5 +1,6 @@
 package com.dassda.repository;
 
+import com.dassda.entity.Board;
 import com.dassda.entity.Share;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +25,8 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
 
     boolean existsByBoardIdAndMemberId(Long boardId, Long memberId);
     List<Share> findByMemberId(Long currentMemberId);
+
+    @Query("SELECT s.board FROM Share s WHERE s.member.id = :memberId")
+    List<Board> findBoardsShared(@Param("memberId") Long memberId);
 }
 

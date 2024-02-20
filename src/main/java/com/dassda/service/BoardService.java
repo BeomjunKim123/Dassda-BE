@@ -35,22 +35,21 @@ public class BoardService {
     private Member currentMember() {
         return GetMember.getCurrentMember();
     }
-    private void validateTitleLength(String title) {
-        if (title.length() > 10) {
-            throw new IllegalArgumentException("제목은 10자를 넘을 수 없다.");
-        }
-    }
+
     @Transactional
     public void addBoard(BoardRequest boardRequest) {
-        validateTitleLength(boardRequest.getTitle());
         Board board = new Board(currentMember(), boardRequest.getTitle(), boardRequest.getImageNumber(),
                 boardRequest.getAppearanceType(), LocalDateTime.now(), false, false);
         boardRepository.save(board);
     }
+
     @Transactional
     public void deleteBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalStateException("삭제된 일기장입니다."));
+        if(!board.getMember().getId().equals(currentMember().getId())) {
+            throw new IllegalStateException("삭제 권한이 없다.");
+        }
         board.setBackUp(true);
         List<Diary> diaryList = diaryRepository.findByBoardId(board.getId());
         diaryList.stream()
@@ -60,37 +59,20 @@ public class BoardService {
         boardRepository.save(board);
     }
     public List<BoardResponse> getBoard() {
-        List<Board> boards = boardRepository.findByMemberId(currentMember().getId());
-        return boards.stream()
+        Long currentMemberId = currentMember().getId();
+        List<Board> ownBoards = boardRepository.findByMemberId(currentMemberId);
+        List<Board> sharedBoards = shareRepository.findBoardsShared(currentMemberId);
+
+        List<Board> allBoards = Stream.concat(ownBoards.stream(), sharedBoards.stream())
+                .distinct()
                 .filter(board -> !board.isBackUp())
+                .collect(Collectors.toList());
+
+        return allBoards.stream()
                 .map(this::convertToBoard)
                 .collect(Collectors.toList());
     }
 
-//    public List<BoardResponse> getBoard() {
-//        Member currentMember = currentMember();
-//        Long currentMemberId = currentMember.getId();
-//
-//        // 현재 사용자가 소유한 일기장 조회
-//        List<Board> ownedBoards = boardRepository.findByMemberId(currentMemberId);
-//
-//        // 현재 사용자가 참여한 공유 일기장 조회
-//        List<Share> shares = shareRepository.findByMemberId(currentMemberId);
-//        List<Board> sharedBoards = shares.stream()
-//                .map(Share::getBoard)
-//                .collect(Collectors.toList());
-//
-//        // 소유한 일기장과 참여한 일기장을 합친 후 중복 제거
-//        List<Board> allBoards = Stream.concat(ownedBoards.stream(), sharedBoards.stream())
-//                .distinct()
-//                .collect(Collectors.toList());
-//
-//        // 변환 로직을 통해 BoardResponse 리스트 생성 및 반환
-//        return allBoards.stream()
-//                .filter(board -> !board.isBackUp()) // 백업되지 않은 일기장만 필터링
-//                .map(this::convertToBoard) // Board 객체를 BoardResponse DTO로 변환
-//                .collect(Collectors.toList());
-//    }
     private BoardResponse convertToBoard(Board board) {
         return new BoardResponse(board.getId(), board.getImageNumber(), board.getAppearanceType(),
                 board.getTitle(), board.getRegDate(), diaryRepository.countByBoardId(board.getId()),
@@ -102,9 +84,9 @@ public class BoardService {
     }
     @Transactional
     public void updateBoard(Long boardId, BoardRequest boardRequest) {
-        validateTitleLength(boardRequest.getTitle());
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalStateException("삭제된 일기장입니다."));
+
         board.updateDetails(boardRequest.getTitle(), boardRequest.getImageNumber(), boardRequest.getAppearanceType());
         boardRepository.save(board);
     }
