@@ -15,13 +15,13 @@ import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/root/items/items/{filename}")
+@RequestMapping("/items")
 @CrossOrigin
 public class ImageGetController {
 
-    @GetMapping()
+    @GetMapping("/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable(value = "filename") String filename) throws MalformedURLException {
-        Path filePath = Paths.get("/root/items/items" + filename);
+        Path filePath = Paths.get("/root/items/" + filename);
         Resource resource = new UrlResource(filePath.toUri());
         return ResponseEntity
                 .ok()

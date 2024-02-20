@@ -119,6 +119,11 @@ public class BoardService {
     public void deleteShare(Long boardId) {
         Long memberId = currentMember().getId();
         Share share = shareRepository.findByBoardIdAndMemberId(boardId, memberId);
+        Board board = boardRepository.findByMemberIdAndId(memberId, boardId);
+        if(memberId.equals(board.getMember().getId())) {
+            board.setBackUp(true);
+            boardRepository.save(board);
+        }
         shareRepository.delete(share);
     }
 }
