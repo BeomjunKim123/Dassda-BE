@@ -42,7 +42,7 @@ public class NotificationEventListener {
         }
         if(member().getId() != memberId) {
             Long index = redisTemplate.opsForValue().increment("1");
-            String key = "notification:" + memberId + ":" + member().getId() + ":" + index;
+            String key = "notification:" + memberId + ":" + index + ":" + member().getId();
             redisTemplate.opsForValue().set(key, notificationJson, 30, TimeUnit.DAYS);
         }
     }
@@ -87,7 +87,7 @@ public class NotificationEventListener {
                 put("replyContent", reply.getReply());
                 put("replyWriterNickname", reply.getMember().getNickname());
             }};
-            parseJson(notificationData, reply.getMember().getId());
+            parseJson(notificationData, comment.get().getMember().getId());
         }
     }
     @EventListener
@@ -95,7 +95,8 @@ public class NotificationEventListener {
         Likes likes = event.getLikes();
         Diary diary = diary(likes.getDiary().getId());
 
-        if(!likes.getMember().getId().equals(member().getId())) {
+        if(!diary.getMember().getId().equals(member().getId())) {
+            System.out.println(11111);
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 3);
                 put("isRead", false);
@@ -107,14 +108,14 @@ public class NotificationEventListener {
                 put("likeId", likes.getId());
                 put("likeMemberNickname", likes.getMember().getNickname());
             }};
-            parseJson(notificationData, likes.getMember().getId());
+            parseJson(notificationData, diary.getMember().getId());
         }
     }
     @EventListener
     public void onDiaryCreated(DiaryCreatedEvent event) {
         Diary diary = event.getDiary();
-        Long writerId = diary.getMember().getId();
-        if (!diary.getMember().getId().equals(member().getId())) {
+        Optional<Board> board = boardRepository.findById(diary.getBoard().getId());
+        if (!board.get().getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 4);
                 put("isRead", false);
@@ -124,7 +125,7 @@ public class NotificationEventListener {
                 put("boardTitle", diary.getBoard().getTitle());
                 put("diaryId", diary.getId());
             }};
-            parseJson(notificationData, diary.getMember().getId());
+            parseJson(notificationData, board.get().getMember().getId());
         }
     }
     @EventListener
@@ -134,6 +135,7 @@ public class NotificationEventListener {
         Optional<Board> board = boardRepository.findById(boardId);
 
         if (!board.get().getMember().getId().equals(member().getId())) {
+
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 5);
                 put("isRead", false);
@@ -143,7 +145,7 @@ public class NotificationEventListener {
                 put("boardTitle", share.getBoard().getTitle());
                 put("newMemberNickname", share.getMember().getNickname());
             }};
-            parseJson(notificationData, share.getMember().getId());
+            parseJson(notificationData, board.get().getMember().getId());
         }
 
     }

@@ -11,6 +11,7 @@ import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.LikesRepository;
 import com.dassda.repository.MemberRepository;
 import com.dassda.response.LikesResponse;
+import com.dassda.utils.GetMember;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -25,20 +26,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LikesService {
 
-    private final MemberRepository memberRepository;
     private final DiaryRepository diaryRepository;
     private final LikesRepository likesRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private Member member() {
-        return memberRepository
-                .findByEmail(
-                        SecurityContextHolder
-                                .getContext()
-                                .getAuthentication()
-                                .getName()
-                )
-                .orElseThrow(
-                        () -> new IllegalStateException("멤버 없다")
-                );
+        return GetMember.getCurrentMember();
     }
     public void toggleLike(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId)
@@ -54,6 +46,7 @@ public class LikesService {
             like.setMember(member());
             like.setDiary(diary);
             likesRepository.save(like);
+            eventPublisher.publishEvent(new LikeCreatedEvent(this, like));
         } else {
             likesRepository.delete(likesOptional.get());
         }

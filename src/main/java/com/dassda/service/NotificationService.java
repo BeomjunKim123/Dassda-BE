@@ -13,12 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,41 +43,67 @@ public class NotificationService {
         return keys != null && !keys.isEmpty();
     }
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
+//        String pattern = "notification:" + member().getId() + ":*";
+//
+//        List<Notification> notifications = new ArrayList<>();
+//        Set<String> keys = redisTemplate.keys(pattern);
+//
+//        if(keys != null) {
+//            List<Long> sortedIds = keys.stream()
+//                    .map(this::extractId)
+//                    .sorted()
+//                    .collect(Collectors.toList());
+//
+//            int startIndex = lastViewId == 0 ? 0 : sortedIds.indexOf(lastViewId) + 1;
+//            List<Long> pageIds = sortedIds.subList(startIndex, Math.min(startIndex + pageSize, sortedIds.size()));
+//            for(Long id : pageIds) {
+//                String key = "notification:" + member().getId() + ":" + id + ":*";
+//                System.out.println(key);
+//                String notificationJson = redisTemplate.opsForValue().get(key);
+//                System.out.println(notificationJson);
+//                if(notificationJson != null) {
+//                    Notification notification = parseNotification(notificationJson);
+//                    notification.setId(id);
+//                    notifications.add(notification);
+//                }
+//            }
+//        }
         String pattern = "notification:" + member().getId() + ":*";
         List<Notification> notifications = new ArrayList<>();
+        List<String> allKeys = new ArrayList<>();
 
-        Set<String> keys = redisTemplate.keys(pattern);
-        if(keys != null) {
-            List<Long> sortedIds = keys.stream()
-                    .map(this::extractId)
-                    .sorted()
-                    .collect(Collectors.toList());
+        Cursor<byte[]> cursor = redisTemplate.executeWithStickyConnection(
+                connection -> connection.scan(ScanOptions.scanOptions().match(pattern).build()));
 
-            int startIndex = lastViewId == 0 ? 0 : sortedIds.indexOf(lastViewId) + 1;
-            List<Long> pageIds = sortedIds.subList(startIndex, Math.min(startIndex + pageSize, sortedIds.size()));
-
-            for(Long id : pageIds) {
-                String key = "notification:" + member().getId() + ":" + id;
-                String notificationJson = redisTemplate.opsForValue().get(key);
-
-                if(notificationJson != null) {
-                    Notification notification = parseNotification(notificationJson);
-                    JsonNode root = objectMapper.readTree(notificationJson);
-                    boolean checkRead = root.get("isRead").asBoolean();
-                    if(checkRead) {
-                        notification.setRead(true);
-                    }
-                    notification.setId(id);
-                    notifications.add(notification);
-                }
-            }
+        while (cursor.hasNext()) {
+            allKeys.add(new String(cursor.next()));
         }
+        allKeys.stream()
+                .map(this::extractId)
+                .sorted()
+                .skip(lastViewId)
+                .limit(pageSize)
+                .forEach(id -> {
+                    String keyPattern = "notification:" + member().getId() + ":" + id + ":*";
+                    redisTemplate.keys(keyPattern).forEach(key -> {
+                        String notificationJson = redisTemplate.opsForValue().get(key);
+                        if (notificationJson != null) {
+                            try {
+                                Notification notification = parseNotification(notificationJson);
+                                notification.setId(id);
+                                notifications.add(notification);
+                            } catch (JsonProcessingException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                });
         return notifications;
     }
 
     private Long extractId(String key) {
         String[] parts = key.split(":");
-        return Long.parseLong(parts[parts.length - 1]);
+        return Long.parseLong(parts[parts.length - 2]);
     }
 
     private Notification parseNotification(String json) throws JsonProcessingException {

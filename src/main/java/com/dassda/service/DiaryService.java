@@ -73,7 +73,6 @@ public class DiaryService {
         if(diaryRepository.exitsByDiaryAtSelectDate(memberId, boardId, selectTime)) {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
-
         boolean isOwnerOrSharedMember = boardRepository.existsMemberIdAboutBoardId(boardId, memberId) ||
                 shareRepository.existsByBoardIdAndMemberId(boardId, memberId);
         if (!isOwnerOrSharedMember) {
@@ -113,9 +112,7 @@ public class DiaryService {
                 diaryImgRepository.save(diaryImg);
             }
         }
-
         eventPublisher.publishEvent(new DiaryCreatedEvent(this, diary));
-
     }
 
     private String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws Exception {
