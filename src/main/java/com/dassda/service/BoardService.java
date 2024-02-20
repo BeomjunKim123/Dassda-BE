@@ -110,6 +110,7 @@ public class BoardService {
     public List<MembersResponse> getMembers(Long boardId) {
         return shareRepository.findByBoardIdAboutMembers(boardId).stream()
                 .map(share -> new MembersResponse(
+                        share.getMember().getId(),
                         share.getMember().getNickname(),
                         share.getMember().getProfile_image_url(),
                         share.getRegDate()))
