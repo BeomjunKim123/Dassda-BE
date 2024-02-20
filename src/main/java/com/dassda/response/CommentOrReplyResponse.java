@@ -24,5 +24,4 @@ public class CommentOrReplyResponse {
     @Schema(name = "지워진 댓글 유무")
     private boolean isDeletedMark;
 
-
 }

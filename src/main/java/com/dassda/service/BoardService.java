@@ -98,8 +98,9 @@ public class BoardService {
     }
     public HeroResponse getHero() {
         Member member = currentMember();
+
         return new HeroResponse(member.getNickname(),
-                Math.toIntExact(shareRepository.countByMemberId(member.getId())),
+                Math.toIntExact(shareRepository.countByMemberIdAboutShare(member.getId())),
                 diaryRepository.countIsSharedDiaries(member.getId()),
                 boardRepository.existsSharedBoardByMemberId(member.getId()),
                 notificationService.existsNotification()
@@ -107,9 +108,6 @@ public class BoardService {
     }
 
     public List<MembersResponse> getMembers(Long boardId) {
-        if(!shareRepository.existsByBoardId(boardId)) {
-            throw new IllegalStateException("공유 일기장이 아닙니다.");
-        }
         return shareRepository.findByBoardIdAboutMembers(boardId).stream()
                 .map(share -> new MembersResponse(
                         share.getMember().getNickname(),

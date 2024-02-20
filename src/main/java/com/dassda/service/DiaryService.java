@@ -146,9 +146,9 @@ public class DiaryService {
         if(diary.get().isBackUp()) {
             throw new IllegalStateException("삭제된 일기입니다.");
         }
-
+        Long diaryId = diary.get().getId();
         DiaryDetailResponse diaryDetailResponse = new DiaryDetailResponse();
-        diaryDetailResponse.setId(diary.get().getId());
+        diaryDetailResponse.setId(diaryId);
         diaryDetailResponse.setMemberId(diary.get().getMember().getId());
         diaryDetailResponse.setNickname(diary.get().getMember().getNickname());
         diaryDetailResponse.setProfileUrl(diary.get().getMember().getProfile_image_url());
@@ -164,16 +164,17 @@ public class DiaryService {
         diaryDetailResponse.setTitle(diary.get().getDiaryTitle());
         diaryDetailResponse.setContents(diary.get().getDiaryContent());
 
-        String time = diaryRepository.findDiaryWithTimeAge(diary.get().getId());
+        String time = diaryRepository.findDiaryWithTimeAge(diaryId);
         diaryDetailResponse.setTimeStamp(time);
 
         diaryDetailResponse.setSelectedDate(diary.get().getSelectDate());
 
-        int likeCount = likesRepository.countByDiaryId(diary.get().getId());
+        int likeCount = likesRepository.countByDiaryId(diaryId);
         diaryDetailResponse.setLikeCount(likeCount);
 
-        int commentCount = commentRepository.countByDiaryId(diary.get().getId());
-        diaryDetailResponse.setCommentCount(commentCount);
+        Integer commentCount = commentRepository.countByDiaryId(diaryId);
+        Integer replyCount = commentRepository.countRepliesByDiaryId(diaryId);
+        diaryDetailResponse.setCommentCount(commentCount + (replyCount == null ? 0 : replyCount));
 
         if(member().getId() == diary.get().getMember().getId()) {
             diaryDetailResponse.setOwned(true);

@@ -12,8 +12,8 @@ import java.util.Optional;
 
 public interface ShareRepository extends JpaRepository<Share, Long> {
     int countByBoardId(Long boardId);
-
-    int countByMemberId(Long memberId);
+    @Query("SELECT COUNT(DISTINCT s.member.id) FROM Share s WHERE s.board.member.id = :memberId OR s.member.id = :memberId AND s.board.isShared = true")
+    int countByMemberIdAboutShare(@Param("memberId") Long memberId);
     @Query("SELECT s FROM Share s WHERE s.board.id = :boardId")
     List<Share> findByBoardIdAboutMembers(@Param(value = "boardId") Long boardId);
 
