@@ -22,7 +22,7 @@ public class NotificationEventListener {
 
     private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
-    private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
     private final DiaryRepository diaryRepository;
     private final CommentRepository commentRepository;
 
@@ -51,7 +51,7 @@ public class NotificationEventListener {
         Comment comment = event.getComment();
         Diary diary = diary(comment.getDiary().getId());
 
-        if(!comment.getMember().getId().equals(member().getId())) {
+        if(!diary.getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 1);
                 put("isRead", false);
@@ -73,7 +73,7 @@ public class NotificationEventListener {
         Optional<Comment> comment = commentRepository.findById(reply.getComment().getId());
         Diary diary = diary(comment.get().getDiary().getId());
 
-        if(!reply.getMember().getId().equals(member().getId())) {
+        if(!comment.get().getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 2);
                 put("isRead", false);
@@ -130,10 +130,12 @@ public class NotificationEventListener {
     @EventListener
     public void onShareCreated(NewMemberEvent event) {
         Share share = event.getShare();
-        Long joinId = share.getMember().getId();
-        if (!share.getMember().getId().equals(member().getId())) {
+        Long boardId = share.getBoard().getId();
+        Optional<Board> board = boardRepository.findById(boardId);
+
+        if (!board.get().getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
-                put("notificationTypeId", 3);
+                put("notificationTypeId", 5);
                 put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", share.getMember().getId());
