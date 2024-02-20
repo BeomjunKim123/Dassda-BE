@@ -74,47 +74,48 @@ public class DiaryService {
             throw new IllegalStateException("이미 해당 날짜에 일기를 작성함");
         }
 
+        boolean isOwnerOrSharedMember = boardRepository.existsMemberIdAboutBoardId(boardId, memberId) ||
+                shareRepository.existsByBoardIdAndMemberId(boardId, memberId);
+        if (!isOwnerOrSharedMember) {
+            throw new IllegalStateException("참여한 일기장이 아닙니다.");
+        }
         if(selectTime.isAfter(LocalDate.now())) {
             throw new IllegalStateException("미래 일기 불가");
         }
-        Optional<Share> share = shareRepository.findByMemberIdAndBoardId(memberId, boardId);
-            if(boardRepository.existsMemberIdAboutBoardId(memberId, boardId) || share.isPresent() && shareRepository.existsById(memberId) && Objects.equals(boardId, share.get().getBoard().getId())) {
-                Diary diary = new Diary();
-                diary.setBoard(board);
-                diary.setSticker(sticker);
-                diary.setMember(member());
-                diary.setDiaryTitle(diaryRequest.getTitle());
-                diary.setDiaryContent(diaryRequest.getContents());
-                diary.setRegDate(LocalDateTime.now());
-                diary.setSelectDate(selectTime);
-                diary.setUpdateDate(LocalDateTime.now());
-                diary.setBackUp(false);
-                diaryRepository.save(diary);
 
-                if(diaryRequest.getImages().isEmpty()) {
-                    diaryImgRepository.save(null);
-                } else {
-                    for(MultipartFile file : diaryRequest.getImages()) {
-                        DiaryImg diaryImg = new DiaryImg();
-                        String oriImgName = file.getOriginalFilename();
-                        String imgName = "";
-                        String imgUrl = "";
-                        if(!StringUtils.isEmpty(oriImgName)) {
-                            imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                            imgUrl = "http://118.67.143.25:8080/root/items/" + imgName;
-                        }
-                        diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
-                        diaryImg.setDiary(diary);
-                        diaryImg.setBackUp(false);
-                        diaryImgRepository.save(diaryImg);
-                    }
+        Diary diary = new Diary();
+        diary.setBoard(board);
+        diary.setSticker(sticker);
+        diary.setMember(member());
+        diary.setDiaryTitle(diaryRequest.getTitle());
+        diary.setDiaryContent(diaryRequest.getContents());
+        diary.setRegDate(LocalDateTime.now());
+        diary.setSelectDate(selectTime);
+        diary.setUpdateDate(LocalDateTime.now());
+        diary.setBackUp(false);
+        diaryRepository.save(diary);
+
+        if(diaryRequest.getImages().isEmpty()) {
+            diaryImgRepository.save(null);
+        } else {
+            for(MultipartFile file : diaryRequest.getImages()) {
+                DiaryImg diaryImg = new DiaryImg();
+                String oriImgName = file.getOriginalFilename();
+                String imgName = "";
+                String imgUrl = "";
+                if(!StringUtils.isEmpty(oriImgName)) {
+                    imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
+                    imgUrl = "http://118.67.143.25:8080/root/items/" + imgName;
                 }
+                diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
+                diaryImg.setDiary(diary);
+                diaryImg.setBackUp(false);
+                diaryImgRepository.save(diaryImg);
+            }
+        }
 
-                eventPublisher.publishEvent(new DiaryCreatedEvent(this, diary));
-        }
-         else {
-            throw new IllegalArgumentException("참여한 일기장에만 일기를 작성할 수 있습니다.");
-        }
+        eventPublisher.publishEvent(new DiaryCreatedEvent(this, diary));
+
     }
 
     private String uploadFile(String uploadPath, String originalFileName, byte[] fileData) throws Exception {

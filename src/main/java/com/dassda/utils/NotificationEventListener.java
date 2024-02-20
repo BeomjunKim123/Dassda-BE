@@ -42,7 +42,7 @@ public class NotificationEventListener {
         }
         if(member().getId() != memberId) {
             Long index = redisTemplate.opsForValue().increment("1");
-            String key = "notification:" + member().getId() + ":" + memberId + ":" + index;
+            String key = "notification:" + memberId + ":" + member().getId() + ":" + index;
             redisTemplate.opsForValue().set(key, notificationJson, 30, TimeUnit.DAYS);
         }
     }
