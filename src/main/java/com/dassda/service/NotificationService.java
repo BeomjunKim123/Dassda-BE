@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,6 +43,7 @@ public class NotificationService {
         Set<String> keys = redisTemplate.keys(key);
         return keys != null && !keys.isEmpty();
     }
+
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
 //        String pattern = "notification:" + member().getId() + ":*";
 //
@@ -80,7 +82,7 @@ public class NotificationService {
         }
         allKeys.stream()
                 .map(this::extractId)
-                .sorted()
+                .sorted(Comparator.reverseOrder())
                 .skip(lastViewId)
                 .limit(pageSize)
                 .forEach(id -> {
@@ -127,29 +129,30 @@ public class NotificationService {
                 throw new IllegalArgumentException("지원하지 않는 알림 타입: " + typeId);
         }
     }
+
     public void updateReadStatusOfOne(Long notificationId) throws JsonProcessingException {
-        String key = "notification:" + member().getId() + ":" + notificationId;
+        String key = "notification:" + member().getId() + ":" + notificationId + ":*";
 
         String notificationJson = redisTemplate.opsForValue().get(key);
         if(notificationJson != null) {
             JsonNode root = objectMapper.readTree(notificationJson);
-            ((ObjectNode) root).put("isRead", true);
+            ((ObjectNode) root).put("readStatus", true);
             String updateJson = objectMapper.writeValueAsString(root);
             redisTemplate.opsForValue().set(key, updateJson);
         } else {
             throw new IllegalStateException("알림 데이터를 찾을 수 없음.");
         }
     }
+
     public void updateReadStatusAll() throws JsonProcessingException {
         String keyPattern = "notification:" + member().getId() + ":*";
         Set<String> keys = redisTemplate.keys(keyPattern);
-
         if(keys != null) {
             for(String key : keys) {
                 String notificationJson = redisTemplate.opsForValue().get(key);
                 if(notificationJson != null) {
                     JsonNode root = objectMapper.readTree(notificationJson);
-                    ((ObjectNode) root).put("isRead", true);
+                    ((ObjectNode) root).put("readStatus", true);
                     String updateJson = objectMapper.writeValueAsString(root);
                     redisTemplate.opsForValue().set(key, updateJson);
                 } else {

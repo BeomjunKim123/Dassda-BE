@@ -45,24 +45,25 @@ spring:
 #          starttls:
 #            enable: true
 
-jpa:
-  properties:
-    hibernate:
-      show_sql: true
-      format_sql: true
-  hibernate:
-    ddl-auto: update
-  database-platform: org.hibernate.dialect.MySQL8Dialect
-
-logging:
-  level:
-    org:
-      springframework:
-        boot: DEBUG
+  jpa:
+    properties:
       hibernate:
-        type:
-          descriptor:
-            sql: trace
+        show_sql: true
+        format_sql: true
+        time_zone: Asia/Seoul
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  logging:
+    level:
+      org:
+        springframework:
+          boot: DEBUG
+        hibernate:
+          type:
+            descriptor:
+              sql: trace
 
 servlet:
   multipart:

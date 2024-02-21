@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 public class Notification {
     private Long id;
     private int notificationTypeId;
-    private boolean isRead;
+    private boolean readStatus;
     private LocalDateTime regDate;
 }
