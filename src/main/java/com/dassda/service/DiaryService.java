@@ -89,7 +89,7 @@ public class DiaryService {
         diary.setDiaryTitle(diaryRequest.getTitle());
         diary.setDiaryContent(diaryRequest.getContents());
         diary.setRegDate(LocalDateTime.now());
-        diary.setSelectDate(selectTime);
+        diary.setSelectDate(LocalDateTime.parse(diaryRequest.getSelectedDate()));
         diary.setUpdateDate(LocalDateTime.now());
         diary.setBackUp(false);
         diaryRepository.save(diary);

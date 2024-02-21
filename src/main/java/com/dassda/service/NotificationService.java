@@ -136,7 +136,7 @@ public class NotificationService {
         String notificationJson = redisTemplate.opsForValue().get(key);
         if(notificationJson != null) {
             JsonNode root = objectMapper.readTree(notificationJson);
-            ((ObjectNode) root).put("readStatus", true);
+            ((ObjectNode) root).put("isRead", true);
             String updateJson = objectMapper.writeValueAsString(root);
             redisTemplate.opsForValue().set(key, updateJson);
         } else {
@@ -152,7 +152,7 @@ public class NotificationService {
                 String notificationJson = redisTemplate.opsForValue().get(key);
                 if(notificationJson != null) {
                     JsonNode root = objectMapper.readTree(notificationJson);
-                    ((ObjectNode) root).put("readStatus", true);
+                    ((ObjectNode) root).put("isRead", true);
                     String updateJson = objectMapper.writeValueAsString(root);
                     redisTemplate.opsForValue().set(key, updateJson);
                 } else {

@@ -9,6 +9,7 @@ import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query("SELECT CASE WHEN COUNT(d) > 0 THEN true ELSE false END FROM Diary d WHERE d.regDate BETWEEN :startDate AND :endDate")
     boolean existsDiariesInLastThreeDays(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 
-    @Query(value = "SELECT SUBSTRING(d.select_date, 1, 10) FROM diary d WHERE d.board_id = :boardId AND DATE(d.select_date) = :month", nativeQuery = true)
-    List<String> findDiaryDatesByMonth(@Param("boardId") Long boardId, @Param("month") LocalDate month);
+    @Query(value = "SELECT DISTINCT SUBSTRING(d.select_date, 1, 10) FROM diary d WHERE d.board_id = :boardId AND MONTH(d.select_date) = :month", nativeQuery = true)
+    List<String> findDiaryDatesByMonth(@Param("boardId") Long boardId, @Param("month") int month);
 
     @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :day")
     List<Diary> findByBoardIdAndDay(@Param("boardId") Long boardId, @Param("day") LocalDate day);

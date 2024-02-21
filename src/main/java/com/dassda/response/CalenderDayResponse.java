@@ -35,7 +35,7 @@ public class CalenderDayResponse {
     @Schema(name = "댓글 수")
     private int commentCount;
     @Schema(name = "선택된 날짜")
-    private LocalDate selectedDate;
+    private LocalDateTime selectedDate;
     @Schema(name = "작성일부터 과거로 일수")
     private String timeStamp;
 

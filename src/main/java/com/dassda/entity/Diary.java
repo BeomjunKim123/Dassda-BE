@@ -39,7 +39,7 @@ public class Diary {
     private LocalDateTime regDate;
 
     @Column(name = "select_date")
-    private LocalDate selectDate;
+    private LocalDateTime selectDate;
 
     @Column(name = "update_date")
     private LocalDateTime updateDate;

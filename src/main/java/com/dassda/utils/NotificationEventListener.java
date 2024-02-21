@@ -54,7 +54,7 @@ public class NotificationEventListener {
         if(!diary.getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 1);
-                put("readStatus", false);
+                put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", comment.getMember().getId());
                 put("boardId", diary.getBoard().getId());
@@ -76,7 +76,7 @@ public class NotificationEventListener {
         if(!comment.get().getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 2);
-                put("readStatus", false);
+                put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", reply.getMember().getId());
                 put("boardId", diary.getBoard().getId());
@@ -99,7 +99,7 @@ public class NotificationEventListener {
             System.out.println(11111);
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 3);
-                put("readStatus", false);
+                put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", likes.getMember().getId());
                 put("boardId", diary.getBoard().getId());
@@ -118,7 +118,7 @@ public class NotificationEventListener {
         if (!board.get().getMember().getId().equals(member().getId())) {
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 4);
-                put("readStatus", false);
+                put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", diary.getMember().getId());
                 put("boardId", diary.getBoard().getId());
@@ -138,7 +138,7 @@ public class NotificationEventListener {
 
             Map<String, Object> notificationData = new HashMap<>() {{
                 put("notificationTypeId", 5);
-                put("readStatus", false);
+                put("isRead", false);
                 put("regDate", LocalDateTime.now());
                 put("writerId", share.getMember().getId());
                 put("boardId", share.getBoard().getId());

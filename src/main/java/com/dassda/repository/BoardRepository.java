@@ -17,4 +17,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     boolean existsMemberIdAboutBoardId(@Param("memberId") Long memberId, @Param("boardId") Long boardId);
 
     Board findByMemberIdAndId(Long memberId, Long boardId);
+    @Query("SELECT COUNT(b) FROM Board b WHERE b.member.id = :memberId AND b.isShared = true")
+    int countByMemberId(@Param("memberId") Long memberId);
 }

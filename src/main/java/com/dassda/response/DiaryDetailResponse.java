@@ -32,7 +32,7 @@ public class DiaryDetailResponse {
     @Schema(name = "작성일부터 과거로 일수")
     private String timeStamp;
     @Schema
-    private LocalDate selectedDate;
+    private LocalDateTime selectedDate;
     @Schema
     private int likeCount;
     @Schema

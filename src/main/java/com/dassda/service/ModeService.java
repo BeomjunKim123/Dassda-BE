@@ -14,8 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class ModeService {
 
     public CalenderMonthResponse getMonthOfExistDiary(Long boardId, String date) {
         LocalDate month = LocalDate.parse(date);
-        List<String> monthList = diaryRepository.findDiaryDatesByMonth(boardId, month);
+        List<String> monthList = diaryRepository.findDiaryDatesByMonth(boardId, month.getMonthValue());
         CalenderMonthResponse calenderMonthResponse = new CalenderMonthResponse();
         calenderMonthResponse.setDateList(monthList);
         return calenderMonthResponse;

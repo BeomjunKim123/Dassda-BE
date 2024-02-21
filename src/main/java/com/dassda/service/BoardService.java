@@ -97,12 +97,11 @@ public class BoardService {
         boardRepository.save(board);
     }
     public HeroResponse getHero() {
-        Member member = currentMember();
-
-        return new HeroResponse(member.getNickname(),
-                Math.toIntExact(shareRepository.countByMemberIdAboutShare(member.getId())),
-                diaryRepository.countIsSharedDiaries(member.getId()),
-                boardRepository.existsSharedBoardByMemberId(member.getId()),
+        Long memberId = currentMember().getId();
+        return new HeroResponse(currentMember().getNickname(),
+                shareRepository.countByMemberIdAboutShare(memberId) - boardRepository.countByMemberId(memberId),
+                diaryRepository.countIsSharedDiaries(memberId),
+                boardRepository.existsSharedBoardByMemberId(memberId),
                 notificationService.existsNotification()
         );
     }
