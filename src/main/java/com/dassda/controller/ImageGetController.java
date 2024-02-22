@@ -1,10 +1,9 @@
 package com.dassda.controller;
 
-import lombok.Getter;
+import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +14,24 @@ import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/items")
 @CrossOrigin
 public class ImageGetController {
 
-    @GetMapping("/{filename:.+}")
+    private final ServletContext servletContext;
+
+    @GetMapping("/items/{filename:.+}")
     public ResponseEntity<Resource> getImage(@PathVariable(value = "filename") String filename) throws MalformedURLException {
         Path filePath = Paths.get("/root/items/" + filename);
         Resource resource = new UrlResource(filePath.toUri());
+        String mimeType = servletContext.getMimeType(filePath.toString());
+        if (mimeType == null) {
+            // 기본값으로 설정
+            mimeType = "application/octet-stream";
+        }
+
         return ResponseEntity
                 .ok()
-                .contentType(MediaType.IMAGE_JPEG)
+                .contentType(MediaType.parseMediaType(mimeType))
                 .body(resource);
     }
 }

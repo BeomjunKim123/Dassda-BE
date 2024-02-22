@@ -104,7 +104,7 @@ public class DiaryService {
                 String imgUrl = "";
                 if(!StringUtils.isEmpty(oriImgName)) {
                     imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                    imgUrl = "http://118.67.143.25:8080/root/items/" + imgName;
+                    imgUrl = "http://118.67.143.25:8080/items/" + imgName;
                 }
                 diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
                 diaryImg.setDiary(diary);
@@ -178,10 +178,14 @@ public class DiaryService {
             diaryDetailResponse.setOwned(true);
         } else {
             diaryDetailResponse.setOwned(false);
-            ReadDiary readDiary = new ReadDiary();
-            readDiary.setReadId(member());
-            readDiary.setDiary(diary.get());
-            readDiaryRepository.save(readDiary);
+            boolean isReadDiary = readDiaryRepository.existsByMemberIdAndDiaryId(diaryId, memberId);
+            if(!isReadDiary) {
+                ReadDiary readDiary = new ReadDiary();
+                readDiary.setReadId(member());
+                readDiary.setDiary(diary.get());
+                readDiaryRepository.save(readDiary);
+            }
+
         }
     return diaryDetailResponse;
     }
@@ -204,7 +208,7 @@ public class DiaryService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "http://118.67.143.25:8080/root/items/" + imgName;
+                imgUrl = "http://118.67.143.25:8080/items/" + imgName;
             }
             diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImgs.setDiary(diary.get());

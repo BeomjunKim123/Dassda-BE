@@ -36,8 +36,12 @@ public class ModeService {
     }
 
     public CalenderMonthResponse getMonthOfExistDiary(Long boardId, String date) {
-        LocalDate month = LocalDate.parse(date);
-        List<String> monthList = diaryRepository.findDiaryDatesByMonth(boardId, month.getMonthValue());
+        LocalDate monthYear = LocalDate.parse(date);
+        int year = monthYear.getYear();
+        int month = monthYear.getMonthValue();
+
+        // 연도와 월을 기준으로 조회
+        List<String> monthList = diaryRepository.findDiaryDatesByMonthAndYear(boardId, month, year);
         CalenderMonthResponse calenderMonthResponse = new CalenderMonthResponse();
         calenderMonthResponse.setDateList(monthList);
         return calenderMonthResponse;
