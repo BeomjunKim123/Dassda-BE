@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/member/**", "http://localhost:3000/**").permitAll()
-                                .requestMatchers("/login/**", "/index/**", "/images/**", "/**").permitAll()
+                                .requestMatchers("/login/**", "/index/**", "/images/**", "/**", "/app/**").permitAll()
                                 .requestMatchers("/oauth/**", "/swagger-ui/**", "/v3/api-docs/**", "/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
                                 .requestMatchers("/v2/user/**").permitAll()
                                 .requestMatchers("https://ssda-front-tan.vercel.app/").permitAll()

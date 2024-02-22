@@ -36,7 +36,7 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<String> findDiaryDatesByMonthAndYear(@Param("boardId") Long boardId, @Param("month") int month, @Param("year") int year);
 
 
-    @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :day")
+    @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :day AND d.board.backUp = false AND d.backUp = false")
     List<Diary> findByBoardIdAndDay(@Param("boardId") Long boardId, @Param("day") LocalDate day);
 
 //    @Query(value = "SELECT " +
@@ -62,11 +62,11 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
             "FROM diary d WHERE d.id = :diaryId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("diaryId") Long diaryId);
 
-    @Query("SELECT d FROM Diary d WHERE d.board.isShared = true AND d.board.id = :boardId AND d.member.id != :memberId AND NOT EXISTS " +
+    @Query("SELECT d FROM Diary d WHERE d.board.isShared = true AND d.board.backUp = false AND d.backUp = false AND d.board.id = :boardId AND d.member.id != :memberId AND NOT EXISTS " +
             "(SELECT rd FROM ReadDiary rd WHERE rd.diary.id = d.id) ORDER BY d.selectDate DESC")
     List<Diary> findSharedDiariesNotRead(@Param("boardId") Long boardId, @Param("memberId") Long memberId);
 
-    @Query(value = "SELECT * FROM diary d WHERE d.board_id = :boardId ORDER BY DATE(select_date) DESC, TIME(select_date) ASC", nativeQuery = true)
+    @Query(value = "SELECT * FROM diary d WHERE d.board_id = :boardId AND d.back_up = false ORDER BY DATE(select_date) DESC, TIME(select_date) ASC", nativeQuery = true)
     List<Diary> findAllDiariesSortedByDateAndTime(@Param("boardId") Long boardId);
 
     @Query("SELECT CASE WHEN COUNT(rd) > 0 THEN true ELSE false END FROM ReadDiary rd WHERE rd.diary.board.id = :boardId AND rd.readId.id = :memberId")

@@ -35,8 +35,8 @@ spring:
 #  mail:
 #    host: smtp.gmail.com
 #    port: 587
-#    username: dassda0606@gmail.com
-#    password: dassda123!
+#    username: gkgk9753@gmail.com
+#    password: hqqd aezh ppxf rcxg
 #    properties:
 #      mail:
 #        smtp:
@@ -75,6 +75,7 @@ uploadPath: file:/Users/proxy/items/
 
 #itemImgLocation: /app/items
 #uploadPath: /app
+
 #itemImgLocation: /root/items
 #uploadPath: /root
 
