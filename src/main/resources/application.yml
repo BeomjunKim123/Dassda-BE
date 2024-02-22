@@ -75,6 +75,7 @@ servlet:
 
 #itemImgLocation: /app/items
 #uploadPath: /app
+
 itemImgLocation: /root/items
 uploadPath: /root
 

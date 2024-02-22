@@ -104,7 +104,7 @@ public class DiaryService {
                 String imgUrl = "";
                 if(!StringUtils.isEmpty(oriImgName)) {
                     imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                    imgUrl = "http://118.67.143.25:8080/items/" + imgName;
+                    imgUrl = "http://118.67.143.25:8080/images/" + imgName;
                 }
                 diaryImg.updateDiaryImg(oriImgName, imgName, imgUrl);
                 diaryImg.setDiary(diary);
@@ -208,7 +208,7 @@ public class DiaryService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "http://118.67.143.25:8080/items/" + imgName;
+                imgUrl = "http://118.67.143.25:8080/images/" + imgName;
             }
             diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
             diaryImgs.setDiary(diary.get());
