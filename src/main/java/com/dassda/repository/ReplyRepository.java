@@ -27,6 +27,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
             "WHEN DATE(d.reg_date) > DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), d.reg_date) / 7), '주 전') " +
             "ELSE CONCAT(FLOOR(DATEDIFF(CURDATE(), d.reg_date) / 30), '개월 전') " +
             "END " +
-            "FROM Reply d WHERE d.id = :replyId", nativeQuery = true)
+            "FROM reply d WHERE d.id = :replyId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("replyId") Long replyId);
 }
