@@ -23,5 +23,6 @@ public class CommentOrReplyResponse {
     private boolean isOwned;
     @Schema(name = "지워진 댓글 유무")
     private boolean isDeletedMark;
-
+    @Schema(name = "작성일부터 과거로 일수")
+    private String timeStamp;
 }

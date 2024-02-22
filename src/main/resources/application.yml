@@ -73,11 +73,11 @@ servlet:
 #itemImgLocation: /Users/proxy/items/item/
 #uploadPath: file:/Users/proxy/items/
 
-itemImgLocation: /app/items
-uploadPath: /app
+#itemImgLocation: /app/items
+#uploadPath: /app
 
-#itemImgLocation: /root/items
-#uploadPath: /root
+itemImgLocation: /root/items
+uploadPath: /root
 
 
 jwt:

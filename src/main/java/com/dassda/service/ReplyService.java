@@ -91,7 +91,9 @@ public class ReplyService {
             commentOrReplyResponse.setProfileUrl(reply.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(reply.getReply());
             commentOrReplyResponse.setRegDate(LocalDateTime.now());
-
+            Long replyId = reply.getId();
+            String time = replyRepository.findDiaryWithTimeAge(replyId);
+            commentOrReplyResponse.setTimeStamp(time);
             if(member().getId() == reply.getMember().getId()) {
                 commentOrReplyResponse.setOwned(true);
             } else {

@@ -71,7 +71,9 @@ public class CommentService {
             commentOrReplyResponse.setProfileUrl(comment.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(comment.getComment());
             commentOrReplyResponse.setRegDate(comment.getRegDate());
-
+            Long commentId = comment.getId();
+            String time = commentRepository.findDiaryWithTimeAge(commentId);
+            commentOrReplyResponse.setTimeStamp(time);
             if (member().getId() == comment.getMember().getId()) {
                 commentOrReplyResponse.setOwned(true);
             } else {
