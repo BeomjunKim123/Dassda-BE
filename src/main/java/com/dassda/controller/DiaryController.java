@@ -31,7 +31,7 @@ public class DiaryController {
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
-            @RequestPart(required = false) DiaryRequest diaryRequest
+            @RequestPart(value = "diaryRequest", required = false) DiaryRequest diaryRequest
     ) throws Exception {
         System.out.println(images);
         System.out.println(diaryRequest);
