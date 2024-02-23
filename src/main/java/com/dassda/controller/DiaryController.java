@@ -31,11 +31,11 @@ public class DiaryController {
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
-            @RequestPart(value = "diaryRequest", required = false) DiaryRequest diaryRequest
+            @RequestPart(value = "diaryRequest") String diaryRequest
     ) throws Exception {
         System.out.println(images);
         System.out.println(diaryRequest);
-        diaryService.addDiary(diaryRequest, images);
+//        diaryService.addDiary(diaryRequest, images);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기 상제 조회 API", description = "일기 제목, 좋아요 수, 댓글 수, 사진, 멤버 정보들")
