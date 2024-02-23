@@ -14,5 +14,6 @@ public class Notification {
     private int notificationTypeId;
     @JsonProperty("isRead")
     private boolean isRead;
+    private Long writerId;
     private LocalDateTime regDate;
 }

@@ -16,7 +16,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Board b WHERE b.member.id = :memberId AND b.id = :boardId")
     boolean existsMemberIdAboutBoardId(@Param("memberId") Long memberId, @Param("boardId") Long boardId);
 
-    Board findByMemberIdAndId(Long memberId, Long boardId);
+    Board findByIdAndMemberId(Long id, Long memberId);
     @Query("SELECT COUNT(b) FROM Board b WHERE b.member.id = :memberId AND b.isShared = true")
     int countByMemberId(@Param("memberId") Long memberId);
 }

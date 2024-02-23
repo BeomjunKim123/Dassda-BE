@@ -66,9 +66,9 @@ public class BoardController {
     }
 
     @Operation(summary = "일기장 나가기 API", description = "공유 일기장 나가기")
-    @PostMapping("/{boardId}/resign")
-    public ResponseEntity<Void> deleteShare(@PathVariable("boardId") Long boardId) {
-        boardService.deleteShare(boardId);
+    @PostMapping("/{id}/resign")
+    public ResponseEntity<Void> deleteShare(@PathVariable("id") Long id) {
+        boardService.deleteShare(id);
         return ResponseEntity.ok().build();
     }
 }

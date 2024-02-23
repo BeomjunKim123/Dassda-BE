@@ -30,7 +30,7 @@ public interface ShareRepository extends JpaRepository<Share, Long> {
     List<Board> findBoardsShared(@Param("memberId") Long memberId);
 
     boolean existsByBoardId(Long boardId);
-
+    boolean existsByMemberId(Long memberId);
     List<Share> findByBoardId(Long boardId);
 
 

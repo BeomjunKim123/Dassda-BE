@@ -3,6 +3,7 @@ package com.dassda.service;
 import com.dassda.entity.Member;
 import com.dassda.notificationResponse.*;
 import com.dassda.repository.MemberRepository;
+import com.dassda.request.NotificationRequest;
 import com.dassda.utils.GetMember;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,12 +40,37 @@ public class NotificationService {
     private Member member() {
         return GetMember.getCurrentMember();
     }
-    public boolean existsNotification() {
-        String key = "notification:" + member().getId() + ":*";
-        Set<String> keys = redisTemplate.keys(key);
-        return keys != null && !keys.isEmpty();
-    }
+//    public boolean existsNotification() {
+//        String key = "notification:" + member().getId() + ":*";
+//        Set<String> keys = redisTemplate.keys(key);
+//        return keys != null && !keys.isEmpty();
+//    }
+public boolean existsUnreadNotification() {
+    String pattern = "notification:" + member().getId() + ":*";
+    AtomicBoolean existsUnread = new AtomicBoolean(false);
 
+    redisTemplate.executeWithStickyConnection(connection -> {
+        Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(pattern).build());
+        while (cursor.hasNext() && !existsUnread.get()) {
+            String key = new String(cursor.next());
+            String notificationJson = redisTemplate.opsForValue().get(key);
+            if (notificationJson != null) {
+                try {
+                    Notification notification = parseNotification(notificationJson);
+                    if (!notification.isRead()) {
+                        existsUnread.set(true);
+                        break;
+                    }
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null; // Return type should match executeWithStickyConnection's expected return type
+    });
+
+    return existsUnread.get();
+}
     public List<Notification> getUserNotifications(int pageSize, int lastViewId) throws JsonProcessingException{
 //        String pattern = "notification:" + member().getId() + ":*";
 //
@@ -130,12 +157,14 @@ public class NotificationService {
         }
     }
 
-    public void updateReadStatusOfOne(Long notificationId) throws JsonProcessingException {
-        String key = "notification:" + member().getId() + ":" + notificationId + ":*";
-
+    public void updateReadStatusOfOne(Long notificationId, NotificationRequest notificationRequest) throws JsonProcessingException {
+        String key = "notification:" + member().getId() + ":" + notificationId + ":" + notificationRequest.getWriterId();
+        System.out.println(key);
         String notificationJson = redisTemplate.opsForValue().get(key);
+        System.out.println(notificationJson);
         if(notificationJson != null) {
             JsonNode root = objectMapper.readTree(notificationJson);
+            System.out.println(root);
             ((ObjectNode) root).put("isRead", true);
             String updateJson = objectMapper.writeValueAsString(root);
             redisTemplate.opsForValue().set(key, updateJson);

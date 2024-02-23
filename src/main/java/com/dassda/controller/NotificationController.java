@@ -1,6 +1,7 @@
 package com.dassda.controller;
 
 import com.dassda.notificationResponse.Notification;
+import com.dassda.request.NotificationRequest;
 import com.dassda.service.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,9 +32,10 @@ public class NotificationController {
     @Operation(summary = "알림 id에 대한 읽음 처리 API", description = "하나의 알림 읽음 처리")
     @PutMapping("/{notificationId}")
     public ResponseEntity<Void> updateReadStatusOfOne(
-            @PathVariable(value = "notificationId") Long notificationId
-    ) throws JsonProcessingException {
-        notificationService.updateReadStatusOfOne(notificationId);
+            @PathVariable(value = "notificationId") Long notificationId,
+            @RequestBody() NotificationRequest notificationRequest
+            ) throws JsonProcessingException {
+        notificationService.updateReadStatusOfOne(notificationId, notificationRequest);
         return ResponseEntity.ok().build();
     }
 

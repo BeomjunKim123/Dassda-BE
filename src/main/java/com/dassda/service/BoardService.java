@@ -58,10 +58,12 @@ public class BoardService {
         }
         board.setBackUp(true);
         List<Diary> diaryList = diaryRepository.findByBoardId(board.getId());
-        diaryList.stream()
-                        .filter(diary -> !diary.isBackUp())
-                        .forEach(diary -> diary.setBackUp(true));
-        diaryRepository.saveAll(diaryList);
+        if(!(shareRepository.existsByBoardId(board.getId()) && shareRepository.existsByMemberId(currentMember().getId()))) {
+            diaryList.stream()
+                    .filter(diary -> !diary.isBackUp())
+                    .forEach(diary -> diary.setBackUp(true));
+            diaryRepository.saveAll(diaryList);
+        }
         boardRepository.save(board);
     }
     public List<BoardResponse> getBoard() {
@@ -102,7 +104,7 @@ public class BoardService {
                 shareRepository.countByMemberIdAboutShare(memberId) - boardRepository.countByMemberId(memberId),
                 diaryRepository.countIsSharedDiaries(memberId),
                 boardRepository.existsSharedBoardByMemberId(memberId),
-                notificationService.existsNotification()
+                notificationService.existsUnreadNotification()
         );
     }
 
@@ -116,14 +118,9 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteShare(Long boardId) {
+    public void deleteShare(Long id) {
         Long memberId = currentMember().getId();
-        Share share = shareRepository.findByBoardIdAndMemberId(boardId, memberId);
-        Board board = boardRepository.findByMemberIdAndId(memberId, boardId);
-        if(memberId.equals(board.getMember().getId())) {
-            board.setBackUp(true);
-            boardRepository.save(board);
-        }
+        Share share = shareRepository.findByBoardIdAndMemberId(id, memberId);
         shareRepository.delete(share);
     }
 }
