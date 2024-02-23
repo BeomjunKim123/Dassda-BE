@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,17 +29,19 @@ public class DiaryController {
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @PostMapping()
     public ResponseEntity<Void> addDiary(
-            @RequestParam(value = "images", required = false) List<MultipartFile> images,
-            @ModelAttribute DiaryRequest diaryRequest
+            @RequestPart(value = "image1", required = false) MultipartFile image1,
+            @RequestPart(value = "image2", required = false) MultipartFile image2,
+            @RequestPart(value = "image3", required = false) MultipartFile image3,
+            @RequestPart DiaryRequest diaryRequest
     ) throws Exception {
-//
-        if(images.isEmpty()) {
-            diaryRequest.setImages(null);
-        } else {
-            diaryRequest.setImages(images);
-        }
 
-        diaryService.addDiary(diaryRequest);
+        List<MultipartFile> images = new ArrayList<>() {{
+           add(image1);
+           add(image2);
+           add(image3);
+        }};
+
+        diaryService.addDiary(diaryRequest, images);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기 상제 조회 API", description = "일기 제목, 좋아요 수, 댓글 수, 사진, 멤버 정보들")

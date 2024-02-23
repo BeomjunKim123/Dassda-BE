@@ -21,7 +21,9 @@ public class DiaryRequest {
     private Long emotionId;
     @Schema(name = "선택된 날짜")
     private String selectedDate;
-    @Schema(description = "멀티파트 이미지 배열")
-    private List<MultipartFile> images;
+
+    private MultipartFile image1;
+    private MultipartFile image2;
+    private MultipartFile image3;
 
 }

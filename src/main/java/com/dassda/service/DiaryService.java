@@ -62,7 +62,7 @@ public class DiaryService {
         }
     }
     @Transactional
-    public void addDiary(DiaryRequest diaryRequest) throws Exception {
+    public void addDiary(DiaryRequest diaryRequest, List<MultipartFile> images) throws Exception {
         Long boardId = diaryRequest.getBoardId();
         Long memberId = member().getId();
         Long emotionId = diaryRequest.getEmotionId();
@@ -94,10 +94,10 @@ public class DiaryService {
         diary.setBackUp(false);
         diaryRepository.save(diary);
 
-        if(diaryRequest.getImages().isEmpty()) {
+        if(images.isEmpty()) {
             diaryImgRepository.save(null);
         } else {
-            for(MultipartFile file : diaryRequest.getImages()) {
+            for(MultipartFile file : images) {
                 DiaryImg diaryImg = new DiaryImg();
                 String oriImgName = file.getOriginalFilename();
                 String imgName = "";
@@ -205,19 +205,19 @@ public class DiaryService {
             diaryImgRepository.delete(image);
         }
 
-        for(MultipartFile file : diaryRequest.getImages()) {
-            DiaryImg diaryImgs = new DiaryImg();
-            String oriImgName = file.getOriginalFilename();
-            String imgName = "";
-            String imgUrl = "";
-            if(!StringUtils.isEmpty(oriImgName)) {
-                imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "http://118.67.143.25:8080/images/" + imgName;
-            }
-            diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
-            diaryImgs.setDiary(diary.get());
-            diaryImgRepository.save(diaryImgs);
-        }
+//        for(MultipartFile file : diaryRequest.getImages()) {
+//            DiaryImg diaryImgs = new DiaryImg();
+//            String oriImgName = file.getOriginalFilename();
+//            String imgName = "";
+//            String imgUrl = "";
+//            if(!StringUtils.isEmpty(oriImgName)) {
+//                imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
+//                imgUrl = "http://118.67.143.25:8080/images/" + imgName;
+//            }
+//            diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
+//            diaryImgs.setDiary(diary.get());
+//            diaryImgRepository.save(diaryImgs);
+//        }
 
         Diary updateDiaryInfo = new Diary();
         updateDiaryInfo.setSticker(sticker.get());
