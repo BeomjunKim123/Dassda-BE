@@ -32,8 +32,11 @@ public class DiaryController {
             @ModelAttribute DiaryRequest diaryRequest
     ) throws Exception {
 
-        if (images != null && images.length > 0) {
-            diaryRequest.setImages(Arrays.asList(images));
+        if(String.valueOf(images).equals("null") || images.length == 0) {
+            diaryRequest.setImages(null);
+        } else {
+            List<MultipartFile> imagesList = Arrays.asList(images);
+            diaryRequest.setImages(imagesList);
         }
 
         diaryService.addDiary(diaryRequest);
