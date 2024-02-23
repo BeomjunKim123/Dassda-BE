@@ -1,6 +1,7 @@
 package com.dassda.controller;
 
 import com.dassda.request.DiaryRequest;
+import com.dassda.request.ImageRequest;
 import com.dassda.response.DiaryDetailResponse;
 import com.dassda.response.LikesResponse;
 import com.dassda.service.DiaryService;
@@ -30,10 +31,10 @@ public class DiaryController {
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
-            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @RequestPart(value = "imageRequest", required = false) ImageRequest imageRequest,
             @RequestPart(value = "diaryRequest") String diaryRequest
     ) throws Exception {
-        System.out.println(images);
+        System.out.println(imageRequest);
         System.out.println(diaryRequest);
 //        diaryService.addDiary(diaryRequest, images);
         return ResponseEntity.ok().build();
