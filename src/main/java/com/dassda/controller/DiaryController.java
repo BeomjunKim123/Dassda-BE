@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,20 +28,13 @@ public class DiaryController {
     private final LikesService likesService;
 
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
-    @PostMapping()
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
-            @RequestPart(value = "image1", required = false) MultipartFile image1,
-            @RequestPart(value = "image2", required = false) MultipartFile image2,
-            @RequestPart(value = "image3", required = false) MultipartFile image3,
-            @RequestPart DiaryRequest diaryRequest
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @RequestPart(value = "diaryRequest", required = false) DiaryRequest diaryRequest
     ) throws Exception {
-
-        List<MultipartFile> images = new ArrayList<>() {{
-           add(image1);
-           add(image2);
-           add(image3);
-        }};
-
+        System.out.println(images);
+        System.out.println(diaryRequest);
         diaryService.addDiary(diaryRequest, images);
         return ResponseEntity.ok().build();
     }
