@@ -28,15 +28,14 @@ public class DiaryController {
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @PostMapping()
     public ResponseEntity<Void> addDiary(
-            @RequestParam(value = "images", required = false) MultipartFile[] images,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @ModelAttribute DiaryRequest diaryRequest
     ) throws Exception {
 
-        if(String.valueOf(images).equals("null") || images.length == 0) {
+        if(images.isEmpty()) {
             diaryRequest.setImages(null);
         } else {
-            List<MultipartFile> imagesList = Arrays.asList(images);
-            diaryRequest.setImages(imagesList);
+            diaryRequest.setImages(images);
         }
 
         diaryService.addDiary(diaryRequest);
