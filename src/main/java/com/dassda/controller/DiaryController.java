@@ -1,22 +1,17 @@
 package com.dassda.controller;
 
 import com.dassda.request.DiaryRequest;
-import com.dassda.request.ImageRequest;
 import com.dassda.response.DiaryDetailResponse;
 import com.dassda.response.LikesResponse;
 import com.dassda.service.DiaryService;
 import com.dassda.service.LikesService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -29,14 +24,14 @@ public class DiaryController {
     private final LikesService likesService;
 
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
-            @RequestPart(value = "imageRequest", required = false) ImageRequest imageRequest,
-            @RequestPart(value = "diaryRequest") String diaryRequest
+            @RequestPart(value = "images", required = false) List<MultipartFile> images,
+            @RequestPart(value = "diaryRequest") DiaryRequest diaryRequest
     ) throws Exception {
-        System.out.println(imageRequest);
+        System.out.println(images);
         System.out.println(diaryRequest);
-//        diaryService.addDiary(diaryRequest, images);
+        diaryService.addDiary(diaryRequest);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기 상제 조회 API", description = "일기 제목, 좋아요 수, 댓글 수, 사진, 멤버 정보들")

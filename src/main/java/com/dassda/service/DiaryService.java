@@ -62,7 +62,7 @@ public class DiaryService {
         }
     }
     @Transactional
-    public void addDiary(DiaryRequest diaryRequest, List<MultipartFile> images) throws Exception {
+    public void addDiary(DiaryRequest diaryRequest) throws Exception {
         Long boardId = diaryRequest.getBoardId();
         Long memberId = member().getId();
         Long emotionId = diaryRequest.getEmotionId();
@@ -94,10 +94,10 @@ public class DiaryService {
         diary.setBackUp(false);
         diaryRepository.save(diary);
 
-        if(images.isEmpty()) {
+        if(diaryRequest.getImages().isEmpty()) {
             diaryImgRepository.save(null);
         } else {
-            for(MultipartFile file : images) {
+            for(MultipartFile file : diaryRequest.getImages()) {
                 DiaryImg diaryImg = new DiaryImg();
                 String oriImgName = file.getOriginalFilename();
                 String imgName = "";
