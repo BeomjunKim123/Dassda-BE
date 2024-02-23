@@ -95,7 +95,7 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         if(diaryRequest.getImages() == null) {
-            diaryImgRepository.save(null);
+            
         } else {
             for(MultipartFile file : diaryRequest.getImages()) {
                 DiaryImg diaryImg = new DiaryImg();
