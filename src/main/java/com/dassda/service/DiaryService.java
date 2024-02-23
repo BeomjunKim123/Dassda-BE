@@ -94,7 +94,7 @@ public class DiaryService {
         diary.setBackUp(false);
         diaryRepository.save(diary);
 
-        if(diaryRequest.getImages().isEmpty()) {
+        if(diaryRequest.getImages() == null) {
             diaryImgRepository.save(null);
         } else {
             for(MultipartFile file : diaryRequest.getImages()) {
