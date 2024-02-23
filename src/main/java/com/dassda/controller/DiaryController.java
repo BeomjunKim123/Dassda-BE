@@ -26,8 +26,8 @@ public class DiaryController {
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> addDiary(
-            @RequestPart(value = "images", required = false) List<MultipartFile> images,
-            @RequestPart(value = "diaryRequest") DiaryRequest diaryRequest
+            @RequestParam(value = "images", required = false) List<MultipartFile> images,
+            @ModelAttribute DiaryRequest diaryRequest
     ) throws Exception {
         System.out.println(images);
         System.out.println(diaryRequest);
