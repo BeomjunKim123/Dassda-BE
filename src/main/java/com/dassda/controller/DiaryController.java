@@ -31,7 +31,7 @@ public class DiaryController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @ModelAttribute DiaryRequest diaryRequest
     ) throws Exception {
-
+//
         if(images.isEmpty()) {
             diaryRequest.setImages(null);
         } else {
