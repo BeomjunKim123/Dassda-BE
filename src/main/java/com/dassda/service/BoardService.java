@@ -12,6 +12,7 @@ import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
 import com.dassda.response.MembersResponse;
+import com.dassda.response.TitleResponse;
 import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -122,6 +123,16 @@ public class BoardService {
         Long memberId = currentMember().getId();
         Share share = shareRepository.findByBoardIdAndMemberId(id, memberId);
         shareRepository.delete(share);
+    }
+    public TitleResponse getTitle(Long boardId) {
+        Optional<Board> board = boardRepository.findById(boardId);
+        if(board.isPresent()) {
+            TitleResponse titleResponse = new TitleResponse(board.get().getTitle());
+            return titleResponse;
+        } else {
+            throw new IllegalStateException("없는 일기장");
+        }
+
     }
 }
 

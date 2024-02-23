@@ -1,5 +1,6 @@
 package com.dassda.service;
 
+import com.dassda.entity.Board;
 import com.dassda.entity.Diary;
 import com.dassda.entity.Member;
 import com.dassda.entity.ReadDiary;
@@ -30,6 +31,7 @@ public class ModeService {
     private final ReadDiaryRepository readDiaryRepository;
     private final DiaryImgRepository diaryImgRepository;
     private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
 
     private Member member() {
         return GetMember.getCurrentMember();
@@ -39,7 +41,6 @@ public class ModeService {
         LocalDate monthYear = LocalDate.parse(date);
         int year = monthYear.getYear();
         int month = monthYear.getMonthValue();
-
         // 연도와 월을 기준으로 조회
         List<String> monthList = diaryRepository.findDiaryDatesByMonthAndYear(boardId, month, year);
         CalenderMonthResponse calenderMonthResponse = new CalenderMonthResponse();
@@ -86,9 +87,16 @@ public class ModeService {
     public NewExistResponse existNewDiary(Long boardId) {
         NewExistResponse newExistResponse = new NewExistResponse();
         Long memberId = member().getId();
-        if (!(readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId) && diaryRepository.existsByMemberIdAndBoardId(boardId, memberId))) {
-            newExistResponse.setNewExist(false);
-        } else {
+        boolean meDiary = diaryRepository.existsByMemberIdAndBoardId(boardId, memberId);
+        boolean meRead = readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId);
+        boolean meBoard = boardRepository.existsByBack(boardId);
+        System.out.println(meDiary);
+        System.out.println(meBoard);
+        System.out.println(meRead);
+        if (    diaryRepository.existsByMemberIdAndBoardId(boardId, memberId)
+                && readDiaryRepository.isUnreadByBoardIdAndMemberId(boardId, memberId)
+                && boardRepository.existsByBack(boardId)
+        ) {
             newExistResponse.setNewExist(true);
         }
         return newExistResponse;

@@ -135,6 +135,7 @@ public class DiaryService {
     public DiaryDetailResponse getDiaries(Long memberId, Long boardId, String date) {
         String dateparsing = date.substring(0, 10);
         LocalDate selectDate = LocalDate.parse(dateparsing);
+        Long current = member().getId();
         Optional<Diary> diary = diaryRepository.findByMemberIdAndBoardIdAndSelectDate(memberId, boardId, selectDate);
 
         if(!diary.isPresent()) {
@@ -173,18 +174,21 @@ public class DiaryService {
         Integer commentCount = commentRepository.countByDiaryId(diaryId);
         Integer replyCount = commentRepository.countRepliesByDiaryId(diaryId);
         diaryDetailResponse.setCommentCount(commentCount + (replyCount == null ? 0 : replyCount));
-
-        if(member().getId() == diary.get().getMember().getId()) {
-            diaryDetailResponse.setOwned(true);
-        } else {
+        boolean babo = Objects.equals(member().getId(), diary.get().getMember().getId());
+        System.out.println(babo);
+        if(!babo) {
             diaryDetailResponse.setOwned(false);
-            boolean isReadDiary = readDiaryRepository.existsByMemberIdAndDiaryId(diaryId, memberId);
-            if(!isReadDiary) {
+            boolean isReadDiary = readDiaryRepository.existsByMemberIdAndDiaryId(diaryId, current);
+            System.out.println(isReadDiary);
+            if(isReadDiary) {
                 ReadDiary readDiary = new ReadDiary();
                 readDiary.setReadId(member());
                 readDiary.setDiary(diary.get());
                 readDiaryRepository.save(readDiary);
             }
+
+        } else {
+            diaryDetailResponse.setOwned(true);
 
         }
     return diaryDetailResponse;

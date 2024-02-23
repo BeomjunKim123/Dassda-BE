@@ -12,5 +12,5 @@ import java.util.List;
 @Setter
 public class CalenderMonthResponse {
     @Schema(name = "1개월에 일기 유무")
-    List<String> dateList;
+    private List<String> dateList;
 }

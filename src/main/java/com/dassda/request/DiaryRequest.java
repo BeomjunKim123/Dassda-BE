@@ -22,6 +22,6 @@ public class DiaryRequest {
     @Schema(name = "선택된 날짜")
     private String selectedDate;
     @Schema(description = "멀티파트 이미지 배열")
-    private List<MultipartFile> images = new ArrayList<>();
+    private List<MultipartFile> images;
 
 }

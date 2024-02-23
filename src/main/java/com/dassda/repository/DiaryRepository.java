@@ -80,4 +80,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     List<Diary> findByBoardId(Long boardId);
 
     List<Diary> findByMemberId(Long memberId);
+
 }

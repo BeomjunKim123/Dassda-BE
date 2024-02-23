@@ -4,6 +4,7 @@ import com.dassda.request.BoardRequest;
 import com.dassda.response.BoardResponse;
 import com.dassda.response.HeroResponse;
 import com.dassda.response.MembersResponse;
+import com.dassda.response.TitleResponse;
 import com.dassda.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -70,5 +71,11 @@ public class BoardController {
     public ResponseEntity<Void> deleteShare(@PathVariable("id") Long id) {
         boardService.deleteShare(id);
         return ResponseEntity.ok().build();
+    }
+    @Operation(summary = "일기장 제목 조회 API", description = "일기장 번호로 제목 주기")
+    @GetMapping("/title/{boardId}")
+    public ResponseEntity<TitleResponse> getTitle(@PathVariable("boardId") Long boardId) {
+        TitleResponse titleResponse = boardService.getTitle(boardId);
+        return ResponseEntity.ok(titleResponse);
     }
 }

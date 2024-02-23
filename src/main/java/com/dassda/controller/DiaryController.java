@@ -11,7 +11,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -25,7 +27,15 @@ public class DiaryController {
 
     @Operation(summary = "일기 작성 API", description = "일기 내용, 기분, 제목, 사진들")
     @PostMapping()
-    public ResponseEntity<Void> addDiary(@ModelAttribute DiaryRequest diaryRequest) throws Exception {
+    public ResponseEntity<Void> addDiary(
+            @RequestParam(value = "images", required = false) MultipartFile[] images,
+            @ModelAttribute DiaryRequest diaryRequest
+    ) throws Exception {
+
+        if (images != null && images.length > 0) {
+            diaryRequest.setImages(Arrays.asList(images));
+        }
+
         diaryService.addDiary(diaryRequest);
         return ResponseEntity.ok().build();
     }
