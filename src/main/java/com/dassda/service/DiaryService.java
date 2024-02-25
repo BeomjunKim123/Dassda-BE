@@ -5,6 +5,7 @@ import com.dassda.event.DiaryCreatedEvent;
 import com.dassda.repository.*;
 import com.dassda.request.DiaryImgRequest;
 import com.dassda.request.DiaryRequest;
+import com.dassda.request.DiaryUpdateRequest;
 import com.dassda.response.DiaryDetailResponse;
 import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,7 +93,7 @@ public class DiaryService {
         diaryRepository.save(diary);
 
         if(diaryRequest.getImages() == null) {
-            
+
         } else {
             for(MultipartFile file : diaryRequest.getImages()) {
                 DiaryImg diaryImg = new DiaryImg();
@@ -194,30 +192,45 @@ public class DiaryService {
     return diaryDetailResponse;
     }
 
-    public void updateDiary(Long diaryId, DiaryRequest diaryRequest) throws Exception {
+    public void updateDiary(Long diaryId, DiaryUpdateRequest diaryRequest) throws Exception {
         Optional<Diary> diary = diaryRepository.findById(diaryId);
         if(!diary.get().getMember().getId().equals(member().getId())) {
             throw new IllegalStateException("내가 작성한 일기가 아닙니다");
         }
         Optional<Sticker> sticker = stickerRepository.findById(diaryRequest.getEmotionId());
-        List<DiaryImg> diaryImg = diaryImgRepository.findByDiaryId(diaryId);
-        for(DiaryImg image : diaryImg) {
-            diaryImgRepository.delete(image);
+//        List<DiaryImg> diaryImg = diaryImgRepository.findByDiaryId(diaryId);
+//        for(DiaryImg image : diaryImg) {
+//            diaryImgRepository.delete(image);
+//        }
+
+        Set<Long> requestImgIds = new HashSet<>(diaryRequest.getImgId());
+
+// 데이터베이스에서 해당 diaryId에 해당하는 모든 DiaryImg 엔티티를 조회
+        List<DiaryImg> existingImgs = diaryImgRepository.findByDiaryId(diaryId);
+
+// 삭제할 DiaryImg 엔티티를 식별
+        List<DiaryImg> imgsToDelete = existingImgs.stream()
+                .filter(img -> !requestImgIds.contains(img.getId()))
+                .toList();
+
+// 식별된 DiaryImg 엔티티들을 데이터베이스에서 삭제
+        for (DiaryImg img : imgsToDelete) {
+            diaryImgRepository.delete(img);
         }
 
-//        for(MultipartFile file : diaryRequest.getImages()) {
-//            DiaryImg diaryImgs = new DiaryImg();
-//            String oriImgName = file.getOriginalFilename();
-//            String imgName = "";
-//            String imgUrl = "";
-//            if(!StringUtils.isEmpty(oriImgName)) {
-//                imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-//                imgUrl = "http://118.67.143.25:8080/images/" + imgName;
-//            }
-//            diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
-//            diaryImgs.setDiary(diary.get());
-//            diaryImgRepository.save(diaryImgs);
-//        }
+        for(MultipartFile file : diaryRequest.getImages()) {
+            DiaryImg diaryImgs = new DiaryImg();
+            String oriImgName = file.getOriginalFilename();
+            String imgName = "";
+            String imgUrl = "";
+            if(!StringUtils.isEmpty(oriImgName)) {
+                imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
+                imgUrl = "http://118.67.143.25:8080/images/" + imgName;
+            }
+            diaryImgs.updateDiaryImg(oriImgName, imgName, imgUrl);
+            diaryImgs.setDiary(diary.get());
+            diaryImgRepository.save(diaryImgs);
+        }
 
         Diary updateDiaryInfo = new Diary();
         updateDiaryInfo.setSticker(sticker.get());

@@ -8,6 +8,8 @@ import com.dassda.oauth.RequestOAuthInfoService;
 import com.dassda.repository.MemberRepository;
 import com.dassda.token.AuthTokens;
 import com.dassda.token.AuthTokensGenerator;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -33,11 +35,24 @@ public class OAuthLoginService {
         HttpEntity<?> request = new HttpEntity<>("", httpHeaders);
         restTemplate.postForObject(url, request, KakaoInfoResponse.class);
     }
-    public AuthTokens login(OAuthLoginParams params) {
-        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
-        Long memberId = findOrCreateMember(oAuthInfoResponse);
-        return authTokensGenerator.generate(memberId);
-    }
+//    public AuthTokens login(OAuthLoginParams params) {
+//        OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
+//        Long memberId = findOrCreateMember(oAuthInfoResponse);
+//        return authTokensGenerator.generate(memberId);
+//    }
+public AuthTokens login(OAuthLoginParams params, HttpServletResponse response) {
+    OAuthInfoResponse oAuthInfoResponse = requestOAuthInfoService.request(params);
+    Long memberId = findOrCreateMember(oAuthInfoResponse);
+    AuthTokens tokens = authTokensGenerator.generate(memberId);
+
+    // 쿠키에 액세스 토큰과 리프레시 토큰 추가
+    Cookie accessTokenCookie = new Cookie("accessToken", tokens.getAccessToken());
+    accessTokenCookie.setHttpOnly(true);
+    accessTokenCookie.setPath("/");
+    response.addCookie(accessTokenCookie);
+
+    return tokens;
+}
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
         return memberRepository.findByEmail(oAuthInfoResponse.getEmail())
                 .map(Member::getId)

@@ -1,36 +1,14 @@
 server:
   port: 8080
-#
-#spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3306/ssda
-#    username: root
-#    password: Dongcci92!!
-#  redis:
-#    host: localhost
-#    port: 6379
-#  mail:
-#    host: smtp.gmail.com
-#    port: 587
-#    username: gkgk9753@gmail.com
-#    password: hqqd aezh ppxf rcxg
-#    properties:
-#      mail:
-#        smtp:
-#          auth: true
-#          timeout: 5000
-#          starttls:
-#            enable: true
 
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://118.67.143.25:3306/ssda
-    username: ssda
-    password: 1234
+    url: jdbc:mysql://localhost:3306/ssda
+    username: root
+    password: Dongcci92!!
   redis:
-    host: 172.17.0.1
+    host: localhost
     port: 6379
   mail:
     host: smtp.gmail.com
@@ -44,6 +22,29 @@ spring:
           timeout: 5000
           starttls:
             enable: true
+
+#spring:
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://118.67.134.203:3306/dassda
+#    username: dassda
+#    password: 1234
+#  redis:
+##    host: 172.17.0.1
+#    host: 127.0.0.1
+#    port: 6379
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: gkgk9753@gmail.com
+#    password: hqqd aezh ppxf rcxg
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          timeout: 5000
+#          starttls:
+#            enable: true
 
   jpa:
     properties:
@@ -70,14 +71,14 @@ servlet:
     maxFileSize: 20MB
     maxRequestSize: 100MB
 
-#itemImgLocation: /Users/proxy/items/item/
-#uploadPath: file:/Users/proxy/items/
+itemImgLocation: /Users/proxy/items/item/
+uploadPath: file:/Users/proxy/items/
 
 #itemImgLocation: /app/items
 #uploadPath: /app
 
-itemImgLocation: /root/items
-uploadPath: /root
+#itemImgLocation: /root/items
+#uploadPath: /root
 
 
 jwt:

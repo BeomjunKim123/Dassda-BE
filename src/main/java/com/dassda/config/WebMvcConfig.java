@@ -11,5 +11,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**", "/items/**")
                 .addResourceLocations("file:/root/items/", "file:/app/items/");
+        registry.addResourceHandler("/.well-known/pki-validation/**")
+                .addResourceLocations("file:/var/www/html/.well-known/pki-validation/");
     }
 }

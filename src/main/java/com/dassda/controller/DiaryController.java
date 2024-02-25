@@ -1,6 +1,7 @@
 package com.dassda.controller;
 
 import com.dassda.request.DiaryRequest;
+import com.dassda.request.DiaryUpdateRequest;
 import com.dassda.response.DiaryDetailResponse;
 import com.dassda.response.LikesResponse;
 import com.dassda.service.DiaryService;
@@ -29,8 +30,6 @@ public class DiaryController {
             @RequestParam(value = "images", required = false) List<MultipartFile> images,
             @ModelAttribute DiaryRequest diaryRequest
     ) throws Exception {
-        System.out.println(images);
-        System.out.println(diaryRequest);
         diaryService.addDiary(diaryRequest);
         return ResponseEntity.ok().build();
     }
@@ -45,12 +44,13 @@ public class DiaryController {
         return ResponseEntity.ok(diaryDetailRespons);
     }
     @Operation(summary = "일기 수정 API", description = "일기 수정할 내용을 보내주셈")
-    @PutMapping("/{diaryId}")
+    @PutMapping(value = "{diaryId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateDiary(
             @PathVariable(value = "diaryId") Long diaryId,
-            @ModelAttribute DiaryRequest diaryRequest
+            @ModelAttribute DiaryUpdateRequest diaryUpdateRequest,
+            @RequestParam(value = "images", required = false) List<MultipartFile> images
             ) throws Exception {
-        diaryService.updateDiary(diaryId, diaryRequest);
+        diaryService.updateDiary(diaryId, diaryUpdateRequest);
         return ResponseEntity.ok().build();
     }
     @Operation(summary = "일기 삭제 API", description = "일기 번호 보내주면 삭제")

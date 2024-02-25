@@ -1,51 +1,92 @@
 server:
   port: 8080
+  ssl:
+    key-store: file:/root/dassda.today_20240225AE947.pfx
+    key-store-type: PKCS12
+    key-store-password: q9upw7og  # jks 또는 pfx 암호
+#    key-alias: dassda.today # (필요시) Alias 명 지정. CSR 자동 생성시에는 CN 명
+#    trust-store: dassda.today_20240225AE947.pfx # (필요시) "sslcert.co.kr.jks" 또는 "sslcert.co.kr.pfx" 지정. CSR 직접 생성시에는, 루트/체인 스토어 파일 지정
+#    trust-store-password: q9upw7og  # (필요시) jks 또는 pfx 암호
 
-spring:
-  resources:
-    static-location: file:/Users/proxy/items/item/
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ssda
-    username: root
-    password: Dongcci92!!
 
 #spring:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://118.67.143.25:3306/ssda
-#    username: ssda
-#    password: 1234
+#    url: jdbc:mysql://localhost:3306/ssda
+#    username: root
+#    password: Dongcci92!!
+#  redis:
+#    host: localhost
+#    port: 6379
+#  mail:
+#    host: smtp.gmail.com
+#    port: 587
+#    username: gkgk9753@gmail.com
+#    password: hqqd aezh ppxf rcxg
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          timeout: 5000
+#          starttls:
+#            enable: true
 
-jpa:
-  properties:
-    hibernate:
-      show_sql: true
-      format_sql: true
-  hibernate:
-    ddl-auto: update
-  database-platform: org.hibernate.dialect.MySQL8Dialect
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://118.67.133.114:3306/dassda
+    username: dassda
+    password: 1234
+  redis:
+#    host: 172.17.0.1
+    host: 127.0.0.1
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gkgk9753@gmail.com
+    password: hqqd aezh ppxf rcxg
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
 
-logging:
-  level:
-    org:
-      springframework:
-        boot: DEBUG
+  jpa:
+    properties:
       hibernate:
-        type:
-          descriptor:
-            sql: trace
+        show_sql: true
+        format_sql: true
+        time_zone: Asia/Seoul
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  logging:
+    level:
+      org:
+        springframework:
+          boot: DEBUG
+        hibernate:
+          type:
+            descriptor:
+              sql: trace
 
 servlet:
   multipart:
     maxFileSize: 20MB
     maxRequestSize: 100MB
 
-itemImgLocation: /Users/proxy/items/item/
-uploadPath: file:/Users/proxy/items/
+#itemImgLocation: /Users/proxy/items/item/
+#uploadPath: file:/Users/proxy/items/
 
-#itemImgLocation: /home/root/items/item/
-#uploadPath: /home/root/items/
+#itemImgLocation: /app/items
+#uploadPath: /app
+
+itemImgLocation: /root/items
+uploadPath: /root
 
 
 jwt:
@@ -57,3 +98,4 @@ oauth:
     url:
       auth: https://kauth.kakao.com
       api: https://kapi.kakao.com
+
