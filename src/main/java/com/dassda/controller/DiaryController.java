@@ -33,14 +33,20 @@ public class DiaryController {
         diaryService.addDiary(diaryRequest);
         return ResponseEntity.ok().build();
     }
+    @Operation(summary = "일기 일별 조회 API", description = "일기장, 일기 아이디")
+    @GetMapping("/{diaryId}/related-list")
+    public ResponseEntity<List<DiaryDetailResponse>> getDetail(
+            @PathVariable("diaryId") Long diaryId) {
+        List<DiaryDetailResponse> diaryDetailResponse = diaryService.getDiary(diaryId);
+        return ResponseEntity.ok(diaryDetailResponse);
+    }
+
     @Operation(summary = "일기 상제 조회 API", description = "일기 제목, 좋아요 수, 댓글 수, 사진, 멤버 정보들")
-    @GetMapping()
+    @GetMapping("/{diaryId}")
     public ResponseEntity<DiaryDetailResponse> getDiary(
-            @RequestParam(value = "memberId") Long memberId,
-            @RequestParam(value = "boardId") Long boardId,
-            @RequestParam(value = "date") String date
+            @PathVariable("diaryId") Long diaryId
     ) {
-        DiaryDetailResponse diaryDetailRespons = diaryService.getDiaries(memberId, boardId, date);
+        DiaryDetailResponse diaryDetailRespons = diaryService.getDiaries(diaryId);
         return ResponseEntity.ok(diaryDetailRespons);
     }
     @Operation(summary = "일기 수정 API", description = "일기 수정할 내용을 보내주셈")

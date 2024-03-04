@@ -33,11 +33,11 @@ public class SecurityConfig {
                         .frameOptions(frameOptionsConfig -> frameOptionsConfig.disable()))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers("/member/**", "http://localhost:3000/**").permitAll()
+                                .requestMatchers("/member/**", "https://localhost:3000/**").permitAll()
                                 .requestMatchers("/login/**", "/index/**", "/images/**", "/**", "/app/**").permitAll()
                                 .requestMatchers("/oauth/**", "/swagger-ui/**", "/v3/api-docs/**", "/v2/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll()
                                 .requestMatchers("/v2/user/**").permitAll()
-                                .requestMatchers("https://ssda-front-tan.vercel.app/").permitAll()
+                                .requestMatchers("https://ssda-front-tan.vercel.app/", "https://dassda.today", "https://www.dassda.today").permitAll()
                                 .anyRequest().authenticated()
                 )
 
@@ -66,7 +66,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://ssda-front-tan.vercel.app/"));
+        configuration.setAllowedOrigins(Arrays.asList("https://localhost:3000", "https://ssda-front-tan.vercel.app/", "https://dassda.today/", "https://www.dassda.today/"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

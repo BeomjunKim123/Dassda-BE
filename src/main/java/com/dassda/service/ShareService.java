@@ -36,9 +36,6 @@ public class ShareService {
     public ShareResponse createInvitation(Long boardId) throws NoSuchAlgorithmException, IllegalArgumentException {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("Board not found with id: " + boardId));
-        if (!board.getMember().getId().equals(member().getId())) {
-            throw new IllegalStateException("일기장 소유자가 아니다");
-        }
         if (board.getShareLinkHash() != null && !board.getShareLinkHash().isEmpty()) {
             return new ShareResponse(board.getShareLinkHash());
         } else {

@@ -1,5 +1,13 @@
 server:
   port: 8080
+#  ssl:
+#    key-store: file:/root/dassda.today_20240225AE947.pfx
+#    key-store-type: PKCS12
+#    key-store-password: q9upw7og  # jks 또는 pfx 암호
+#    key-alias: dassda.today # (필요시) Alias 명 지정. CSR 자동 생성시에는 CN 명
+#    trust-store: dassda.today_20240225AE947.pfx # (필요시) "sslcert.co.kr.jks" 또는 "sslcert.co.kr.pfx" 지정. CSR 직접 생성시에는, 루트/체인 스토어 파일 지정
+#    trust-store-password: q9upw7og  # (필요시) jks 또는 pfx 암호
+
 
 spring:
   datasource:
@@ -26,7 +34,7 @@ spring:
 #spring:
 #  datasource:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://118.67.134.203:3306/dassda
+#    url: jdbc:mysql://118.67.133.114:3306/dassda
 #    username: dassda
 #    password: 1234
 #  redis:
@@ -45,26 +53,26 @@ spring:
 #          timeout: 5000
 #          starttls:
 #            enable: true
+#
+#  jpa:
+#    properties:
+#      hibernate:
+#        show_sql: true
+#        format_sql: true
+#        time_zone: Asia/Seoul
+#    hibernate:
+#      ddl-auto: update
+#    database-platform: org.hibernate.dialect.MySQL8Dialect
 
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-        time_zone: Asia/Seoul
-    hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-
-  logging:
-    level:
-      org:
-        springframework:
-          boot: DEBUG
-        hibernate:
-          type:
-            descriptor:
-              sql: trace
+#  logging:
+#    level:
+#      org:
+#        springframework:
+#          boot: DEBUG
+#        hibernate:
+#          type:
+#            descriptor:
+#              sql: trace
 
 servlet:
   multipart:

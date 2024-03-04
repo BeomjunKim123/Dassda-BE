@@ -9,8 +9,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/images/**", "/items/**")
-                .addResourceLocations("file:/root/items/", "file:/app/items/");
+        registry.addResourceHandler("/images/**")
+                .addResourceLocations("file:/root/items/");
         registry.addResourceHandler("/.well-known/pki-validation/**")
                 .addResourceLocations("file:/var/www/html/.well-known/pki-validation/");
     }

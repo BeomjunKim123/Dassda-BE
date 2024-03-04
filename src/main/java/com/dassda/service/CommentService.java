@@ -8,11 +8,14 @@ import com.dassda.event.DiaryCreatedEvent;
 import com.dassda.repository.CommentRepository;
 import com.dassda.repository.DiaryRepository;
 import com.dassda.repository.MemberRepository;
+import com.dassda.repository.ReplyRepository;
 import com.dassda.request.CommentOrReplyRequest;
 import com.dassda.response.CommentOrReplyResponse;
 import com.dassda.utils.GetMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +32,7 @@ public class CommentService {
     private final DiaryRepository diaryRepository;
     private final CommentRepository commentRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ReplyRepository replyRepository;
 
     private Member member() {
         return GetMember.getCurrentMember();
@@ -58,23 +62,26 @@ public class CommentService {
     }
 
     public List<CommentOrReplyResponse> getComment(Long diaryId, int pageSize, int lastViewId) {
-        List<CommentOrReplyResponse> commentOrReplyResponseList = new ArrayList<>();
-        List<Comment> commentList = commentRepository.findByDiaryId(diaryId);
+        Pageable pageable = PageRequest.of(0, pageSize);
+        List<Comment> commentList = commentRepository.findByDiaryIdAndIdGreaterThanOrderByIdAsc(diaryId, lastViewId, pageable);
 
-        int startIndex = Math.max(lastViewId, 0);
-        int endIndex = Math.min(startIndex + pageSize, commentList.size());
-        for (int i = startIndex; i < endIndex; i++) {
+        List<CommentOrReplyResponse> commentOrReplyResponseList = new ArrayList<>();
+
+        for (Comment comment : commentList) {
             CommentOrReplyResponse commentOrReplyResponse = new CommentOrReplyResponse();
-            Comment comment = commentList.get(i);
             commentOrReplyResponse.setId(comment.getId());
             commentOrReplyResponse.setNickname(comment.getMember().getNickname());
             commentOrReplyResponse.setProfileUrl(comment.getMember().getProfile_image_url());
             commentOrReplyResponse.setContents(comment.getComment());
             commentOrReplyResponse.setRegDate(comment.getRegDate());
+
             Long commentId = comment.getId();
+            boolean hasReply = replyRepository.existsByCommentId(commentId);
+            commentOrReplyResponse.setHasReply(hasReply);
+
             String time = commentRepository.findDiaryWithTimeAge(commentId);
             commentOrReplyResponse.setTimeStamp(time);
-            if (member().getId() == comment.getMember().getId()) {
+            if (member().getId().equals(comment.getMember().getId())) {
                 commentOrReplyResponse.setOwned(true);
             } else {
                 commentOrReplyResponse.setOwned(false);
@@ -89,6 +96,39 @@ public class CommentService {
         }
         return commentOrReplyResponseList;
     }
+
+//    public List<CommentOrReplyResponse> getComment(Long diaryId, int pageSize, int lastViewId) {
+//        List<CommentOrReplyResponse> commentOrReplyResponseList = new ArrayList<>();
+//        List<Comment> commentList = commentRepository.findByDiaryId(diaryId);
+//
+//        int startIndex = Math.max(lastViewId, 0);
+//        int endIndex = Math.min(startIndex + pageSize, commentList.size());
+//        for (int i = startIndex; i < endIndex; i++) {
+//            CommentOrReplyResponse commentOrReplyResponse = new CommentOrReplyResponse();
+//            Comment comment = commentList.get(i);
+//            commentOrReplyResponse.setId(comment.getId());
+//            commentOrReplyResponse.setNickname(comment.getMember().getNickname());
+//            commentOrReplyResponse.setProfileUrl(comment.getMember().getProfile_image_url());
+//            commentOrReplyResponse.setContents(comment.getComment());
+//            commentOrReplyResponse.setRegDate(comment.getRegDate());
+//            Long commentId = comment.getId();
+//            String time = commentRepository.findDiaryWithTimeAge(commentId);
+//            commentOrReplyResponse.setTimeStamp(time);
+//            if (member().getId() == comment.getMember().getId()) {
+//                commentOrReplyResponse.setOwned(true);
+//            } else {
+//                commentOrReplyResponse.setOwned(false);
+//            }
+//
+//            if (comment.isBackUp()) {
+//                commentOrReplyResponse.setDeletedMark(true);
+//            } else {
+//                commentOrReplyResponse.setDeletedMark(false);
+//            }
+//            commentOrReplyResponseList.add(commentOrReplyResponse);
+//        }
+//        return commentOrReplyResponseList;
+//    }
 
     public void deleteComment(Long diaryId, Long commentId) {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);

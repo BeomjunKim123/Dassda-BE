@@ -29,4 +29,6 @@ public interface ReplyRepository extends JpaRepository<Reply, Long> {
             "END " +
             "FROM reply d WHERE d.id = :replyId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("replyId") Long replyId);
+
+    boolean existsByCommentId(Long commentId);
 }

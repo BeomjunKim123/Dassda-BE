@@ -1,6 +1,7 @@
 package com.dassda.repository;
 
 import com.dassda.entity.Comment;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,9 +17,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c WHERE c.id = :commentId ORDER BY c.regDate DESC")
     Optional<Comment> findLatestByCommentId(Long commentId);
 
+    // CommentRepository.java
+    List<Comment> findByDiaryIdAndIdGreaterThanOrderByIdAsc(Long diaryId, int lastViewId, Pageable pageable);
 
-    @Query(value = "select r.* from comment c inner join reply r on c.id = r.comment_id where c.diary_id = :diaryId", nativeQuery = true)
-    Integer countRepliesByDiaryId(@Param("diaryId") Long diaryId);
+
+    @Query(value = "SELECT COUNT(r.id) FROM comment c INNER JOIN reply r ON c.id = r.comment_id WHERE c.diary_id = :diaryId", nativeQuery = true)
+    int countRepliesByDiaryId(@Param("diaryId") Long diaryId);
 
     @Query(value = "SELECT " +
             "CASE " +

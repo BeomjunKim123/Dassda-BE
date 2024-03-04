@@ -2,12 +2,14 @@ package com.dassda.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "read_diary")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReadDiary {
 
     @Id

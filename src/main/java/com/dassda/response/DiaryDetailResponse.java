@@ -3,7 +3,9 @@ package com.dassda.response;
 import com.dassda.entity.DiaryImg;
 import com.dassda.request.DiaryImgRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -12,32 +14,54 @@ import java.util.List;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class DiaryDetailResponse {
-    @Schema
+
     private Long id;
-    @Schema
+
     private Long memberId;
-    @Schema
+
     private String nickname;
-    @Schema
+
     private String profileUrl;
-    @Schema
+
     private Long emotionId;
     @Schema(ref = "#/components/schemas/DiaryImgRequest")
     private List<DiaryImgRequest> images;
-    @Schema
+
     private String title;
-    @Schema
+
     private String contents;
     @Schema(name = "작성일부터 과거로 일수")
     private String timeStamp;
-    @Schema
+
     private LocalDateTime selectedDate;
-    @Schema
+
     private int likeCount;
-    @Schema
+
     private int commentCount;
-    @Schema
+
     private boolean isOwned;
+
+    private boolean isLiked;
+
+    public DiaryDetailResponse(Long id, Long memberId, String nickname, String profileUrl, Long emotionId,
+                               List<DiaryImgRequest> images, String title, String contents, String timeStamp,
+                               LocalDateTime selectedDate, int likeCount, int commentCount, boolean isOwned, boolean isLiked) {
+        this.id = id;
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.profileUrl = profileUrl;
+        this.emotionId = emotionId;
+        this.images = images;
+        this.title = title;
+        this.contents = contents;
+        this.timeStamp = timeStamp;
+        this.selectedDate = selectedDate;
+        this.likeCount = likeCount;
+        this.commentCount = commentCount;
+        this.isOwned = isOwned;
+        this.isLiked = isLiked;
+    }
 
 }

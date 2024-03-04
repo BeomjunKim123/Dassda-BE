@@ -1,5 +1,6 @@
 package com.dassda.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,4 +26,6 @@ public class CommentOrReplyResponse {
     private boolean isDeletedMark;
     @Schema(name = "작성일부터 과거로 일수")
     private String timeStamp;
+    @Schema(name = "답글 유무")
+    private boolean hasReply;
 }

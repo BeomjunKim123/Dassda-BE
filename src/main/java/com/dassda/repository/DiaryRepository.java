@@ -39,6 +39,8 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
     @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :day AND d.board.backUp = false AND d.backUp = false")
     List<Diary> findByBoardIdAndDay(@Param("boardId") Long boardId, @Param("day") LocalDate day);
 
+    @Query("SELECT d FROM Diary d WHERE d.board.id = :boardId AND FUNCTION('DATE', d.selectDate) = :selectedDateTime AND d.board.backUp = false AND d.backUp = false")
+    List<Diary> findByBoardIdAndSelectedDate(@Param("boardId") Long boardId, @Param("selectedDateTime") LocalDate selectedDateTime);
 //    @Query(value = "SELECT " +
 //            "CASE " +
 //            "WHEN DATE(d.select_date) = CURDATE() THEN '오늘' " +
@@ -52,12 +54,12 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 
     @Query(value = "SELECT " +
             "CASE " +
-            "WHEN TIMESTAMPDIFF(MINUTE, d.select_date, NOW()) < 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, d.select_date, NOW()), '분 전') " +
-            "WHEN TIMESTAMPDIFF(HOUR, d.select_date, NOW()) < 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, d.select_date, NOW()), '시간 전') " +
-            "WHEN DATE(d.select_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN '1일 전' " +
-            "WHEN DATE(d.select_date) > DATE_SUB(CURDATE(), INTERVAL 7 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), d.select_date)), '일 전') " +
-            "WHEN DATE(d.select_date) > DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), d.select_date) / 7), '주 전') " +
-            "ELSE CONCAT(FLOOR(DATEDIFF(CURDATE(), d.select_date) / 30), '개월 전') " +
+            "WHEN TIMESTAMPDIFF(MINUTE, d.reg_date, NOW()) < 60 THEN CONCAT(TIMESTAMPDIFF(MINUTE, d.reg_date, NOW()), '분 전') " +
+            "WHEN TIMESTAMPDIFF(HOUR, d.reg_date, NOW()) < 24 THEN CONCAT(TIMESTAMPDIFF(HOUR, d.reg_date, NOW()), '시간 전') " +
+            "WHEN DATE(d.reg_date) = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN '1일 전' " +
+            "WHEN DATE(d.reg_date) > DATE_SUB(CURDATE(), INTERVAL 7 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), d.reg_date)), '일 전') " +
+            "WHEN DATE(d.reg_date) > DATE_SUB(CURDATE(), INTERVAL 30 DAY) THEN CONCAT(FLOOR(DATEDIFF(CURDATE(), d.reg_date) / 7), '주 전') " +
+            "ELSE CONCAT(FLOOR(DATEDIFF(CURDATE(), d.reg_date) / 30), '개월 전') " +
             "END " +
             "FROM diary d WHERE d.id = :diaryId", nativeQuery = true)
     String findDiaryWithTimeAge(@Param("diaryId") Long diaryId);

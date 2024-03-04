@@ -18,4 +18,6 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
     Optional<Likes> findByMemberIdAndDiaryId(Long memberId, Long diaryId);
     @EntityGraph(attributePaths = {"member"})
     List<Likes> findActiveLikesByDiaryId(@Param("diaryId") Long diaryId);
+
+    boolean existsByDiaryIdAndMemberId(Long diaryId, Long memberId);
 }

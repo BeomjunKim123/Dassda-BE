@@ -67,6 +67,7 @@ public class BoardService {
         }
         boardRepository.save(board);
     }
+
     public List<BoardResponse> getBoard() {
         Long currentMemberId = currentMember().getId();
         List<Board> ownBoards = boardRepository.findByMemberId(currentMemberId);
@@ -87,10 +88,6 @@ public class BoardService {
                 board.getTitle(), board.getRegDate(), diaryRepository.countByBoardId(board.getId()),
                 Math.toIntExact(shareRepository.countByBoardId(board.getId())), newBadge(board.getId()), board.isShared());
     }
-    private boolean newBadge(Long boardId) {
-        Long memberId = currentMember().getId();
-        return readDiaryRepository.existsUnreadDiaries(boardId, memberId);
-    }
     @Transactional
     public void updateBoard(Long boardId, BoardRequest boardRequest) {
         Board board = boardRepository.findById(boardId)
@@ -98,6 +95,10 @@ public class BoardService {
 
         board.updateDetails(boardRequest.getTitle(), boardRequest.getImageNumber(), boardRequest.getAppearanceType());
         boardRepository.save(board);
+    }
+    private boolean newBadge(Long boardId) {
+        Long memberId = currentMember().getId();
+        return readDiaryRepository.existsUnreadDiaries(boardId, memberId);
     }
     public HeroResponse getHero() {
         Long memberId = currentMember().getId();

@@ -64,21 +64,21 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
-  logging:
-    level:
-      org:
-        springframework:
-          boot: DEBUG
-        hibernate:
-          type:
-            descriptor:
-              sql: trace
+#  logging:
+#    level:
+#      org:
+#        springframework:
+#          boot: DEBUG
+#        hibernate:
+#          type:
+#            descriptor:
+#              sql: trace
 
 servlet:
   multipart:
     maxFileSize: 20MB
     maxRequestSize: 100MB
-
+#
 #itemImgLocation: /Users/proxy/items/item/
 #uploadPath: file:/Users/proxy/items/
 

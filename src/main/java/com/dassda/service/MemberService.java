@@ -42,7 +42,7 @@ public class MemberService {
             String imgUrl = "";
             if(!StringUtils.isEmpty(oriImgName)) {
                 imgName = uploadFile(itemImgLocation, oriImgName, file.getBytes());
-                imgUrl = "/Users/proxy/items/item/" + imgName;
+                imgUrl = "https://dassda.today/images/" + imgName;
             }
             member.get().setProfile_image_url(imgUrl);
             memberRepository.save(member.get());
