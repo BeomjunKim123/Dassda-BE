@@ -21,9 +21,9 @@
 
 | 역할 | 이름 | 연락처 | 비고 |
 | ------------- | ------------- | ------------- | ------------- |
-| 📝 PM | 이세은 | wntkfkd95@naver.com | 팀장 |
+| 📝 PM | 이세은 | wntkfkd95@naver.com | - |
 | 🎨 DE | 유수 | - | - |
-| ⚙ BE | 권동휘 | hocci0222@kakao.com | BE 리드 |
+| ⚙ BE | 권동휘 | hocci0222@kakao.com | 팀 리드 |
 | ⚙ BE | 김범준 | - | - |
 | 📺 FE | 김주현 | sang.pok.e@gmail.com | FE 리드 |
 | 📺 FE | 이어진 | - | - |
@@ -43,24 +43,23 @@
 | 📺 FE | 김주현 | sang.pok.e@gmail.com | - |
 
 #### 배포 주소
-- https://dassda.today, by Vercel
+- https://dassda.today/
 
 #### 화면설계 URL
 - [쓰다 Prototyping UI / Figma URL](https://www.figma.com/file/nx8EkCrbjOGxo22KYulTcP/%EA%B3%B5%EC%9C%A0-%EC%9D%BC%EA%B8%B0%EC%9E%A5?type=design&node-id=0%3A1&mode=design&t=dibWmhUdCesJXOy9-1)
 
-## 기술 스택 /Frontend
-`React`, `Typescript`
-- 2차 배포 목표가 PWA이기 때문에 하나의 어플리케이션으로 느끼게 만들고 싶어 React UI Library를 사용하였습니다.
+## 기술 스택 /Back-End
+`Spring Boot`, `Java`
 
-`Module SCSS`
+`Jenkins`, `Docker`, `Ubuntu(Compact, Micro)`
 - CSS in JS는 스타일을 직렬화하는 과정에서 런타임 오버헤드가 걸리고 번들 크기를 늘리는 단점이 있습니다.
 - 초기 로딩을 최대한 앞당기기 위함과, 스코프 지정 스타일을 사용하기 위해 Module SCSS를 선택했습니다.
 
-`React Query`, `Recoil`
+`JPA`, `MySQL`, `Redis`
 - 서버 사이드 상태를 효율적으로 캐싱하기 위해 React Query를 사용하였습니다.
 - Header Config 등 클라이언트 상태를 효율적으로 관리하기 위해 Recoil을 사용하였습니다.
 
-`Axios`
+`OAuth(REST API)`
 - Axios에서 제공하는 많은 편리성, 예를 들면 헤더 설정 및 Multipart 전송 등이 개발 경험을 좋게 만들어주어 선택하였습니다.
 
 ## 협업 /팀 전체
@@ -70,15 +69,12 @@
 
 `Slack`: 주 소통 채널로서 팀원 또는 팀끼리의 협업에 대한 이야기를 나누거나 자료를 공유하였습니다.
 
-## 협업 /FE팀
+## 협업 /BE팀
 
-**`Github Action`을 통한 티켓 넘버 관리**
-- Github Action을 작성하여 Github Issue를 작성 시, 자동으로 Jira에 이슈를 생성합니다.
-- 생성한 Jira 이슈의 티켓 넘버를 받아와 develop에서 branch를 따와 생성합니다.
-
-**`Husky`를 통한 커밋 컨벤션 관리**
-- 위의 상황과 마찬가지로, Commit 내용에도 해당 티켓 넘버가 포함되어 있어야 연동이 됩니다.
-- Github Hook을 편하게 사용할 수 있게 제공해주는 Husky를 통해 커밋 시 자동으로 티켓 넘버가 기입되게 만들었습니다.
+**`Github Webhook`을 통한 CI/CD, 티켓을 통한 Jira 이슈 관리**
+- Github Main 브렌치에 대한 PR, Merge 발생 시 Docker, Jenkins 빌드 후 Ubuntu에 자동 배포
+- 생성한 Jira 이슈의 티켓 넘버를 받아와 Push 네임에 티켓으로 발행
+- 모든 API를 동시 구현 후 코드 리뷰하는 방식으로 진행
 
 # 서비스 특징
 
