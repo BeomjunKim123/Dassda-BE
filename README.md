@@ -50,6 +50,7 @@
 
 ## 기술 스택 /Back-End
 `Spring Boot`, `Spring Security`
+- 쉬운 설정과 배포를 위한 Spring boot를 사용하고 인증과 권한 부여를 통해 보안을 강화하기 위해 시큐리티를 선택하였습니다.
 
 `Jenkins`, `Docker`, `Ubuntu(Compact, Micro)`, `DNS`, `SSL 인증서`
 - 수동 배포의 불편함 해소와 우분투 서버의 경량화를 위해 젠킨스와 도커를 사용하였습니다.
@@ -60,7 +61,7 @@
 - 안정적이고 확장가능한 관계형 데이터베이스 MySQL을 사용하였습니다.
 - 빠른 읽기 및 쓰기 속도를 이용하여 자동 로그인(RefreshToken)과 알림 기능에서 Redis를 사용하였습니다.
 
-`OAuth(REST API)`, `JWT`
+`oauth(REST API)`, `JWT`
 - 편리한 로그인을 위해 카카오 로그인을 사용하였고 스케일러블하고 유연한 인증 및 정보 교환을 위해 JWT를 선택하였습니다.
 
 ## 협업 /팀 전체
@@ -120,76 +121,79 @@
 | -------- |
 | ![쓰다 초대 흐름](https://github.com/SSDA-Side/SSDA-Front/assets/48979587/8e5d0fe8-8ce3-4485-ae0c-4011c21dae54) |
 
-## 스켈레톤 로딩 및 오류 화면 대응
-- Skeleton UI를 적용하여 사용자에게 데이터 패칭 중임을 알려주고, 앞으로 나올 콘텐츠의 위치를 미리 알려주어 균일감 있는 경험을 제공합니다.
-- `Suspense`와 `Error Boundary`를 활용하여 오류 화면과 로딩 화면을 비즈니스 로직에서 분리하였습니다.
-- `React Query`의 `QueryErrorResetBoundary`를 활용하여 재시도를 제공하였습니다.
-- `QueryErrorResetBoundary`, `Error Boundary`, `Suspense`를 한 번에 처리하도록 `AsyncBoundary` Provider를 사용하였습니다.
-  - 출처: https://varletc0nst.tistory.com/39
 
-| 일기 스켈레톤 | 오류 화면 대응 |
-| -------- | --------- |
-| ![GIF 2024-03-03 오전 12-44-20](https://github.com/SSDA-Side/SSDA-Front/assets/48979587/a456daa0-3e9c-46e1-aef7-f5338e406756) | ![GIF 2024-03-03 오전 12-48-01](https://github.com/SSDA-Side/SSDA-Front/assets/48979587/4127f118-de0e-4e40-ad09-7fa25f3c8ea3) |
+## 클린 코드
+- 중복 코드 제거와 가독성을 위해
+-  클래스 이니셜라이즈를 사용하였습니다.(알림 리스너에서)
+-  모던 자바를 사용하였습니다.(서비스 로직, Stream api)
+-  @Component를 사용하여 자주 접근하는 객체를 클래스화 시켰습니다.(SecurityContextHolder)
 
-## ID 기반 모달 관리
-- Recoil을 통해 모달 정보를 담은 전역 배열을 만들었고, ModalController를 통해 렌더링합니다.
-- 필요한 모달을 Component Modal, Confirm, Alert, Sheet로 구분하여 관리하였습니다.
-- prop으로 필요한 정보를 넘겨줄 수 있도록 만들었습니다.
-- 모달의 기본 기능을 제공함으로써 모달 콘텐츠는 본인의 역할에만 집중할 수 있도록 했습니다.
+**| NotificationEventListener**
+```java
+@EventListener
+    public void onCommentCreated(CommentCreatedEvent event) {
+        Comment comment = event.getComment();
+        Diary diary = diary(comment.getDiary().getId());
 
-**| ModalController**
-```typescript
-const ModalController = () => {
-  const { modals } = useModal();
-
-  const getTypedComponent = ({ id, type, isOpened, payload }: Modal) => {
-    if (type === 'Component') {
-      return <ComponentModal key={id} id={id} isOpened={isOpened} {...(payload as ComponentPayload)} />;
+        if(!diary.getMember().getId().equals(member().getId())) {
+            Map<String, Object> notificationData = new HashMap<>() {{
+                put("notificationTypeId", 1);
+                put("isRead", false);
+                put("regDate", LocalDateTime.now());
+                put("writerId", comment.getMember().getId());
+                put("boardId", diary.getBoard().getId());
+                put("boardTitle", diary.getBoard().getTitle());
+                put("diaryId", diary.getId());
+                put("commentId", comment.getId());
+                put("commentContent", comment.getComment());
+                put("commentWriterNickname", comment.getMember().getNickname());
+            }};
+            parseJson(notificationData, diary.getMember().getId());
+        }
     }
-
-    if (type === 'Alert') {
-      return <Alert key={id} id={id} isOpened={isOpened} {...(payload as AlertPayload)} />;
-    }
-
-    if (type === 'Confirm') {
-      return <Confirm key={id} id={id} isOpened={isOpened} {...(payload as ConfirmPayload)} />;
-    }
-  };
-
-  return modals.map(getTypedComponent);
-};
 ```
 
-**| openModal 코드**
-```typescript
-const openModal = useRecoilCallback(
-  ({ set }) =>
-    ({ type, payload }: { type: ModalType; payload: ModalPayloadType }) => {
-      const newId = uuid();
-
-      set(ModalStore, (prevState) => {
-        return [
-          ...prevState,
-          {
-            id: newId,
-            type,
-            payload,
-            isOpened: true,
-          } as Modal,
-        ];
-      });
-
-      return newId;
-    },
-  [],
-);
+**| Service 코드**
+```java
+@Transactional
+    public void deleteBoard(Long boardId) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalStateException("삭제된 일기장입니다."));
+        if(!board.getMember().getId().equals(currentMember().getId())) {
+            throw new IllegalStateException("삭제 권한이 없다.");
+        }
+        board.setBackUp(true);
+        List<Diary> diaryList = diaryRepository.findByBoardId(board.getId());
+        if(!(shareRepository.existsByBoardId(board.getId()) && shareRepository.existsByMemberId(currentMember().getId()))) {
+            diaryList.stream()
+                    .filter(diary -> !diary.isBackUp())
+                    .forEach(diary -> diary.setBackUp(true));
+            diaryRepository.saveAll(diaryList);
+        }
+        boardRepository.save(board);
+    }
 ```
 
-**| openComponentModal Usage**
-```typescript
-openComponentModal<CreateShareLinkModalProps>({
-  title: '초대하기',
-  children: InviteMemberModal,
-  props: { board },
-});
+**| GetMember**
+```java
+@Component
+public class GetMember {
+
+    private static MemberRepository memberRepository;
+
+    @Autowired
+    public void setMemberRepository(MemberRepository memberRepository) {
+        GetMember.memberRepository = memberRepository;
+    }
+    public static Member getCurrentMember() {
+        return memberRepository
+                .findByEmail(
+                        SecurityContextHolder
+                                .getContext()
+                                .getAuthentication()
+                                .getName()
+                )
+                .orElseThrow(() -> new IllegalStateException("다시 로그인 해주세요"));
+    }
+}
 ```
