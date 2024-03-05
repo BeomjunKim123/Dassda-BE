@@ -124,7 +124,7 @@
 
 ## 클린 코드
 - 중복 코드 제거와 가독성을 위해
--  클래스 이니셜라이즈를 사용하였습니다.(알림 리스너에서)
+-  Double Brace Initialization를 사용하였습니다.(알림 리스너에서)
 -  모던 자바를 사용하였습니다.(서비스 로직, Stream api)
 -  @Component를 사용하여 자주 접근하는 객체를 클래스화 시켰습니다.(SecurityContextHolder)
 
