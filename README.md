@@ -136,18 +136,20 @@
         Diary diary = diary(comment.getDiary().getId());
 
         if(!diary.getMember().getId().equals(member().getId())) {
-            Map<String, Object> notificationData = new HashMap<>() {{
-                put("notificationTypeId", 1);
-                put("isRead", false);
-                put("regDate", LocalDateTime.now());
-                put("writerId", comment.getMember().getId());
-                put("boardId", diary.getBoard().getId());
-                put("boardTitle", diary.getBoard().getTitle());
-                put("diaryId", diary.getId());
-                put("commentId", comment.getId());
-                put("commentContent", comment.getComment());
-                put("commentWriterNickname", comment.getMember().getNickname());
-            }};
+            Map<String, Object> notificationData = new HashMap<>() {
+                {
+                    put("notificationTypeId", 1);
+                    put("isRead", false);
+                    put("regDate", LocalDateTime.now());
+                    put("writerId", comment.getMember().getId());
+                    put("boardId", diary.getBoard().getId());
+                    put("boardTitle", diary.getBoard().getTitle());
+                    put("diaryId", diary.getId());
+                    put("commentId", comment.getId());
+                    put("commentContent", comment.getComment());
+                    put("commentWriterNickname", comment.getMember().getNickname());
+                }
+            };
             parseJson(notificationData, diary.getMember().getId());
         }
     }
