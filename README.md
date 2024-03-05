@@ -49,18 +49,19 @@
 - [쓰다 Prototyping UI / Figma URL](https://www.figma.com/file/nx8EkCrbjOGxo22KYulTcP/%EA%B3%B5%EC%9C%A0-%EC%9D%BC%EA%B8%B0%EC%9E%A5?type=design&node-id=0%3A1&mode=design&t=dibWmhUdCesJXOy9-1)
 
 ## 기술 스택 /Back-End
-`Spring Boot`, `Java`
+`Spring Boot`, `Spring Security`
 
-`Jenkins`, `Docker`, `Ubuntu(Compact, Micro)`
-- CSS in JS는 스타일을 직렬화하는 과정에서 런타임 오버헤드가 걸리고 번들 크기를 늘리는 단점이 있습니다.
-- 초기 로딩을 최대한 앞당기기 위함과, 스코프 지정 스타일을 사용하기 위해 Module SCSS를 선택했습니다.
+`Jenkins`, `Docker`, `Ubuntu(Compact, Micro)`, `DNS`, `SSL 인증서`
+- 수동 배포의 불편함 해소와 우분투 서버의 경량화를 위해 젠킨스와 도커를 사용하였습니다.
+- 사용자 친화적인 도메인 이름을 위해 DNS를 웹 사이트 간 정보가 암호화하고 보안을 강화하기 위해 SSL인증서를 사용하여 HTTPS 구축하였습니다.
 
 `JPA`, `MySQL`, `Redis`
-- 서버 사이드 상태를 효율적으로 캐싱하기 위해 React Query를 사용하였습니다.
-- Header Config 등 클라이언트 상태를 효율적으로 관리하기 위해 Recoil을 사용하였습니다.
+- 데이터 중심의 로직보다는 비즈니스 로직에 더 집중하기 위해 JPA를 사용하였습니다.
+- 안정적이고 확장가능한 관계형 데이터베이스 MySQL을 사용하였습니다.
+- 빠른 읽기 및 쓰기 속도를 이용하여 자동 로그인(RefreshToken)과 알림 기능에서 Redis를 사용하였습니다.
 
-`OAuth(REST API)`
-- Axios에서 제공하는 많은 편리성, 예를 들면 헤더 설정 및 Multipart 전송 등이 개발 경험을 좋게 만들어주어 선택하였습니다.
+`OAuth(REST API)`, `JWT`
+- 편리한 로그인을 위해 카카오 로그인을 사용하였고 스케일러블하고 유연한 인증 및 정보 교환을 위해 JWT를 선택하였습니다.
 
 ## 협업 /팀 전체
 `Jira`: 팀 전체 진도 현황을 공유하였습니다.
@@ -83,6 +84,8 @@
 - 서비스 내에 로그인을 필요로 하는 Entry Point가 두 군데 존재하였습니다.
 - Access Token을 받아오는 콜백 주소는 고정하되, localStorage를 통해 다음 서비스 경로를 지정해주는 흐름으로 구현하였습니다.
 - 사용자 인증 방식은 JWT 방식을 사용하였습니다.
+- RestTemplate을 이용하여 카카오 서버에서 사용자 정보를 가져와 DB에 저장하였습니다.
+- DB를 조회하여 사용자가 없으면 AccessToken과 RefreshToken을 생성하며 저장하였습니다.
 
 | 쓰다 로그인 흐름 순서도 |
 | -------- |
@@ -92,10 +95,8 @@
 ## 알림
 - 서비스를 이용하면서 놓칠 수 있는 부분을 알림으로 알려주고 있습니다.
 - 총 5종류로 알림을 구분하였고, 각 종류별 마다 적절한 경로로 따라가게 했습니다.
-- `React Query`의 `useSuspenseInfiniteQuery` Hook을 사용하여 무한 스크롤 패칭을 구현하였습니다.
-- `useInfiniteObserver`라는 Custom Hook을 만들어 스크롤 위치를 감지하였습니다.
-  - `MutationObserver`, `Intersection Observer` interface를 사용하여 구현하였습니다.
-  - 해당 방식은 쓰다 서비스의 무한 스크롤 방식의 모든 목록에 적용되었습니다.
+- Pageable을 이용하여 무한 스크롤을 구현하였습니다.(마지막 id값으로 다음 페이지 응답)
+- 기획의도에 따라 알림의 만료 기간을 30일로 지정하고 빠른 읽기와 쓰기 속도를 위해 Redis를 사용하였습니다.
 
 | 쓰다 알림 화면 | 알림 종류 명세 |
 | -------- | ------- |
